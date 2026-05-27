@@ -290,15 +290,14 @@
     margin: 2rem 0;
     @include mixins.border-radius(12px);
     overflow: hidden;
-    background: var(--theme-gray-50);
-    border: 1px solid var(--border);
+    background: var(--background);
+    border: 1px solid var(--border); 
 
     // 避免圖片過大導致記憶體問題
     img {
       max-width: 100%;
       height: auto;
       display: block;
-      @include mixins.border-radius(12px);
     }
   }
 
@@ -306,10 +305,113 @@
     border-radius: 0.5rem;
     object-fit: contain;
     transition: transform 0.3s ease;
+  }
+
+  // 連續多張圖片：圖片輪播（一次顯示一張）
+  .carousel {
+    width: 100%;
+    margin: 2rem 0;
+  }
+
+  .carouselViewport {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border: 1px solid var(--border); 
+    @include mixins.border-radius(12px);
+  }
+
+  .carouselTrack {
+    display: flex;
+    transition: transform 0.35s ease;
+  }
+
+  .carouselSlide {
+    flex: 0 0 100%;
+    width: 100%;
+    min-width: 0;
+    aspect-ratio: 3 / 2;
+
+    .imageWrapper {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      border: none;
+      border-radius: 0;
+      background: var(--background);
+
+      img {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        border-radius: 0;
+      }
+    }
+  }
+
+  // 左右切換按鈕
+  .carouselArrow {
+    z-index: 2;
+    position: absolute;
+    top: calc(50% - 20px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid transparent;
+    cursor: pointer;
+    color: var(--color-white);
+    background: transparent;
+    @include mixins.border-radius(50%);
+    @include mixins.hover-scale-effect;
 
     &:hover {
-      transform: scale(1.02);
+    border: 1px solid var(--border);
+      @include mixins.glass-blur(6px);
+      background: rgba(var(--background-secondary-rgb), 0.5);
     }
+  }
+
+  .carouselArrowPrev {
+    left: 0.75rem;
+  }
+
+  .carouselArrowNext {
+    right: 0.75rem;
+  }
+
+  // 下方導航圓點
+  .carouselDots {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+  }
+
+  .carouselDot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: var(--border);
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease;
+
+    &:hover {
+      background: var(--foreground-tertiary);
+    }
+  }
+
+  .carouselDotActive {
+    background: var(--primary);
+    transform: scale(1.25);
   }
 
   video {
