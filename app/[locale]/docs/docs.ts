@@ -1,5 +1,5 @@
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
-import { faYoutube } from '@fortawesome/free-brands-svg-icons'
+import { faGithub, faYoutube } from '@fortawesome/free-brands-svg-icons'
 import {
   faMoneyBillWave,
   faScrewdriverWrench,
@@ -78,6 +78,36 @@ export const subDocs: SubDocs[] = [
     id: 'course-materials',
     title: '課程資料',
     docs: [
+      {
+        id: '',
+        title: '第一屆 機器人對抗賽',
+        date: '2026-05-27',
+        docs: [
+          {
+            id: 'course-files',
+            title: '機器人遙控程式',
+            type: 'Github',
+            filePath: 'https://github.com/robotctust/robot-program-examples/blob/main/bluetooth-remote-control/bluetooth-remote-control.zip',
+            icon: faGithub,
+          },
+          {
+            id: 'course-files',
+            title: 'Arduino 驅動程式',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1eeHpWV68UiTtbvFQRRDyEFXxKA0WbRSd/view?usp=sharing',
+            icon: faGoogleDrive,
+          },
+          {
+            id: 'arduino-ide-installation-and-usage-google-drive',
+            title: 'Arduino IDE 安裝及使用 - 簡報',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1E9K2VmNAzUmeRdLW2MdOmULmKpawgEBK/view?usp=sharing',
+            icon: faGoogleDrive,
+          },
+        ],
+      },
       {
         id: '',
         title: '114-2 社團活動二：遙控避障挑戰賽',
