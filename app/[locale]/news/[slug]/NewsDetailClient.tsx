@@ -8,7 +8,6 @@ import { useLocale, useTranslations } from 'next-intl'
 import styles from './post-detail.module.scss'
 
 // components
-import MarkdownRenderer from '@/app/components/Markdown/MarkdownRenderer'
 import FloatingActionBar, {
   ActionItem,
 } from '@/app/components/FloatingActionBar/FloatingActionBar'
@@ -39,11 +38,14 @@ import { faThreads, faXTwitter } from '@fortawesome/free-brands-svg-icons'
 interface NewsDetailClientProps {
   initialPost: SerializedPost | null
   initialError: string | null
+  // server 端預先渲染的 Markdown 內文
+  children?: React.ReactNode
 }
 
 export default function NewsDetailClient({
   initialPost,
   initialError,
+  children,
 }: NewsDetailClientProps) {
   const router = useRouter()
   const locale = useLocale()
@@ -209,9 +211,7 @@ export default function NewsDetailClient({
           </div>
         )}
 
-        <div className={styles.content}>
-          <MarkdownRenderer content={post.contentMarkdown} />
-        </div>
+        <div className={styles.content}>{children}</div>
       </article>
 
       <FloatingActionBar

@@ -1,4 +1,5 @@
 import { Metadata } from 'next'
+import type { ReactNode } from 'react'
 import styles from './post-detail.module.scss'
 
 // utils
@@ -13,6 +14,7 @@ import { getTranslations } from 'next-intl/server'
 // components
 import Page from '@/app/components/page/Page'
 import NewsDetailClient from './NewsDetailClient'
+import { MarkdownContent } from '@/app/components/Markdown'
 
 // types
 import { Post } from '@/app/types/post'
@@ -43,11 +45,14 @@ export default async function NewsDetailPage({
   const { slug } = await params
   let initialPost = null
   let error = null
+  // 在 server 端預先渲染的 Markdown 內文，透過 children 傳給 client 元件
+  let contentNode: ReactNode = null
 
   try {
     const post = await getPostById(slug)
     if (post) {
       initialPost = serializePost(post)
+      contentNode = <MarkdownContent content={post.contentMarkdown} />
     } else {
       const t = await getTranslations('News')
       error = t('detail.error.notFound')
@@ -60,7 +65,9 @@ export default async function NewsDetailPage({
 
   return (
     <Page style={styles.postDetailContainer}>
-      <NewsDetailClient initialPost={initialPost} initialError={error} />
+      <NewsDetailClient initialPost={initialPost} initialError={error}>
+        {contentNode}
+      </NewsDetailClient>
     </Page>
   )
 }
