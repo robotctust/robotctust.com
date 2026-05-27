@@ -85,9 +85,16 @@ export const subDocs: SubDocs[] = [
         docs: [
           {
             id: 'course-files',
-            title: '機器人遙控程式',
+            title: '機器人遙控程式 - Arduino',
             type: 'Github',
             filePath: 'https://github.com/robotctust/robot-program-examples/blob/main/bluetooth-remote-control/bluetooth-remote-control.zip',
+            icon: faGithub,
+          },
+          {
+            id: 'course-files',
+            title: '機器人遙控程式 - Android App',
+            type: 'Github',
+            filePath: 'https://github.com/robotctust/robot-bluetooth-remote-app/releases/tag/v3.1',
             icon: faGithub,
           },
           {
