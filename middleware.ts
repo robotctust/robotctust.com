@@ -5,6 +5,13 @@ import { routing } from './i18n/routing'
 
 const intlMiddleware = createMiddleware(routing)
 
+// 搜尋引擎與社群媒體爬蟲：跳過地區自動轉址，讓它們直接拿到各語系的正規網址。
+// 注意 Google 旗下部分爬蟲 UA 不含 "bot"，必須明確列出，否則會漏抓：
+// - Google-InspectionTool：GSC「測試實際網址」用，漏抓會讓你實測時仍被轉址而誤判失敗
+// - GoogleOther / Mediapartners-Google：其他 Google 爬蟲
+const BOT_UA_REGEX =
+  /bot|crawler|spider|crawling|google-inspectiontool|googleother|mediapartners-google|slurp|yandex|facebookexternalhit|facebot|twitterbot|linkedinbot|whatsapp|telegrambot|slackbot|discordbot|line-poker|vkshare/i
+
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl
 
@@ -13,11 +20,12 @@ export async function middleware(request: NextRequest) {
     return await updateSession(request)
   }
 
-  // Geo-detection：對未加 /en 前綴、且沒有語言 cookie 的請求偵測地區
   const hasEnPrefix = pathname === '/en' || pathname.startsWith('/en/')
   const localeCookie = request.cookies.get('NEXT_LOCALE')?.value
+  const isBot = BOT_UA_REGEX.test(request.headers.get('user-agent') ?? '')
 
-  if (!hasEnPrefix && !localeCookie) {
+  // Geo-detection：僅對「未加 /en 前綴、無語言 cookie、且非爬蟲」的真人請求做地區自動轉址
+  if (!hasEnPrefix && !localeCookie && !isBot) {
     const country = request.headers.get('x-vercel-ip-country')
     let shouldRedirectToEn = false
 
