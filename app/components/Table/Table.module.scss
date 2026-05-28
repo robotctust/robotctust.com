@@ -1,0 +1,330 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.root {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space);
+  width: 100%;
+}
+
+/* =========================================
+   Toolbar（搜尋 + 過濾，與表格分離）
+   ========================================= */
+.toolbar {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  gap: var(--space);
+  flex-wrap: wrap;
+}
+
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+
+  .searchIcon {
+    position: absolute;
+    left: 12px;
+    font-size: 0.85rem;
+    color: var(--foreground-secondary);
+    pointer-events: none;
+  }
+
+  .searchInput {
+    height: 40px;
+    padding: 6px 12px 6px 34px;
+    border: 1px solid var(--border);
+    @include mixins.border-radius(9px);
+    background: var(--background);
+    color: var(--foreground);
+    width: 260px;
+    max-width: 100%;
+    font-size: 0.9rem;
+
+    &:focus {
+      outline: none;
+      background: var(--background-secondary);
+      border-color: var(--border-hover);
+    }
+  }
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filterSelect {
+  height: 40px;
+  padding: 6px 12px;
+  border: 1px solid var(--border);
+  @include mixins.border-radius(9px);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.9rem;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    background: var(--background-secondary);
+    border-color: var(--border-hover);
+  }
+}
+
+/* =========================================
+   選取列 inline toolbar
+   ========================================= */
+.selectionBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space);
+  flex-wrap: wrap;
+  padding: 8px 16px;
+  border: 1px solid var(--border-hover);
+  @include mixins.border-radius(12px);
+  background: rgba(var(--background-secondary-rgb), 0.6);
+
+  .selectionCount {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--foreground);
+  }
+
+  .selectionActions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .clearButton {
+    @include mixins.button('normal', 'small');
+  }
+}
+
+/* =========================================
+   Table
+   ========================================= */
+.tableWrap {
+  border: 1px solid var(--border);
+  @include mixins.border-radius(16px);
+  overflow: auto;
+  background: rgba(var(--background-rgb), 0.4);
+}
+
+.table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+
+  th,
+  td {
+    padding: 11px 18px;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--foreground-secondary);
+    background: rgba(var(--background-secondary-rgb), 0.5);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+    user-select: none;
+
+    &.sortable {
+      cursor: pointer;
+
+      &:hover {
+        color: var(--foreground);
+      }
+    }
+  }
+
+  td {
+    font-size: 0.9rem;
+    color: var(--foreground);
+  }
+
+  tr:last-child td {
+    border-bottom: none;
+  }
+
+  tbody tr:hover td {
+    background: rgba(var(--background-secondary-rgb), 0.3);
+  }
+
+  .clickableRow {
+    cursor: pointer;
+  }
+
+  .selectedRow td {
+    background: rgba(var(--background-secondary-rgb), 0.5);
+  }
+}
+
+.headerContent {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.sortIcon {
+  font-size: 0.7rem;
+  opacity: 0.35;
+  transition: opacity var(--transition-duration) var(--transition-bezier-fast);
+}
+
+.sortIconActive {
+  opacity: 1;
+  color: var(--primary);
+}
+
+.nowrap {
+  white-space: nowrap;
+}
+
+.checkboxCell {
+  width: 44px;
+  text-align: center;
+}
+
+/* =========================================
+   Custom Checkbox
+   ========================================= */
+.checkboxWrapper {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  vertical-align: middle;
+  cursor: pointer;
+}
+
+.checkboxInput {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+  margin: 0;
+  pointer-events: none;
+
+  &:checked + .checkboxBox {
+    background: var(--primary);
+    border-color: var(--primary);
+    // SVG 打勾
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 10' xmlns='http://www.w3.org/2000/svg'%3E%3Cpolyline points='1.5,5 4.5,8.5 10.5,1.5' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+    background-size: 11px 9px;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  &:indeterminate + .checkboxBox {
+    background: var(--primary);
+    border-color: var(--primary);
+    // SVG 橫線（indeterminate）
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 12 4' xmlns='http://www.w3.org/2000/svg'%3E%3Cline x1='1.5' y1='2' x2='10.5' y2='2' stroke='white' stroke-width='2.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-size: 10px 3px;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+}
+
+.checkboxBox {
+  width: 18px;
+  height: 18px;
+  border: 1.5px solid var(--border);
+  @include mixins.border-radius(5px);
+  background: var(--background);
+  flex-shrink: 0;
+  transition:
+    background var(--transition-duration) var(--transition-bezier-fast),
+    border-color var(--transition-duration) var(--transition-bezier-fast);
+
+  .checkboxWrapper:hover & {
+    border-color: var(--border-hover);
+  }
+}
+
+/* =========================================
+   Empty State
+   ========================================= */
+.emptyState {
+  text-align: center;
+  padding: 48px 24px;
+  color: var(--foreground-secondary);
+  border: 1px dashed var(--border);
+  @include mixins.border-radius(16px);
+}
+
+/* =========================================
+   Pagination
+   ========================================= */
+.pagination {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: var(--space);
+  flex-wrap: wrap;
+}
+
+.pageSizeControl {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.85rem;
+  color: var(--foreground-secondary);
+}
+
+.pageSizeSelect {
+  height: 32px;
+  padding: 2px 8px;
+  border: 1px solid var(--border);
+  @include mixins.border-radius(8px);
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.85rem;
+  cursor: pointer;
+
+  &:focus {
+    outline: none;
+    border-color: var(--border-hover);
+  }
+}
+
+.pageControl {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pageInfo {
+  font-size: 0.85rem;
+  color: var(--foreground-secondary);
+}
+
+.pageButton {
+  @include mixins.flexbox(row, center, center);
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  @include mixins.border-radius(8px);
+  background: var(--background);
+  color: var(--foreground);
+  cursor: pointer;
+  @include mixins.transition();
+
+  &:hover:not(:disabled) {
+    background: var(--background-secondary);
+    border-color: var(--border-hover);
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+}

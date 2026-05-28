@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   gap: var(--space-2x);
-  padding: var(--space-2x);
+  padding: var(--space-2x) 0;
 }
 
 /* =========================================
@@ -28,94 +28,23 @@
     align-items: center;
     gap: 12px;
     flex-wrap: wrap;
-  }
-}
 
-/* =========================================
-   Filters
-   ========================================= */
-.filters {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  flex-wrap: wrap;
-
-  .searchInput {
-    padding: 8px 16px;
-    border: 1px solid var(--border);
-    @include mixins.border-radius(8px);
-    background: var(--background-secondary);
-    color: var(--foreground);
-    width: 240px;
-    transition: border-color 0.2s;
-
-    &:focus {
-      outline: none;
-      border-color: var(--foreground-secondary);
-    }
-  }
-
-  .categorySelect {
-    padding: 8px 12px;
-    border: 1px solid var(--border);
-    @include mixins.border-radius(8px);
-    background: var(--background-secondary);
-    color: var(--foreground);
-    cursor: pointer;
-
-    &:focus {
-      outline: none;
+    > .newNewsButton {
+      @include mixins.flexbox(row, center, center);
+      gap: 6px;
+      @include mixins.button('normal', 'normal');
     }
   }
 }
 
 /* =========================================
-   Table
+   Cell content（表格框架樣式由 Table 元件提供）
    ========================================= */
-.tableWrap {
-  border: 1px solid var(--border);
-  @include mixins.border-radius(16px);
-  overflow: auto;
-  background: rgba(var(--background-rgb), 0.4);
-}
-
-.table {
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0;
-
-  th,
-  td {
-    padding: 14px 18px;
-    text-align: left;
-    border-bottom: 1px solid var(--border);
-  }
-
-  th {
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: var(--foreground-secondary);
-    background: rgba(var(--background-secondary-rgb), 0.5);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-    white-space: nowrap;
-  }
-
-  tr:last-child td {
-    border-bottom: none;
-  }
-
-  tr:hover td {
-    background: rgba(var(--background-secondary-rgb), 0.3);
-  }
-}
-
 .titleCell {
   max-width: 320px;
 
   .titleLink {
-    font-weight: 600;
-    color: var(--foreground);
+    color: var(--foreground-secondary);
     text-decoration: none;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -123,9 +52,13 @@
     overflow: hidden;
 
     &:hover {
-      color: var(--foreground-secondary);
+      color: var(--foreground);
     }
   }
+}
+
+.authorLink {
+  white-space: nowrap;
 }
 
 .categoryBadge {
@@ -136,8 +69,8 @@
   font-weight: 600;
   white-space: nowrap;
   background: var(--category-bg-color, rgba(var(--foreground-rgb), 0.1));
-  color: var(--category-text-color, var(--foreground));
-  border: 1px solid var(--category-border-color, transparent);
+  color: var(--foreground);
+  border: 1px solid var(--border, transparent);
 }
 
 .dateCell {
@@ -146,29 +79,19 @@
   color: var(--foreground-secondary);
 }
 
-.actionsCell {
-  white-space: nowrap;
+.actionButtons {
+  display: flex;
+  gap: 8px;
+  align-items: center;
 
-  .actionButtons {
-    display: flex;
-    gap: 8px;
-    align-items: center;
+  .editButton  {
+    @include mixins.button('normal', 'small');
+  }
+  .deleteButton {
+    @include mixins.button('danger', 'small');
   }
 }
 
-/* =========================================
-   Empty / Feedback States
-   ========================================= */
-.emptyState {
-  text-align: center;
-  padding: 48px 24px;
-  color: var(--foreground-secondary);
-  border: 1px dashed var(--border);
-  @include mixins.border-radius(16px);
-}
-
-.loading {
-  text-align: center;
-  padding: var(--space-4x);
-  color: var(--foreground-secondary);
+.bulkDeleteButton {
+  @include mixins.button('danger', 'small');
 }

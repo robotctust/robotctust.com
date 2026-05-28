@@ -122,10 +122,11 @@
   > .semesterSection {
     display: flex;
     flex-direction: column;
-    gap: var(--space-1-5x);
-    padding: 12px;
-    border: 1px solid var(--border);
-    @include mixins.border-radius(28px);
+    padding: var(--space-2x) 0;
+
+    & + .semesterSection {
+      border-top: 2px solid var(--border);
+    }
 
     .sectionDescription {
       margin: 0;
@@ -142,9 +143,9 @@
     > .semesterHeader {
       @include mixins.flexbox(column, flex-start, flex-start);
       gap: var(--space);
-      padding: 12px;
-      padding-bottom: 0;
+      padding: 0 0 var(--space) 0;
       width: 100%;
+      border-bottom: 1px solid var(--border);
 
       > .semesterTitleGroup {
         display: flex;
@@ -244,26 +245,26 @@
     > .chapterList {
       display: flex;
       flex-direction: column;
-      gap: var(--space);
 
       > .chapterCard {
         display: flex;
         flex-direction: column;
-        gap: 14px;
-        padding: 14px;
-        border: 1px solid var(--border);
-        @include mixins.border-radius(16px);
+        gap: var(--space);
+        padding: var(--space-2x) 0;
+        padding-right: var(--space);
+        border-bottom: 1px solid var(--border);
         cursor: pointer;
 
-        &:hover {
-          border-color: var(--border-hover);
+        &:last-child {
+          border-bottom: none;
         }
 
         &.collapsedChapterCard {
-          @include mixins.hover-scale-effect(1.02);
+          padding: var(--space) 0;
+          padding-right: var(--space);
+
           &:hover {
-            border-color: var(--border-hover);
-            background: rgba(var(--background-secondary-rgb), 0.5);
+            background: rgba(var(--background-secondary-rgb), 0.3);
           }
         }
 
@@ -346,123 +347,6 @@
           display: flex;
           flex-direction: column;
           gap: var(--space);
-
-          > .coursesGrid {
-            display: grid;
-            gap: var(--space);
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-
-            /* =========================================
-               Course Card
-               ========================================= */
-            > .courseCard {
-              display: flex;
-              flex-direction: column;
-              gap: 14px;
-              padding: 18px;
-              min-width: 0;
-              border: 1px solid var(--border);
-              background: rgba(var(--background-secondary-rgb), 0.5);
-              @include mixins.border-radius(9px);
-              cursor: default;
-
-              > .courseCardHeader {
-                display: flex;
-                justify-content: space-between;
-                gap: 12px;
-
-                > .courseCardTitle {
-                  min-width: 0;
-
-                  > h5 {
-                    font-size: 1.2rem;
-                    font-weight: bold;
-                    margin: 0;
-                  }
-
-                  > p {
-                    margin: 0;
-                    margin-bottom: 6px;
-                    width: fit-content;
-                    color: var(--foreground-tertiary);
-                    font-size: 0.8rem;
-                    word-break: break-all;
-                    @include mixins.border-radius(6px);
-                  }
-                }
-
-                > .courseCardActions {
-                  @include mixins.flexbox(row, flex-end, flex-start);
-                  gap: 6px;
-
-                  > span.publishedBadge,
-                  > span.draftBadge {
-                    padding: 3px 9px;
-                    height: fit-content;
-                    font-size: 0.8rem;
-                    border: 1px solid var(--border);
-                    @include mixins.border-radius(6px);
-                  }
-
-                  > span.publishedBadge {
-                    font-weight: bold;
-                    color: var(--foreground-secondary);
-                    background: var(--theme-green-400);
-                    border: 1px solid var(--border);
-                  }
-                }
-              }
-
-              .courseDescription {
-                margin: 0;
-                color: var(--foreground-secondary);
-                line-height: 1.2;
-                flex: 1;
-                display: -webkit-box;
-                -webkit-line-clamp: 3;
-                line-clamp: 3;
-                -webkit-box-orient: vertical;
-                text-overflow: ellipsis;
-                overflow: hidden;
-              }
-
-              .courseActions {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 10px;
-                margin-top: auto;
-
-                > .primaryLink {
-                  @include mixins.button('normal', 'normal');
-                  @include mixins.border-radius(6px);
-                  background: transparent;
-                }
-              }
-
-              .courseMeta {
-                display: flex;
-                flex-wrap: wrap;
-                gap: 10px;
-
-                > .metaPill {
-                  padding: 3px 9px;
-                  font-size: 0.85rem;
-                  border: 1px solid var(--border);
-                  @include mixins.border-radius(6px);
-
-                  &.metaPillExp {
-                    color: var(--foreground-secondary);
-                    background: var(--theme-green-400);
-                  }
-
-                  &.metaPillContent {
-                    color: var(--foreground-tertiary);
-                    background: rgba(var(--background-rgb), 0.46);
-                  }
-                }
-              }
-            }
-          }
         }
       }
     }
@@ -621,4 +505,58 @@
   .secondaryLink {
     @include mixins.button('normal', 'normal');
   }
+}
+
+/* =========================================
+   Course Table（standalone，不受祖先選擇器限制）
+   ========================================= */
+.publishedBadge,
+.draftBadge {
+  display: inline-block;
+  padding: 3px 9px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  border: 1px solid var(--border);
+  @include mixins.border-radius(6px);
+  white-space: nowrap;
+}
+
+.publishedBadge {
+  color: var(--foreground-secondary);
+  background: var(--theme-green-400);
+}
+
+.draftBadge {
+  color: var(--foreground-tertiary);
+  background: rgba(var(--background-secondary-rgb), 0.5);
+}
+
+.metaPillExp {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--foreground-secondary);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.courseNameCell {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.courseSlug {
+  font-size: 0.78rem;
+  color: var(--foreground-tertiary);
+  word-break: break-all;
+}
+
+.courseTableActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.workspaceLink {
+  @include mixins.button('normal', 'small');
 }

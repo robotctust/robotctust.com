@@ -18,9 +18,9 @@ import { ToastProvider } from '../contexts/ToastContext'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 // i18n
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
+import { getMessages, getTranslations } from 'next-intl/server'
 import { notFound } from 'next/navigation'
-import { routing } from '@/i18n/routing'
+import { routing, ogLocaleMap } from '@/i18n/routing'
 // config
 import { HEADER_SCROLL_CONFIG } from '@/app/components/Header/headerScrollConfig'
 
@@ -35,12 +35,27 @@ const dmMono = DM_Mono({
   subsets: ['latin'],
 })
 
-export async function generateMetadata(): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'Metadata' })
+
+  const ogLocale = ogLocaleMap[locale] ?? locale.replace('-', '_')
+  const alternateLocale = routing.locales
+    .filter((l) => l !== locale)
+    .map((l) => ogLocaleMap[l] ?? l.replace('-', '_'))
+
   return {
-    title: '中臺機器人研究社｜Robot Research Club of CTUST',
-    applicationName: '中臺機器人研究社',
-    description:
-      '一個由中臺科技大學學生組成的社團，主要研究機器人技術，並且提供學生一個學習機器人技術的平台。',
+    title: t('siteTitle'),
+    applicationName: t('siteTitle'),
+    description: t('siteDescription'),
+    openGraph: {
+      locale: ogLocale,
+      alternateLocale,
+    },
     icons: {
       icon: [
         {

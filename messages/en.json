@@ -1,4 +1,8 @@
 {
+  "Metadata": {
+    "siteTitle": "Robot Research Club of CTUST｜中臺機器人研究社",
+    "siteDescription": "A student club at Central Taiwan University of Science and Technology focused on robotics research, hands-on learning, and building a collaborative maker community."
+  },
   "Index": {
     "title": "Robotics Research Club of CTUST",
     "webTitle": "Robotics Research Club of CTUST",
@@ -139,6 +143,18 @@
           "website": "Website"
         }
       }
+    },
+    "Table": {
+      "selectionCount": "{count} selected",
+      "clearSelection": "Clear selection",
+      "selectAll": "Select all",
+      "selectRow": "Select this row",
+      "perPage": "Per page",
+      "itemsUnit": "",
+      "pageInfo": "{total} items · Page {current} of {totalPages}",
+      "prevPage": "Previous page",
+      "nextPage": "Next page",
+      "filterAll": "All"
     }
   },
   "Login": {
@@ -636,8 +652,8 @@
       "description": "Explore competitions participated in by the CTUST Robotics Research Club, including schedules, eligibility requirements, and award information.",
       "keywords": "competitions,contest,robotics competition,participation info",
       "detail": {
-        "titleTemplate": "Competition | {title} | Robotics Research Club of CTUST",
-        "titleFallback": "Competition | {slug} | Robotics Research Club of CTUST",
+        "titleTemplate": "{title} | Competition | Robotics Research Club of CTUST",
+        "titleFallback": "{slug} | Competition | Robotics Research Club of CTUST",
         "descriptionFallback": "View details for the {slug} competition, including rules, schedules, and registration information.",
         "keywordDetail": "competition details",
         "keywordInfo": "contest information"
@@ -659,6 +675,49 @@
       "titleTemplate": "{name} | Courses | Robotics Research Club of CTUST",
       "keywords": "course,online courses,robotics,learning unit",
       "fallbackDescription": "{name} is an online course unit from the CTUST Robotics Research Club, offering structured lessons and completion tracking to guide your robotics learning journey."
+    }
+  },
+  "Dashboard": {
+    "News": {
+      "title": "News Management",
+      "newPost": "New Post",
+      "searchPlaceholder": "Search by title or author...",
+      "allCategories": "All Categories",
+      "empty": "No posts yet",
+      "columns": {
+        "title": "Title",
+        "category": "Category",
+        "author": "Author",
+        "createdAt": "Created",
+        "updatedAt": "Updated",
+        "actions": "Actions"
+      },
+      "actions": {
+        "edit": "Edit post",
+        "delete": "Delete post",
+        "bulkDelete": "Delete selected"
+      },
+      "deleteModal": {
+        "title": "Confirm Delete",
+        "body": "You are about to delete \"<strong>{title}</strong>\". This action cannot be undone, and the cover image will also be deleted.",
+        "confirm": "Delete",
+        "deleting": "Deleting...",
+        "cancel": "Cancel"
+      },
+      "bulkDeleteModal": {
+        "title": "Confirm Bulk Delete",
+        "body": "You are about to delete <strong>{count} posts</strong>. This action cannot be undone, and all cover images will also be deleted.",
+        "confirm": "Delete",
+        "deleting": "Deleting...",
+        "cancel": "Cancel"
+      },
+      "toast": {
+        "loadError": "Failed to load posts",
+        "deletedSingle": "Deleted \"{title}\"",
+        "deletedError": "Delete failed",
+        "deletedBulk": "Deleted {count} posts",
+        "deletedPartial": "{success} deleted, {failed} failed"
+      }
     }
   }
 }

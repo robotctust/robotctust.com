@@ -1,4 +1,8 @@
 {
+  "Metadata": {
+    "siteTitle": "中臺機器人研究社｜Robot Research Club of CTUST",
+    "siteDescription": "一個由中臺科技大學學生組成的社團，主要研究機器人技術，並提供學生動手實作、共同成長的學習平台。"
+  },
   "Index": {
     "title": "中臺機器人研究社",
     "webTitle": "中臺機器人研究社",
@@ -139,6 +143,18 @@
           "website": "網站"
         }
       }
+    },
+    "Table": {
+      "selectionCount": "已選 {count} 項",
+      "clearSelection": "清除選取",
+      "selectAll": "全選",
+      "selectRow": "選取此列",
+      "perPage": "每頁",
+      "itemsUnit": "筆",
+      "pageInfo": "{total} 筆 · 第 {current} / {totalPages} 頁",
+      "prevPage": "上一頁",
+      "nextPage": "下一頁",
+      "filterAll": "全部"
     }
   },
   "Login": {
@@ -636,8 +652,8 @@
       "description": "探索中臺機器人研究社參與的各項內外部競賽資訊，包含競賽時程、報名資格與獎項內容。",
       "keywords": "競賽,比賽,機器人競賽,參賽資訊",
       "detail": {
-        "titleTemplate": "競賽詳情｜{title}｜中臺機器人研究社",
-        "titleFallback": "競賽詳情｜{slug}｜中臺機器人研究社",
+        "titleTemplate": "{title}｜競賽詳情｜中臺機器人研究社",
+        "titleFallback": "{slug}｜競賽詳情｜中臺機器人研究社",
         "descriptionFallback": "查看 {slug} 競賽的詳細資訊，包含競賽規則、時程安排與報名方式。",
         "keywordDetail": "競賽詳情",
         "keywordInfo": "比賽資訊"
@@ -659,6 +675,49 @@
       "titleTemplate": "{name}｜課程｜中臺機器人研究社",
       "keywords": "課程,線上課程,機器人,教學單元",
       "fallbackDescription": "{name}為中臺機器人研究社的線上課程單元，提供章節化教材與完成驗證流程，協助你循序學習機器人相關主題。"
+    }
+  },
+  "Dashboard": {
+    "News": {
+      "title": "新聞管理",
+      "newPost": "新建文章",
+      "searchPlaceholder": "搜尋標題或作者...",
+      "allCategories": "所有分類",
+      "empty": "目前還沒有任何文章",
+      "columns": {
+        "title": "標題",
+        "category": "分類",
+        "author": "作者",
+        "createdAt": "建立時間",
+        "updatedAt": "更新時間",
+        "actions": "操作"
+      },
+      "actions": {
+        "edit": "編輯文章",
+        "delete": "刪除文章",
+        "bulkDelete": "刪除選取"
+      },
+      "deleteModal": {
+        "title": "確認刪除文章",
+        "body": "你即將刪除「<strong>{title}</strong>」，此操作無法復原，封面圖片也會一同刪除。",
+        "confirm": "確認刪除",
+        "deleting": "刪除中...",
+        "cancel": "取消"
+      },
+      "bulkDeleteModal": {
+        "title": "確認批量刪除",
+        "body": "你即將刪除「<strong>{count} 篇文章</strong>」，此操作無法復原，封面圖片也會一同刪除。",
+        "confirm": "確認刪除",
+        "deleting": "刪除中...",
+        "cancel": "取消"
+      },
+      "toast": {
+        "loadError": "載入文章列表時發生錯誤",
+        "deletedSingle": "已刪除「{title}」",
+        "deletedError": "刪除失敗",
+        "deletedBulk": "已刪除 {count} 篇文章",
+        "deletedPartial": "刪除 {success} 篇成功，{failed} 篇失敗"
+      }
     }
   }
 }

@@ -16,7 +16,7 @@
     margin: 0 auto;
 
     @include mixins.respond-by-min-width(860px) {
-      gap: var(--space-3x);
+      // gap: var(--space-3x);
       max-width: var(--max-window-width);
     }
 

@@ -16,6 +16,7 @@ import {
   faWandMagicSparkles,
 } from '@fortawesome/free-solid-svg-icons'
 import ActionMenu from '@/app/components/ActionMenu/ActionMenu'
+import { Table } from '@/app/components/Table'
 import { Modal } from '../../components/Modal'
 import { useToast } from '@/app/contexts/ToastContext'
 import { Skeleton } from '@/app/components/Skeleton'
@@ -766,115 +767,134 @@ export default function CoursesOverviewClient() {
                         <div
                           id={`chapter-panel-${chapter.id}`}
                           className={styles.chapterBody}
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          {chapter.courses.length === 0 ? (
-                            <div className={styles.emptyState}>
-                              這個章節還沒有課程，現在就新增第一堂課。
-                            </div>
-                          ) : (
-                            <div className={styles.coursesGrid}>
-                              {chapter.courses.map((course) => (
-                                <div
-                                  key={course.id}
-                                  className={styles.courseCard}
-                                  onClick={(e) => {
-                                    e.stopPropagation()
-                                  }}
-                                >
-                                  <div className={styles.courseCardHeader}>
-                                    <div className={styles.courseCardTitle}>
-                                      <p>{course.id}</p>
-                                      <h5>{course.name}</h5>
-                                    </div>
-                                    <div className={styles.courseCardActions}>
-                                      <span
-                                        className={
-                                          course.is_published
-                                            ? styles.publishedBadge
-                                            : styles.draftBadge
-                                        }
-                                      >
-                                        {course.is_published
-                                          ? '已發布'
-                                          : '草稿'}
-                                      </span>
-                                      <ActionMenu
-                                        ariaLabel={`操作 ${course.name}`}
-                                      >
-                                        <button
-                                          onClick={(e) => {
-                                            e.preventDefault()
-                                            void togglePublish(course)
-                                          }}
-                                        >
-                                          <FontAwesomeIcon
-                                            icon={faWandMagicSparkles}
-                                          />
-                                          <span>
-                                            {course.is_published
-                                              ? '轉為草稿'
-                                              : '立即發布'}
-                                          </span>
-                                        </button>
-                                        <button
-                                          onClick={(e) => {
-                                            e.preventDefault()
-                                            openEditCourse(course, chapter.id)
-                                          }}
-                                        >
-                                          <FontAwesomeIcon icon={faPencil} />
-                                          <span>編輯課程</span>
-                                        </button>
-                                        <button
-                                          data-danger="true"
-                                          onClick={(e) => {
-                                            e.preventDefault()
-                                            promptDelete(
-                                              'course',
-                                              course.id,
-                                              course.name,
-                                            )
-                                          }}
-                                        >
-                                          <FontAwesomeIcon icon={faTrash} />
-                                          <span>刪除課程</span>
-                                        </button>
-                                      </ActionMenu>
-                                    </div>
-                                  </div>
-
-                                  <p className={styles.courseDescription}>
-                                    {course.description || '尚未填寫課程簡介。'}
-                                  </p>
-
-                                  <div className={styles.courseMeta}>
-                                    <span
-                                      className={`${styles.metaPill} ${styles.metaPillExp}`}
-                                    >
-                                      EXP {course.reward_exp}
+                          <Table<CourseTreeNode>
+                            columns={[
+                              {
+                                key: 'order_index',
+                                header: '#',
+                                sortable: true,
+                                sortAccessor: (c) => c.order_index,
+                                nowrap: true,
+                                align: 'center',
+                                width: '52px',
+                                render: (c) => c.order_index,
+                              },
+                              {
+                                key: 'name',
+                                header: '課程名稱',
+                                minWidth: '180px',
+                                render: (c) => (
+                                  <div className={styles.courseNameCell}>
+                                    <span className={styles.courseSlug}>
+                                      {c.id}
                                     </span>
-                                    {/* <span
-                                      className={`${styles.metaPill} ${styles.metaPillContent}`}
-                                    >
-                                      內容 {course.contents.length} 筆
-                                    </span> */}
+                                    <span>{c.name}</span>
                                   </div>
-
-                                  <div className={styles.courseActions}>
+                                ),
+                              },
+                              {
+                                key: 'is_published',
+                                header: '狀態',
+                                sortable: true,
+                                sortAccessor: (c) => (c.is_published ? 1 : 0),
+                                filter: {
+                                  options: [
+                                    { label: '已發布', value: 'published' },
+                                    { label: '草稿', value: 'draft' },
+                                  ],
+                                  accessor: (c) =>
+                                    c.is_published ? 'published' : 'draft',
+                                  placeholder: '全部狀態',
+                                },
+                                nowrap: true,
+                                render: (c) => (
+                                  <span
+                                    className={
+                                      c.is_published
+                                        ? styles.publishedBadge
+                                        : styles.draftBadge
+                                    }
+                                  >
+                                    {c.is_published ? '已發布' : '草稿'}
+                                  </span>
+                                ),
+                              },
+                              {
+                                key: 'reward_exp',
+                                header: 'EXP',
+                                sortable: true,
+                                sortAccessor: (c) => c.reward_exp,
+                                align: 'right',
+                                nowrap: true,
+                                render: (c) => (
+                                  <span className={styles.metaPillExp}>
+                                    EXP {c.reward_exp}
+                                  </span>
+                                ),
+                              },
+                              {
+                                key: 'actions',
+                                header: '操作',
+                                nowrap: true,
+                                render: (c) => (
+                                  <div className={styles.courseTableActions}>
                                     <Link
-                                      href={`/dashboard/courses/courses/${course.id}`}
-                                      className={styles.primaryLink}
+                                      href={`/dashboard/courses/courses/${c.id}`}
+                                      className={styles.workspaceLink}
                                     >
                                       <FontAwesomeIcon
                                         icon={faUpRightFromSquare}
                                       />
-                                      <span>進入工作台</span>
+                                      <span>工作台</span>
                                     </Link>
+                                    <ActionMenu ariaLabel={`操作 ${c.name}`}>
+                                      <button
+                                        onClick={(e) => {
+                                          e.preventDefault()
+                                          void togglePublish(c)
+                                        }}
+                                      >
+                                        <FontAwesomeIcon
+                                          icon={faWandMagicSparkles}
+                                        />
+                                        <span>
+                                          {c.is_published
+                                            ? '轉為草稿'
+                                            : '立即發布'}
+                                        </span>
+                                      </button>
+                                      <button
+                                        onClick={(e) => {
+                                          e.preventDefault()
+                                          openEditCourse(c, chapter.id)
+                                        }}
+                                      >
+                                        <FontAwesomeIcon icon={faPencil} />
+                                        <span>編輯課程</span>
+                                      </button>
+                                      <button
+                                        data-danger="true"
+                                        onClick={(e) => {
+                                          e.preventDefault()
+                                          promptDelete('course', c.id, c.name)
+                                        }}
+                                      >
+                                        <FontAwesomeIcon icon={faTrash} />
+                                        <span>刪除課程</span>
+                                      </button>
+                                    </ActionMenu>
                                   </div>
-                                </div>
-                              ))}
-                            </div>
-                          )}
+                                ),
+                              },
+                            ]}
+                            data={chapter.courses}
+                            rowKey={(c) => c.id}
+                            loading={false}
+                            emptyMessage="這個章節還沒有課程，現在就新增第一堂課。"
+                            defaultSort={{ key: 'order_index', direction: 'asc' }}
+                          />
                         </div>
                       ) : null}
                     </article>

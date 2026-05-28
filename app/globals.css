@@ -87,6 +87,34 @@ span.nowrap {
   white-space: nowrap;
 }
 
+/* 表格 / 清單操作欄的圖示按鈕 */
+.icon-button,
+.icon-button-danger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--foreground);
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+.icon-button:hover {
+  background: var(--background-secondary);
+  border-color: var(--border-hover);
+}
+.icon-button-danger {
+  color: var(--danger);
+}
+.icon-button-danger:hover {
+  background: rgba(var(--background-secondary-rgb), 0.6);
+  border-color: var(--danger);
+  color: var(--danger-hover);
+}
+
 .page {
   height: 100%;
   width: 100%;
