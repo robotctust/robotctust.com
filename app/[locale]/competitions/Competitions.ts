@@ -823,9 +823,60 @@ export const competitions: Competition[] = [
   },
   {
     id: 'robot-combat-2026-05-27-club',
-    title: '機器人對抗賽',
+    title: '第一屆 中臺機器人研究社 機器人對抗賽',
     description: '暫無簡介',
-    detailMarkdown: '',
+    detailMarkdown: `
+# 競賽規則
+
+## 機器人的規定
+1. 機器人必須為遙控以有線、無線射頻或紅外線遙控。
+2. 自走車機構總主機(控制器)數僅限一台。
+3. 於競賽全程，機器人之整體長度（L）≤ 30cm、寬度（W）≤ 30cm、高度（H）不限。
+4. 機器人限為輪型和履帶之運動方式。
+5. 機器人重量無任何限制。
+6. 本競賽所有挑戰均為不限。
+
+## 場地
+1. 比賽場地如圖所示， 為一般的學校教室地板 (可能有某種程度的不平坦)，會在地面上放底圖上面有標示出發區和對戰區。
+2. 對戰區直徑約150cm，圓形平台，出發區為35cm正方形。
+3. 本規則對場地所描述或註記的尺寸均為概略值，實際尺寸以比賽現場的配置為準。
+
+![](https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Frobot-combat-2026-05-27-club%2F%E6%A9%9F%E5%99%A8%E4%BA%BA%E6%93%82%E5%8F%B0%E8%B3%BD%E5%9C%B0%E5%9C%96-%E6%A8%99%E7%A4%BA.webp?alt=media&token=6aca5b8b-6b3f-4e70-bd43-afa9911e4826)
+
+## 比賽規則
+1. 競賽流程中，非對戰隊伍或是預備隊伍皆不得進入競賽場地，屢勸不聽者，相關隊伍將會判定喪失競賽資格。 
+2. 檢錄時，參賽隊伍需將機器人、遙控設備、電池進行檢錄。檢錄後不得再新增，以及修正、拆卸或改變機器人的任何狀態。    
+3. 參賽隊伍需自備機器人，嚴禁隊伍間交換設備或零件，若經查證屬實，則取消相關隊 伍參賽資格，不得異議。 
+4. 每場競賽，每隊限制一位隊員上場。預備時間為1分鐘，可於此時間內調整設備及更換電池，但不得下載程式或更換機器。 
+5. 競賽開始前由對戰雙方確認該回合賽制。雙方機器放置於「出發基地」，機器正投影須全在白底區內，不得接觸黑框區。 
+6. 競賽開始時，如未能在5秒內進入對戰區，則此回合判定為失敗，對手獲勝。 
+7. 比賽時間：每回合有60秒的比賽時間。裁判會以時間結束那一刻的情況作勝負判定。 
+8. 勝負判定：有下列情況之一時，比賽終止，進行勝負判定。 
+	- 機器人被推出對戰區(機身任一部分接觸地面或出發基地) 。 
+    - 機器人自行離開對戰區。 
+    - 機器人於檢修後不符合比賽規定。 
+    - 單方機器人停止不動讀秒五秒。 
+    - 機器人翻覆、摔倒、擊倒(判定方法為動力輪已無法回復原本行進狀態)。 
+9. 競賽過程中，若雙方機器人處不移動情形，裁判有權進行僵持判定，由裁判讀秒5秒後暫停計時，雙方將機器人斷電放回預備線，裁判吹哨後用此回合剩餘時間重新進行競賽。 
+10. 每回合的限時1分鐘時間到，若雙方的機器人都還在對戰區內，則取機器人重量輕者獲勝，若雙方重量相同，則此回合重賽。 
+11. 每回合競賽開始後，若發生零件掉落，而裁判認定該物件足以影響競賽進行時，可裁定暫停比賽，移除該零件，雙方回到基地區，用此回合剩餘時間重新進行競賽。 
+12. 每回合開始前，雙方選手可利用１分鐘之檢修時間對機器人進行維護，例如: 重組零件、緊固螺絲、清潔輪胎等，但不得再增加或減少任何零件，亦不得重新下載程式。 
+13. 對戰結束後由裁判宣佈成績，若有異議請當下提出，若無異議由雙方選手簽名認定成績，大賽方不再受理任何爭議及申訴。 
+14. 若參賽選手對於比賽規則有任何疑問，請於比賽前向裁判提出，由裁判進行決議，一旦比賽開始進行，不再受理。如有意見歧異，以裁判團共識為最終決議，不得異議。 
+15. 比賽過程中，任一方機器人破壞場地或造成汙損，裁判將立即停止比賽，且該場比賽由對手直接獲勝。 
+16. 對戰比賽過程中，若出現機器人損壞，將由參賽隊伍負責。 
+17. 本規則未提及事宜，由裁判在現場根據實際情況裁定。 
+
+## 賽制說明
+
+1. 參賽隊伍於報到時抽取對戰序號。競賽時唱名對戰雙方隊伍，若1分鐘未到則視同放棄比賽，不得再要求競賽。 
+2. 本項比賽為遙控賽制，各組別皆採單淘汰賽，每場比賽採三戰兩勝制。 
+    
+
+## 獎勵
+
+獲得排列名次及佳作的隊伍依本大賽辦法發給選手獎品
+    `,
     status: 'upcoming',
     position: 'club',
     timeline: [
@@ -857,29 +908,7 @@ export const competitions: Competition[] = [
           date: '2026-05-27',
           time: '15:50',
         },
-        // timeline: [
-        //   {
-        //     stepName: '比賽規則講解',
-        //     startTime: '14:00',
-        //     endTime: '14:10',
-        //   },
-        //   {
-        //     stepName: '比賽練習',
-        //     startTime: '14:10',
-        //     endTime: '15:10',
-        //   },
-        //   {
-        //     stepName: '正式比賽',
-        //     startTime: '15:10',
-        //     endTime: '15:50',
-        //   },
-        //   {
-        //     stepName: '公布成績',
-        //     startTime: '15:50',
-        //     endTime: '16:00',
-        //   },
-        // ],
-        description: '最終挑戰，避開障礙物！',
+        description: '用你精妙的技巧，把對手的機器人推出去！',
         required: true,
         order: 1,
       },
@@ -901,7 +930,8 @@ export const competitions: Competition[] = [
       },
     ],
     link: '',
-    image: '',
+    image:
+      'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Frobot-combat-2026-05-27-club%2F%E6%A9%9F%E5%99%A8%E4%BA%BA%E6%93%82%E5%8F%B0%E8%B3%BD%E5%9C%B0%E5%9C%96.webp?alt=media&token=87bba621-5f51-44e1-a3ac-3448b76b906b',
     tags: ['競賽', '機器人', '對抗', '對戰'],
     priority: 2,
     createdAt: {
@@ -909,13 +939,18 @@ export const competitions: Competition[] = [
       time: '14:00',
     },
     updatedAt: {
-      date: '2026-03-04',
-      time: '14:00',
+      date: '2026-05-20',
+      time: '13:30',
     },
     published: true,
     estimatedParticipants: 30,
     registrationFee: 0,
-    rewards: ['獲得排列名次及佳作的隊伍依本大賽辦法發給選手獎品'],
+    registrationLink: 'https://forms.gle/7NLrqrRLpwVVQCQV6',
+    registrationDeadline: {
+      date: '2026-05-22',
+      time: '17:00',
+    },
+    rewards: ['第一名 3C 用品', '第二名 全聯禮卷 300 元', '第三名 神秘禮品'],
     contact: {
       email: 'robotctust@gmail.com',
       phone: '',
@@ -923,117 +958,3 @@ export const competitions: Competition[] = [
     },
   },
 ]
-
-//   {
-//     id: 'obstacle-avoidance-2025-11',
-//     title: '機器人避障比賽',
-//     description: '測試機器人自主避障能力的競賽，考驗程式設計與硬體整合技術',
-//     detailMarkdown: `
-// # 機器人避障比賽
-
-// ## 比賽規則
-
-// ## 機器人的規定
-
-// ## 比賽場地
-
-// ## 評分標準
-// 1. 完成時間 (50%)
-// 2. 路線流暢度 (30%)
-// 3. 技術創新性 (20%)
-//     `,
-//     status: 'upcoming',
-//     position: 'club',
-//     timeline: [
-//       {
-//         id: 'registration-phase',
-//         step: 'registration',
-//         stepName: '報名階段',
-//         startDateTime: {
-//           date: '2025-10-01',
-//           time: '09:00',
-//         },
-//         endDateTime: {
-//           date: '2025-11-01',
-//           time: '12:00',
-//         },
-//         description: '開放報名，請準備團隊資料',
-//         required: true,
-//         order: 1,
-//       },
-//       {
-//         id: 'preliminary-round',
-//         step: 'pre',
-//         stepName: '初賽',
-//         startDateTime: {
-//           date: '2025-11-10',
-//           time: '14:00',
-//         },
-//         endDateTime: {
-//           date: '2025-11-10',
-//           time: '16:00',
-//         },
-//         description: '篩選出前8名隊伍進入決賽',
-//         required: true,
-//         order: 2,
-//       },
-//       {
-//         id: 'final-round',
-//         step: 'final',
-//         stepName: '決賽',
-//         startDateTime: {
-//           date: '2025-11-12',
-//           time: '14:00',
-//         },
-//         endDateTime: {
-//           date: '2025-11-12',
-//           time: '16:00',
-//         },
-//         description: '最終決賽，決定冠亞季軍',
-//         required: true,
-//         order: 3,
-//       },
-//       {
-//         id: 'result-announcement',
-//         step: 'result',
-//         stepName: '成績公布',
-//         startDateTime: {
-//           date: '2025-11-12',
-//           time: '17:00',
-//         },
-//         endDateTime: {
-//           date: null,
-//           time: null,
-//         },
-//         description: '公布最終成績與頒獎',
-//         required: true,
-//         order: 4,
-//       },
-//     ],
-//     link: 'https://www.robot-ctust.com/competitions/obstacle-avoidance',
-//     image: 'https://www.robot-ctust.com/images/obstacle-avoidance.png',
-//     tags: ['競賽', '機器人', '避障', '自主導航'],
-//     priority: 1,
-//     createdAt: {
-//       date: '2025-09-16',
-//       time: '10:00',
-//     },
-//     updatedAt: {
-//       date: '2025-09-16',
-//       time: '10:00',
-//     },
-//     published: true,
-//     estimatedParticipants: 20,
-//     registrationFee: 200,
-//     rewards: [
-//       '冠軍獎金 5000元',
-//       '亞軍獎金 3000元',
-//       '季軍獎金 1000元',
-//       '參賽證書',
-//     ],
-//     contact: {
-//       email: 'competitions@robot-ctust.com',
-//       phone: '04-1234-5678',
-//       person: '王小明',
-//     },
-//   },

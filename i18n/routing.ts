@@ -9,3 +9,9 @@ export const routing = defineRouting({
   // 真人的首訪地區導流仍由 middleware.ts 的自訂 geo 邏輯負責（且會放行爬蟲）。
   localeDetection: false,
 })
+
+// 新增語系時在這裡補對應的 OG locale 代碼即可
+export const ogLocaleMap: Record<string, string> = {
+  'zh-TW': 'zh_TW',
+  'en': 'en_US',
+}
