@@ -8,7 +8,13 @@ import {
   formatFirebaseTimestampToISO,
   generateDescriptionFromMarkdown,
 } from '@/app/utils/metadata'
-import { getAllPosts, getPostById } from '@/app/utils/postService'
+import {
+  getAllPosts,
+  getPostById,
+  getAdjacentPosts,
+  getRelatedPosts,
+  type AdjacentPost,
+} from '@/app/utils/postService'
 import { getTranslations } from 'next-intl/server'
 
 // components
@@ -45,6 +51,9 @@ export default async function NewsDetailPage({
   const { slug } = await params
   let initialPost = null
   let error = null
+  let olderPost: AdjacentPost | null = null
+  let newerPost: AdjacentPost | null = null
+  let relatedPosts: AdjacentPost[] = []
   // 在 server 端預先渲染的 Markdown 內文，透過 children 傳給 client 元件
   let contentNode: ReactNode = null
 
@@ -53,6 +62,13 @@ export default async function NewsDetailPage({
     if (post) {
       initialPost = serializePost(post)
       contentNode = <MarkdownContent content={post.contentMarkdown} />
+      const adjacent = await getAdjacentPosts(post.createdAt)
+      olderPost = adjacent.older
+      newerPost = adjacent.newer
+      const excludeIds = [olderPost?.id, newerPost?.id].filter(
+        (id): id is string => Boolean(id),
+      )
+      relatedPosts = await getRelatedPosts(post.category, post.id, excludeIds)
     } else {
       const t = await getTranslations('News')
       error = t('detail.error.notFound')
@@ -65,7 +81,13 @@ export default async function NewsDetailPage({
 
   return (
     <Page style={styles.postDetailContainer}>
-      <NewsDetailClient initialPost={initialPost} initialError={error}>
+      <NewsDetailClient
+        initialPost={initialPost}
+        initialError={error}
+        olderPost={olderPost}
+        newerPost={newerPost}
+        relatedPosts={relatedPosts}
+      >
         {contentNode}
       </NewsDetailClient>
     </Page>

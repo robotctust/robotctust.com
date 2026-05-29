@@ -510,6 +510,15 @@
     },
     "detail": {
       "updatedAt": "(更新於 {date})",
+      "nav": {
+        "label": "文章導覽",
+        "previous": "上一篇",
+        "next": "下一篇"
+      },
+      "related": {
+        "label": "相關文章",
+        "heading": "你可能也想看"
+      },
       "error": {
         "loadFailed": "載入失敗",
         "notFound": "文章不存在",

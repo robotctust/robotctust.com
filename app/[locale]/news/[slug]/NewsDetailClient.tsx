@@ -13,7 +13,11 @@ import FloatingActionBar, {
 } from '@/app/components/FloatingActionBar/FloatingActionBar'
 
 // utils
-import { formatPostDate, getPostExcerpt } from '@/app/utils/postService'
+import {
+  formatPostDate,
+  getPostExcerpt,
+  type AdjacentPost,
+} from '@/app/utils/postService'
 
 // hooks
 import useWebSupport from '@/app/hooks/useWebSupport'
@@ -32,12 +36,19 @@ import {
   faCheck,
   faLink,
   faShare,
+  faChevronLeft,
+  faChevronRight,
 } from '@fortawesome/free-solid-svg-icons'
 import { faThreads, faXTwitter } from '@fortawesome/free-brands-svg-icons'
 
 interface NewsDetailClientProps {
   initialPost: SerializedPost | null
   initialError: string | null
+  // 依時間線的相鄰文章：上一篇（較舊）／下一篇（較新）
+  olderPost?: AdjacentPost | null
+  newerPost?: AdjacentPost | null
+  // 同分類推薦文章（已排除上／下一篇與自己）
+  relatedPosts?: AdjacentPost[]
   // server 端預先渲染的 Markdown 內文
   children?: React.ReactNode
 }
@@ -45,6 +56,9 @@ interface NewsDetailClientProps {
 export default function NewsDetailClient({
   initialPost,
   initialError,
+  olderPost = null,
+  newerPost = null,
+  relatedPosts = [],
   children,
 }: NewsDetailClientProps) {
   const router = useRouter()
@@ -213,6 +227,103 @@ export default function NewsDetailClient({
 
         <div className={styles.content}>{children}</div>
       </article>
+
+      {(olderPost || newerPost) && (
+        <nav className={styles.adjacentNav} aria-label={tNews('detail.nav.label')}>
+          {olderPost ? (
+            <Link
+              href={`/news/${olderPost.id}`}
+              className={`${styles.adjacentLink} ${styles.adjacentPrev}`}
+            >
+              {olderPost.coverImageUrl && (
+                <div className={styles.adjacentThumb}>
+                  <Image
+                    src={olderPost.coverImageUrl}
+                    alt={olderPost.title}
+                    width={96}
+                    height={96}
+                    quality={60}
+                  />
+                </div>
+              )}
+              <div className={styles.adjacentText}>
+                <span className={styles.adjacentDirection}>
+                  <FontAwesomeIcon icon={faChevronLeft} />
+                  {tNews('detail.nav.previous')}
+                </span>
+                <span className={styles.adjacentTitle}>{olderPost.title}</span>
+              </div>
+            </Link>
+          ) : (
+            <span />
+          )}
+
+          {newerPost ? (
+            <Link
+              href={`/news/${newerPost.id}`}
+              className={`${styles.adjacentLink} ${styles.adjacentNext}`}
+            >
+              <div className={styles.adjacentText}>
+                <span className={styles.adjacentDirection}>
+                  {tNews('detail.nav.next')}
+                  <FontAwesomeIcon icon={faChevronRight} />
+                </span>
+                <span className={styles.adjacentTitle}>{newerPost.title}</span>
+              </div>
+              {newerPost.coverImageUrl && (
+                <div className={styles.adjacentThumb}>
+                  <Image
+                    src={newerPost.coverImageUrl}
+                    alt={newerPost.title}
+                    width={96}
+                    height={96}
+                    quality={60}
+                  />
+                </div>
+              )}
+            </Link>
+          ) : (
+            <span />
+          )}
+        </nav>
+      )}
+
+      {relatedPosts.length > 0 && (
+        <section
+          className={styles.relatedSection}
+          aria-label={tNews('detail.related.label')}
+        >
+          <h2 className={styles.relatedHeading}>
+            {tNews('detail.related.heading')}
+          </h2>
+          <div className={styles.relatedGrid}>
+            {relatedPosts.map((related) => (
+              <Link
+                key={related.id}
+                href={`/news/${related.id}`}
+                className={styles.relatedCard}
+              >
+                <div className={styles.relatedThumb}>
+                  {related.coverImageUrl ? (
+                    <Image
+                      src={related.coverImageUrl}
+                      alt={related.title}
+                      width={320}
+                      height={180}
+                      quality={60}
+                    />
+                  ) : (
+                    <div className={styles.relatedThumbPlaceholder}>
+                      <span>{categoryLabel}</span>
+                    </div>
+                  )}
+                </div>
+                <span className={styles.relatedTitle}>{related.title}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      )}
 
       <FloatingActionBar
         align="center"

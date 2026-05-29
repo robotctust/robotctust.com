@@ -69,6 +69,88 @@ export async function getAllPosts(): Promise<Post[]> {
   return (data as SupabasePostRow[]).map(rowToPost)
 }
 
+export type AdjacentPost = {
+  id: string
+  title: string
+  coverImageUrl: string | null
+}
+
+/**
+ * 依時間線取得相鄰文章（older = 較早一篇，newer = 較新一篇）
+ */
+export async function getAdjacentPosts(
+  createdAt: string,
+): Promise<{ older: AdjacentPost | null; newer: AdjacentPost | null }> {
+  const admin = createAdminClient()
+  const [olderRes, newerRes] = await Promise.all([
+    admin
+      .from('posts')
+      .select('id, title, cover_image_url')
+      .lt('created_at', createdAt)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .maybeSingle(),
+    admin
+      .from('posts')
+      .select('id, title, cover_image_url')
+      .gt('created_at', createdAt)
+      .order('created_at', { ascending: true })
+      .limit(1)
+      .maybeSingle(),
+  ])
+
+  if (olderRes.error)
+    console.error('Error fetching older post:', olderRes.error)
+  if (newerRes.error)
+    console.error('Error fetching newer post:', newerRes.error)
+
+  const toAdjacent = (
+    row: { id: string; title: string; cover_image_url: string | null } | null,
+  ): AdjacentPost | null =>
+    row
+      ? { id: row.id, title: row.title, coverImageUrl: row.cover_image_url }
+      : null
+
+  return {
+    older: toAdjacent(olderRes.data),
+    newer: toAdjacent(newerRes.data),
+  }
+}
+
+/**
+ * 取得同分類的推薦文章（依時間新到舊），排除自己與指定 ids
+ */
+export async function getRelatedPosts(
+  category: PostCategory,
+  currentId: string,
+  excludeIds: string[] = [],
+  limit = 3,
+): Promise<AdjacentPost[]> {
+  const admin = createAdminClient()
+  const exclude = new Set([currentId, ...excludeIds])
+  const { data, error } = await admin
+    .from('posts')
+    .select('id, title, cover_image_url')
+    .eq('category', category)
+    .neq('id', currentId)
+    .order('created_at', { ascending: false })
+    .limit(limit + excludeIds.length)
+
+  if (error) {
+    console.error('Error fetching related posts:', error)
+    return []
+  }
+
+  return (data ?? [])
+    .filter((row) => !exclude.has(row.id))
+    .slice(0, limit)
+    .map((row) => ({
+      id: row.id,
+      title: row.title,
+      coverImageUrl: row.cover_image_url,
+    }))
+}
+
 /**
  * 根據分類獲取文章
  */
