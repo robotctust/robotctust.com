@@ -510,6 +510,15 @@
     },
     "detail": {
       "updatedAt": "(Updated {date})",
+      "nav": {
+        "label": "Article navigation",
+        "previous": "Previous",
+        "next": "Next"
+      },
+      "related": {
+        "label": "Related articles",
+        "heading": "You might also like"
+      },
       "error": {
         "loadFailed": "Failed to load",
         "notFound": "Post not found",
