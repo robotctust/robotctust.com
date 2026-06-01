@@ -29,7 +29,8 @@
       "about": "關於",
       "dashboard": "後台",
       "admin": "總控台"
-    }
+    },
+    "settings": "設定"
   },
   "Footer": {
     "contactUs": {
@@ -327,6 +328,19 @@
           "studentIdRequired": "若您是本校學生，請輸入學號",
           "studentIdMaxLength": "學號最多 20 個字元",
           "studentIdPattern": "學號僅能使用英文字母、數字、底線與連字號"
+        }
+      },
+      "forgotPassword": {
+        "title": "忘記密碼",
+        "description": "輸入您的電子郵件，我們將寄送密碼重設連結給您。",
+        "email": "電子郵件",
+        "emailPlaceholder": "請輸入您的電子郵件",
+        "submit": "寄送重設連結",
+        "submitting": "寄送中...",
+        "sent": "重設連結已寄至 {email}，請查看信箱。連結將在 1 小時後失效。",
+        "backToLogin": "返回登入",
+        "errors": {
+          "default": "寄送失敗，請稍後再試"
         }
       }
     }
@@ -734,6 +748,72 @@
         "deletedError": "刪除失敗",
         "deletedBulk": "已刪除 {count} 篇文章",
         "deletedPartial": "刪除 {success} 篇成功，{failed} 篇失敗"
+      }
+    }
+  },
+  "ResetPassword": {
+    "title": "設定新密碼",
+    "description": "請輸入您的新密碼。",
+    "password": "新密碼",
+    "passwordPlaceholder": "請輸入新密碼",
+    "confirmPassword": "確認新密碼",
+    "confirmPasswordPlaceholder": "請再次輸入新密碼",
+    "submit": "更新密碼",
+    "submitting": "更新中...",
+    "success": "密碼已成功更新，正在帶您前往個人頁面...",
+    "invalidSession": "連結已失效或已使用，請重新申請密碼重設。",
+    "requestAgain": "重新申請",
+    "errors": {
+      "passwordMismatch": "兩次輸入的密碼不一致",
+      "passwordMinLength": "密碼至少需要 8 個字元",
+      "default": "密碼更新失敗，請稍後再試"
+    },
+    "meta": {
+      "title": "重設密碼｜中臺機器人研究社"
+    }
+  },
+  "Settings": {
+    "aside": {
+      "title": "設定",
+      "backLink": "返回個人頁面",
+      "nav": {
+        "security": "帳號安全"
+      }
+    },
+    "security": {
+      "title": "帳號安全",
+      "subtitle": "管理你的登入密碼與電子郵件",
+      "loading": "載入中...",
+      "password": {
+        "sectionTitle": "密碼",
+        "label": "登入密碼",
+        "hint": "重設連結將寄送至 {email}",
+        "action": "重設密碼",
+        "sending": "寄送中...",
+        "sent": "郵件已寄出"
+      },
+      "email": {
+        "sectionTitle": "電子郵件",
+        "label": "目前信箱",
+        "change": "更改",
+        "cancel": "取消",
+        "placeholder": "請輸入新的電子郵件",
+        "confirm": "確認更改",
+        "confirming": "確認中...",
+        "hint": "確認後將寄送驗證郵件至新信箱，完成點擊後電子郵件才會正式更新。"
+      },
+      "oauth": {
+        "title": "您目前使用 Google 帳號登入",
+        "desc": "密碼與電子郵件由 Google 管理，請前往 Google 帳號設定頁面進行變更。",
+        "link": "前往 Google 帳號設定 →"
+      },
+      "toast": {
+        "resetSent": "重設密碼郵件已寄出，請查看信箱",
+        "resetFailed": "郵件寄送失敗，請稍後再試",
+        "emailSent": "確認郵件已寄至新信箱，點擊連結後電子郵件將完成更新"
+      },
+      "errors": {
+        "emailUpdateDefault": "更新失敗，請稍後再試"
       }
     }
   }

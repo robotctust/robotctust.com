@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect, useMemo } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faEdit, faTrash, faCalendar, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { useToast } from '@/app/contexts/ToastContext'

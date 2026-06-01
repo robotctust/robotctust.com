@@ -24,6 +24,17 @@ export async function middleware(request: NextRequest) {
   const localeCookie = request.cookies.get('NEXT_LOCALE')?.value
   const isBot = BOT_UA_REGEX.test(request.headers.get('user-agent') ?? '')
 
+  // 語言偏好優先：曾主動選擇英文的真人（NEXT_LOCALE=en），訪問無 /en 前綴的
+  // 預設語系路徑時，自動補上 /en，確保「使用者選擇的語言」不被裸連結覆蓋。
+  // - 爬蟲排除：維持各語系正規網址的 SEO，避免爬蟲被轉址。
+  // - 僅單向補 en：zh-TW 為預設語言（無前綴），且不反向處理 /en→裸路徑，
+  //   以免在語言切換瞬間（cookie 尚未更新）把剛切到 /en 的請求彈回。
+  if (!hasEnPrefix && !isBot && localeCookie === 'en') {
+    const url = request.nextUrl.clone()
+    url.pathname = pathname === '/' ? '/en' : `/en${pathname}`
+    return NextResponse.redirect(url)
+  }
+
   // Geo-detection：僅對「未加 /en 前綴、無語言 cookie、且非爬蟲」的真人請求做地區自動轉址
   if (!hasEnPrefix && !localeCookie && !isBot) {
     const country = request.headers.get('x-vercel-ip-country')

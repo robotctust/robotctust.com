@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { startTransition, useEffect, useMemo, useRef, useState } from 'react'
 import type { DragDropEventHandlers } from '@dnd-kit/react'
 import { Fragment } from 'react'

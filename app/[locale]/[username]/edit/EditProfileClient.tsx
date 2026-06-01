@@ -2,7 +2,8 @@
 
 import React, { useState, useEffect, useRef } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useLocale } from 'next-intl'
+import { useRouter, getPathname } from '@/i18n/navigation'
 import styles from './EditProfile.module.scss'
 
 // third-party utils
@@ -217,6 +218,8 @@ export default function EditProfileClient({
 }: EditProfileClientProps) {
   // Router
   const router = useRouter()
+  // 目前語系（供 locale-aware 硬導航使用）
+  const locale = useLocale()
   // AuthContext
   const { getUserProfile } = useAuth()
   // Header Compact State
@@ -482,7 +485,7 @@ export default function EditProfileClient({
 
       // 延遲跳轉，使用完整頁面導航以確保 Next.js router cache 不會顯示舊資料
       setTimeout(() => {
-        window.location.href = `/profile`
+        window.location.href = getPathname({ href: '/profile', locale })
       }, 500)
     } catch (err) {
       console.error('更新個人資料失敗:', err)

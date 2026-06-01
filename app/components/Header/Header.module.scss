@@ -44,6 +44,14 @@ header.header {
             }
           }
         }
+
+        //* 選單展開時，設定齒輪按鈕滑出顯示
+        > .settings_button {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          @include mixins.transform-container(translateY(0) scale(1));
+        }
       }
       > .nav_links {
         background-color: #00000000;
@@ -240,6 +248,42 @@ header.header {
               translate(-50%, -50%) rotate(-45deg)
             );
             opacity: 0;
+          }
+        }
+      }
+
+      //* 設定齒輪按鈕：自 menu button 正下方滑出（僅選單展開時可見）
+      > .settings_button {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        @include mixins.flexbox(row, center, center);
+        height: 48px;
+        margin-top: 8px;
+        font-size: 17px;
+        color: var(--foreground);
+        background-color: rgba(var(--background-secondary-rgb), 0.5);
+        border: 1px solid var(--border);
+        @include mixins.glass-blur(12px);
+        @include mixins.border-radius(12px);
+        @include mixins.transition(var(--transition-default));
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        @include mixins.transform-container(translateY(-50%) scale(0.85));
+        @include mixins.hover-scale-effect;
+
+        > svg {
+          @include mixins.transition(transform 0.4s var(--transition-bezier));
+        }
+
+        &:hover {
+          background-color: rgba(var(--background-tertiary-rgb), 0.6);
+          border-color: var(--border-hover);
+
+          > svg {
+            @include mixins.transform-container(rotate(90deg));
           }
         }
       }

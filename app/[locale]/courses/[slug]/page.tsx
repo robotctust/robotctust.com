@@ -9,7 +9,7 @@ import {
 } from '@/app/utils/metadata'
 import { notFound } from 'next/navigation'
 import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import styles from './courseDetail.module.scss'
 import { createClient } from '@/app/utils/supabase/server'
 import { isUserSemesterMember } from '@/app/utils/auth/membership'

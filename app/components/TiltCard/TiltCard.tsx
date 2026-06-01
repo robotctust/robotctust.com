@@ -2,7 +2,7 @@
 
 import React, { useRef } from 'react'
 import { useSpring, animated } from '@react-spring/web'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 
 /**
  * TiltCard 組件的屬性介面

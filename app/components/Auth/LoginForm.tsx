@@ -12,6 +12,7 @@ import * as yup from 'yup'
 
 // component
 import GoogleLoginButton from '../GoogleLoginButton/GoogleLoginButton'
+import { ForgotPasswordForm } from './ForgotPasswordForm'
 
 // context
 import { useAuth } from '../../contexts/AuthContext'
@@ -43,6 +44,7 @@ export function LoginForm({
   const [emailQuery] = useQueryState('email', parseAsString.withDefault(''))
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string>('')
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
 
   const loginSchema = useMemo(
     () =>
@@ -62,6 +64,7 @@ export function LoginForm({
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: yupResolver(loginSchema),
@@ -120,6 +123,16 @@ export function LoginForm({
     }
   }
 
+  // 忘記密碼模式：替換整個表單內容
+  if (showForgotPassword) {
+    return (
+      <ForgotPasswordForm
+        onBack={() => setShowForgotPassword(false)}
+        initialEmail={getValues('email')}
+      />
+    )
+  }
+
   return (
     <>
       {/* 表單標題 */}
@@ -164,6 +177,14 @@ export function LoginForm({
             </span>
           )}
         </div>
+
+        <button
+          type="button"
+          className={styles.forgot_link}
+          onClick={() => setShowForgotPassword(true)}
+        >
+          {t('form.forgotPassword.title')}？
+        </button>
 
         <button
           type="submit"

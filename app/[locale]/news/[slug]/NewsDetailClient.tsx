@@ -2,8 +2,8 @@
 
 import React from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
+import { Link } from '@/i18n/navigation'
+import { useRouter } from '@/i18n/navigation'
 import { useLocale, useTranslations } from 'next-intl'
 import styles from './post-detail.module.scss'
 

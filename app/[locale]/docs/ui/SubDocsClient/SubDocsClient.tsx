@@ -1,6 +1,6 @@
 'use client'
 
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import styles from './SubDocsClient.module.scss'
 import { subDocs } from '../../docs'

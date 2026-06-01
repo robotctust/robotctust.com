@@ -2,7 +2,7 @@
 
 import React, { useMemo, useState, useRef, useEffect } from 'react'
 import Image from 'next/image'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { useForm } from 'react-hook-form'
 import { useTranslations } from 'next-intl'
 import styles from './RegisterForm.module.scss'

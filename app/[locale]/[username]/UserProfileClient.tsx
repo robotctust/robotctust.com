@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Image from 'next/image'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
 import styles from './User.module.scss'
 
 // context
@@ -17,7 +17,7 @@ import {
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faLock } from '@fortawesome/free-solid-svg-icons'
+import { faLock, faPen } from '@fortawesome/free-solid-svg-icons'
 
 interface UserProfileClientProps {
   username: string
@@ -126,10 +126,10 @@ export default function UserProfileClient({
             {isOwnProfile && (
               <div className={styles.actions}>
                 <div className={styles.edit_profile}>
-                  <button onClick={handleEditProfile}>編輯個人資料</button>
-                </div>
-                <div className={styles.logout}>
-                  <button onClick={handleLogout}>登出</button>
+                  <button onClick={handleEditProfile}>
+                    <FontAwesomeIcon icon={faPen} />
+                    <span>編輯</span>
+                  </button>
                 </div>
               </div>
             )}

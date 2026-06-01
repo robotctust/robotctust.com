@@ -1,5 +1,7 @@
 import { ReactNode } from 'react'
 import { redirect } from 'next/navigation'
+import { getLocale } from 'next-intl/server'
+import { getPathname } from '@/i18n/navigation'
 import styles from './dashboard.module.scss'
 
 // util
@@ -24,6 +26,8 @@ export default async function DashboardLayout({
   children,
   aside,
 }: DashboardLayoutProps) {
+  const locale = await getLocale()
+
   try {
     // 獲取使用者資料，確保有進入後台的權限
     await requireDashboardAccess()
@@ -36,9 +40,9 @@ export default async function DashboardLayout({
     )
   } catch (error) {
     if (isDashboardAccessError(error) && error.statusCode === 401) {
-      redirect('/login')
+      redirect(getPathname({ href: '/login', locale }))
     }
 
-    redirect('/')
+    redirect(getPathname({ href: '/', locale }))
   }
 }

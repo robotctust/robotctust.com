@@ -29,7 +29,8 @@
       "about": "About",
       "dashboard": "Dashboard",
       "admin": "Admin"
-    }
+    },
+    "settings": "Settings"
   },
   "Footer": {
     "contactUs": {
@@ -149,7 +150,6 @@
           "robotProgramExamples": "Robot Program Examples",
           "robotBluetoothRemoteApp": "Robot Remote for Android",
           "robotBluetoothRemoteAppForIos": "Robot Remote for iOS"
-
         }
       }
     },
@@ -328,6 +328,19 @@
           "studentIdRequired": "CTUST students must provide their student ID",
           "studentIdMaxLength": "Student ID must be 20 characters or fewer",
           "studentIdPattern": "Student ID may only contain letters, numbers, underscores, and hyphens"
+        }
+      },
+      "forgotPassword": {
+        "title": "Forgot Password",
+        "description": "Enter your email address and we will send you a password reset link.",
+        "email": "Email",
+        "emailPlaceholder": "Enter your email address",
+        "submit": "Send Reset Link",
+        "submitting": "Sending...",
+        "sent": "A reset link has been sent to {email}. Please check your inbox. The link expires in 1 hour.",
+        "backToLogin": "Back to Login",
+        "errors": {
+          "default": "Failed to send. Please try again later."
         }
       }
     }
@@ -735,6 +748,72 @@
         "deletedError": "Delete failed",
         "deletedBulk": "Deleted {count} posts",
         "deletedPartial": "{success} deleted, {failed} failed"
+      }
+    }
+  },
+  "ResetPassword": {
+    "title": "Set New Password",
+    "description": "Please enter your new password.",
+    "password": "New Password",
+    "passwordPlaceholder": "Enter new password",
+    "confirmPassword": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Re-enter new password",
+    "submit": "Update Password",
+    "submitting": "Updating...",
+    "success": "Password updated successfully. Redirecting to your profile...",
+    "invalidSession": "This link has expired or already been used. Please request a new password reset.",
+    "requestAgain": "Request Again",
+    "errors": {
+      "passwordMismatch": "Passwords do not match",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "default": "Failed to update password. Please try again."
+    },
+    "meta": {
+      "title": "Reset Password | Robotics Research Club of CTUST"
+    }
+  },
+  "Settings": {
+    "aside": {
+      "title": "Settings",
+      "backLink": "Back to Profile",
+      "nav": {
+        "security": "Account Security"
+      }
+    },
+    "security": {
+      "title": "Account Security",
+      "subtitle": "Manage your login password and email address",
+      "loading": "Loading...",
+      "password": {
+        "sectionTitle": "Password",
+        "label": "Login Password",
+        "hint": "A reset link will be sent to {email}",
+        "action": "Reset Password",
+        "sending": "Sending...",
+        "sent": "Email Sent"
+      },
+      "email": {
+        "sectionTitle": "Email",
+        "label": "Current Email",
+        "change": "Change",
+        "cancel": "Cancel",
+        "placeholder": "Enter your new email address",
+        "confirm": "Confirm Change",
+        "confirming": "Confirming...",
+        "hint": "A verification email will be sent to the new address. Your email is updated only after you click the link."
+      },
+      "oauth": {
+        "title": "You are signed in with Google",
+        "desc": "Your password and email are managed by Google. Please update them in your Google Account settings.",
+        "link": "Go to Google Account settings →"
+      },
+      "toast": {
+        "resetSent": "Password reset email sent. Please check your inbox.",
+        "resetFailed": "Failed to send email. Please try again later.",
+        "emailSent": "A confirmation email has been sent to your new address. Click the link to complete the update."
+      },
+      "errors": {
+        "emailUpdateDefault": "Update failed. Please try again later."
       }
     }
   }

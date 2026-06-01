@@ -21,7 +21,7 @@ import {
   faSort,
 } from '@fortawesome/free-solid-svg-icons'
 import { faApple } from '@fortawesome/free-brands-svg-icons'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 
 /**
  * [component] Web 視覺效果

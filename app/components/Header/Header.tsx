@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { usePathname } from 'next/navigation'
 import Image from 'next/image'
 import styles from './Header.module.scss'
@@ -19,7 +19,7 @@ import { useNavAutoCenter } from './useNavAutoCenter'
 
 // icons
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faBars, faXmark } from '@fortawesome/free-solid-svg-icons'
+import { faBars, faXmark, faGear } from '@fortawesome/free-solid-svg-icons'
 
 // configs
 import { NAV_AUTO_CENTER_CONFIG } from './headerScrollConfig'
@@ -239,6 +239,18 @@ export default function Header() {
               <FontAwesomeIcon icon={faBars} className={styles.faBars} />
               <FontAwesomeIcon icon={faXmark} className={styles.faXmark} />
             </button>
+            {/* 設定入口：常駐顯示，選單展開時自 menu button 下方滑出 */}
+            <Link
+              href="/settings"
+              onClick={handleCloseMenu}
+              className={styles.settings_button}
+              aria-label={t('settings')}
+              title={t('settings')}
+              tabIndex={isMenuOpen ? 0 : -1}
+              aria-hidden={!isMenuOpen}
+            >
+              <FontAwesomeIcon icon={faGear} />
+            </Link>
           </div>
         </div>
       </header>
