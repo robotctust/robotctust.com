@@ -53,9 +53,6 @@ export default function WebsiteMap({ onClose }: { onClose?: () => void }) {
           <LinkWithIcon href="/competitions" onClick={handleLinkClick}>
             {t('info.items.competitions')}
           </LinkWithIcon>
-          <LinkWithIcon href="/courses" onClick={handleLinkClick}>
-            {t('info.items.courses')}
-          </LinkWithIcon>
         </div>
       </div>
       <div className={styles.websiteMap_group}>
@@ -84,14 +81,43 @@ export default function WebsiteMap({ onClose }: { onClose?: () => void }) {
         </div>
       </div>
       <div className={styles.websiteMap_group}>
+        <p>{t('course.title')}</p>
+        <div className={styles.websiteMap_group_items}>
+          <LinkWithIcon href="/courses" onClick={handleLinkClick}>
+            {t('course.items.courses')}
+          </LinkWithIcon>
+        </div>
+      </div>
+      <div className={styles.websiteMap_group}>
         <p>{t('openSource.title')}</p>
         <div className={styles.websiteMap_group_items}>
           <LinkWithIcon
-            href="https://github.com/johnlin10/robot-ctust"
+            href="https://github.com/robotctust/robotctust.com"
             onClick={handleLinkClick}
             blank
           >
             {t('openSource.items.website')}
+          </LinkWithIcon>
+          <LinkWithIcon
+            href="https://github.com/robotctust/robot-program-examples"
+            onClick={handleLinkClick}
+            blank
+          >
+            {t('openSource.items.robotProgramExamples')}
+          </LinkWithIcon>
+          <LinkWithIcon
+            href="https://github.com/robotctust/robot-bluetooth-remote-app"
+            onClick={handleLinkClick}
+            blank
+          >
+            {t('openSource.items.robotBluetoothRemoteApp')}
+          </LinkWithIcon>
+          <LinkWithIcon
+            href="https://github.com/robotctust/robot-bluetooth-remote-app-for-ios"
+            onClick={handleLinkClick}
+            blank
+          >
+            {t('openSource.items.robotBluetoothRemoteAppForIos')}
           </LinkWithIcon>
         </div>
       </div>

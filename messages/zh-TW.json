@@ -113,13 +113,18 @@
       }
     },
     "WebsiteMap": {
+      "course": {
+        "title": "課程",
+        "items": {
+          "courses": "學習工坊"
+        }
+      },
       "info": {
         "title": "資訊",
         "items": {
           "calendar": "行事曆",
           "news": "新聞",
-          "competitions": "競賽",
-          "courses": "課程"
+          "competitions": "競賽"
         }
       },
       "data": {
@@ -140,7 +145,10 @@
       "openSource": {
         "title": "開放原始碼",
         "items": {
-          "website": "網站"
+          "website": "網站",
+          "robotProgramExamples": "機器人程式範例",
+          "robotBluetoothRemoteApp": "機器人遙控 Android",
+          "robotBluetoothRemoteAppForIos": "機器人遙控 iOS"
         }
       }
     },

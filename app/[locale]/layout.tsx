@@ -161,9 +161,6 @@ export default async function RootLayout({
 
   return (
     <html lang={locale} suppressHydrationWarning>
-      <GoogleAnalytics gaId="G-GRP0752WNN" />
-      <Analytics />
-      <SpeedInsights />
       <body className={`${notoSansTC.variable} ${dmMono.variable} antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <ThemeProvider>
@@ -180,6 +177,9 @@ export default async function RootLayout({
             </AuthProvider>
           </ThemeProvider>
         </NextIntlClientProvider>
+        <GoogleAnalytics gaId="G-GRP0752WNN" />
+        <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   )

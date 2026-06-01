@@ -113,13 +113,18 @@
       }
     },
     "WebsiteMap": {
+      "course": {
+        "title": "Course",
+        "items": {
+          "courses": "Learning Workshop"
+        }
+      },
       "info": {
         "title": "Information",
         "items": {
           "calendar": "Calendar",
           "news": "News",
-          "competitions": "Competitions",
-          "courses": "Courses"
+          "competitions": "Competitions"
         }
       },
       "data": {
@@ -140,7 +145,11 @@
       "openSource": {
         "title": "Open Source",
         "items": {
-          "website": "Website"
+          "website": "Website",
+          "robotProgramExamples": "Robot Program Examples",
+          "robotBluetoothRemoteApp": "Robot Remote for Android",
+          "robotBluetoothRemoteAppForIos": "Robot Remote for iOS"
+
         }
       }
     },
