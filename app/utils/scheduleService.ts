@@ -59,6 +59,23 @@ export async function getPublishedScheduleEvents(): Promise<ScheduleEvent[]> {
 
 // ---------- Admin (server-side, bypasses RLS) ----------
 
+/**
+ * 取得已發布事件（server-side 變體，給 API route / mobile endpoint 使用）
+ * 與 getPublishedScheduleEvents 行為相同，但走 admin client。
+ */
+export async function getAllPublishedScheduleEvents(): Promise<ScheduleEvent[]> {
+  const admin = createAdminClient()
+  const { data, error } = await admin
+    .from('schedule_events')
+    .select('*, semesters(name)')
+    .eq('published', true)
+    .order('start_date', { ascending: true })
+    .order('start_time', { ascending: true })
+
+  if (error) throw new Error('取得行事曆資料失敗')
+  return (data ?? []).map((r: unknown) => rowToEvent(r as Record<string, unknown>))
+}
+
 /** 取得所有事件（含未發布），供後台使用 */
 export async function getAllScheduleEvents(): Promise<ScheduleEvent[]> {
   const admin = createAdminClient()
