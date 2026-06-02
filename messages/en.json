@@ -788,43 +788,74 @@
       "title": "Settings",
       "backLink": "Back to Profile",
       "nav": {
-        "security": "Account Security"
+        "account": "Account"
       }
     },
-    "security": {
-      "title": "Account Security",
-      "subtitle": "Manage your login password and email address",
+    "account": {
+      "title": "Account",
+      "subtitle": "Manage your account security, data, and account status",
       "loading": "Loading...",
-      "password": {
-        "sectionTitle": "Password",
-        "label": "Login Password",
-        "hint": "A reset link will be sent to {email}",
-        "action": "Reset Password",
-        "sending": "Sending...",
-        "sent": "Email Sent"
+      "security": {
+        "sectionTitle": "Account Security",
+        "password": {
+          "sectionTitle": "Password",
+          "label": "Login Password",
+          "hint": "A reset link will be sent to {email}",
+          "action": "Reset Password",
+          "sending": "Sending...",
+          "sent": "Email Sent"
+        },
+        "email": {
+          "sectionTitle": "Email",
+          "label": "Current Email",
+          "change": "Change",
+          "cancel": "Cancel",
+          "placeholder": "Enter your new email address",
+          "confirm": "Confirm Change",
+          "confirming": "Confirming...",
+          "hint": "Confirmation emails will be sent to both your new and current addresses. Your email is updated only after you confirm via both links."
+        },
+        "oauth": {
+          "title": "You are signed in with Google",
+          "desc": "Your password and email are managed by Google. Please update them in your Google Account settings.",
+          "link": "Go to Google Account settings →"
+        },
+        "toast": {
+          "resetSent": "Password reset email sent. Please check your inbox.",
+          "resetFailed": "Failed to send email. Please try again later.",
+          "emailSent": "Confirmation emails have been sent to both your new and current addresses. Click the link in each to complete the update."
+        },
+        "errors": {
+          "emailUpdateDefault": "Update failed. Please try again later."
+        }
       },
-      "email": {
-        "sectionTitle": "Email",
-        "label": "Current Email",
-        "change": "Change",
-        "cancel": "Cancel",
-        "placeholder": "Enter your new email address",
-        "confirm": "Confirm Change",
-        "confirming": "Confirming...",
-        "hint": "A verification email will be sent to the new address. Your email is updated only after you click the link."
+      "export": {
+        "sectionTitle": "Your Data",
+        "label": "Export your data",
+        "hint": "Download a copy of all your data on this site (JSON format)",
+        "action": "Export Data",
+        "exporting": "Preparing...",
+        "toastSuccess": "Data exported",
+        "toastFailed": "Export failed. Please try again later."
       },
-      "oauth": {
-        "title": "You are signed in with Google",
-        "desc": "Your password and email are managed by Google. Please update them in your Google Account settings.",
-        "link": "Go to Google Account settings →"
-      },
-      "toast": {
-        "resetSent": "Password reset email sent. Please check your inbox.",
-        "resetFailed": "Failed to send email. Please try again later.",
-        "emailSent": "A confirmation email has been sent to your new address. Click the link to complete the update."
-      },
-      "errors": {
-        "emailUpdateDefault": "Update failed. Please try again later."
+      "danger": {
+        "sectionTitle": "Danger Zone",
+        "label": "Delete Account",
+        "hint": "Permanently delete your account and related data. This cannot be undone.",
+        "action": "Delete Account",
+        "modal": {
+          "title": "Delete your account?",
+          "warning": "This action cannot be undone.",
+          "consequenceProfile": "Your profile, learning progress, course completion records, and achievements will be permanently deleted.",
+          "consequencePosts": "Posts you authored will be kept, but the author will be shown as \"Deleted user\".",
+          "confirmHint": "Type your username {username} to confirm.",
+          "placeholder": "Enter username",
+          "cancel": "Cancel",
+          "confirm": "Permanently Delete Account",
+          "deleting": "Deleting..."
+        },
+        "toastSuccess": "Account deleted",
+        "toastFailed": "Deletion failed. Please try again later."
       }
     }
   }

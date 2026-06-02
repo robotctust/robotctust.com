@@ -788,43 +788,74 @@
       "title": "設定",
       "backLink": "返回個人頁面",
       "nav": {
-        "security": "帳號安全"
+        "account": "帳號設定"
       }
     },
-    "security": {
-      "title": "帳號安全",
-      "subtitle": "管理你的登入密碼與電子郵件",
+    "account": {
+      "title": "帳號設定",
+      "subtitle": "管理你的帳號安全、個人資料與帳號狀態",
       "loading": "載入中...",
-      "password": {
-        "sectionTitle": "密碼",
-        "label": "登入密碼",
-        "hint": "重設連結將寄送至 {email}",
-        "action": "重設密碼",
-        "sending": "寄送中...",
-        "sent": "郵件已寄出"
+      "security": {
+        "sectionTitle": "帳號安全",
+        "password": {
+          "sectionTitle": "密碼",
+          "label": "登入密碼",
+          "hint": "重設連結將寄送至 {email}",
+          "action": "重設密碼",
+          "sending": "寄送中...",
+          "sent": "郵件已寄出"
+        },
+        "email": {
+          "sectionTitle": "電子郵件",
+          "label": "目前信箱",
+          "change": "更改",
+          "cancel": "取消",
+          "placeholder": "請輸入新的電子郵件",
+          "confirm": "確認更改",
+          "confirming": "確認中...",
+          "hint": "確認後將分別寄送驗證郵件至新、舊兩個信箱，兩封都點擊確認後，電子郵件才會正式更新。"
+        },
+        "oauth": {
+          "title": "您目前使用 Google 帳號登入",
+          "desc": "密碼與電子郵件由 Google 管理，請前往 Google 帳號設定頁面進行變更。",
+          "link": "前往 Google 帳號設定 →"
+        },
+        "toast": {
+          "resetSent": "重設密碼郵件已寄出，請查看信箱",
+          "resetFailed": "郵件寄送失敗，請稍後再試",
+          "emailSent": "確認郵件已寄至新、舊兩個信箱，請分別點擊兩封連結以完成更新"
+        },
+        "errors": {
+          "emailUpdateDefault": "更新失敗，請稍後再試"
+        }
       },
-      "email": {
-        "sectionTitle": "電子郵件",
-        "label": "目前信箱",
-        "change": "更改",
-        "cancel": "取消",
-        "placeholder": "請輸入新的電子郵件",
-        "confirm": "確認更改",
-        "confirming": "確認中...",
-        "hint": "確認後將寄送驗證郵件至新信箱，完成點擊後電子郵件才會正式更新。"
+      "export": {
+        "sectionTitle": "我的資料",
+        "label": "匯出我的資料",
+        "hint": "下載一份你在本站所有資料的副本（JSON 格式）",
+        "action": "匯出資料",
+        "exporting": "準備中...",
+        "toastSuccess": "資料已匯出",
+        "toastFailed": "匯出失敗，請稍後再試"
       },
-      "oauth": {
-        "title": "您目前使用 Google 帳號登入",
-        "desc": "密碼與電子郵件由 Google 管理，請前往 Google 帳號設定頁面進行變更。",
-        "link": "前往 Google 帳號設定 →"
-      },
-      "toast": {
-        "resetSent": "重設密碼郵件已寄出，請查看信箱",
-        "resetFailed": "郵件寄送失敗，請稍後再試",
-        "emailSent": "確認郵件已寄至新信箱，點擊連結後電子郵件將完成更新"
-      },
-      "errors": {
-        "emailUpdateDefault": "更新失敗，請稍後再試"
+      "danger": {
+        "sectionTitle": "危險區域",
+        "label": "刪除帳號",
+        "hint": "永久刪除你的帳號與相關資料，此動作無法復原",
+        "action": "刪除帳號",
+        "modal": {
+          "title": "確定要刪除帳號嗎？",
+          "warning": "此動作無法復原。",
+          "consequenceProfile": "你的個人資料、學習進度、課程完成紀錄與成就將被永久刪除。",
+          "consequencePosts": "你發表過的文章會保留，但作者將顯示為「已刪除使用者」。",
+          "confirmHint": "請輸入你的使用者名稱 {username} 以確認。",
+          "placeholder": "輸入使用者名稱",
+          "cancel": "取消",
+          "confirm": "永久刪除帳號",
+          "deleting": "刪除中..."
+        },
+        "toastSuccess": "帳號已刪除",
+        "toastFailed": "刪除失敗，請稍後再試"
       }
     }
   }

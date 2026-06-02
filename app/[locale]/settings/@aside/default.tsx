@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server'
 import { createClient } from '@/app/utils/supabase/server'
 import { Aside, type AsideNavItem } from '@/app/components/Aside'
-import { faShieldHalved } from '@fortawesome/free-solid-svg-icons'
+import { faUserGear } from '@fortawesome/free-solid-svg-icons'
 
 /**
  * [Component] 設定頁面側邊欄 (Server Component @aside slot)
@@ -26,9 +26,9 @@ export default async function SettingsAsideSlot() {
   // 需登入的設定項
   if (user) {
     items.push({
-      label: t('nav.security'),
-      href: '/settings/security',
-      icon: faShieldHalved,
+      label: t('nav.account'),
+      href: '/settings/account',
+      icon: faUserGear,
     })
   }
 

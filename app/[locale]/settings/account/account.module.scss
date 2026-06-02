@@ -47,6 +47,10 @@
   letter-spacing: 0.05em;
 }
 
+.danger_title {
+  color: var(--theme-red-600);
+}
+
 // 設定項目列
 .item {
   @include mixins.flexbox(row, space-between, center);
@@ -61,10 +65,16 @@
   }
 }
 
+.danger_item {
+  border-color: var(--theme-red-600);
+  background-color: var(--theme-red-100);
+}
+
 .item_info {
   @include mixins.flexbox(column, flex-start, flex-start);
   gap: 0.2rem;
   min-width: 0;
+  width: 100%;
 }
 
 .item_label {
@@ -79,7 +89,6 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  max-width: 240px;
 }
 
 // 操作按鈕
@@ -112,6 +121,33 @@
     background: #f0fdf4;
     border-color: #bbf7d0;
     pointer-events: none;
+  }
+}
+
+// 危險操作按鈕
+.danger_button {
+  flex-shrink: 0;
+  padding: 0.4375rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--theme-red-600);
+  background: transparent;
+  border: 1px solid var(--theme-red-600);
+  cursor: pointer;
+  white-space: nowrap;
+  @include mixins.border-radius(6px);
+  @include mixins.transition();
+  @include mixins.hover-scale-effect;
+
+  &:hover:not(:disabled) {
+    color: white;
+    background: var(--theme-red-600);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
   }
 }
 
@@ -230,5 +266,129 @@
 
   &:hover {
     text-decoration: underline;
+  }
+}
+
+// ── 刪除帳號確認 Modal ──
+.modal_overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  background: rgba(0, 0, 0, 0.5);
+  @include mixins.flexbox(column, center, center);
+  padding: var(--space-1-5x);
+}
+
+.modal {
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space);
+  width: 100%;
+  max-width: 420px;
+  padding: var(--space-1-5x);
+  background: var(--background);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(12px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+}
+
+.modal_title {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.modal_warning {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--theme-red-600);
+}
+
+.modal_list {
+  margin: 0;
+  padding-left: 1.2rem;
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: 0.35rem;
+
+  > li {
+    font-size: 0.85rem;
+    color: var(--foreground-secondary);
+    line-height: 1.55;
+  }
+}
+
+.modal_confirm_label {
+  font-size: 0.825rem;
+  color: var(--foreground-secondary);
+  line-height: 1.5;
+}
+
+.modal_input {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(6px);
+  @include mixins.transition();
+
+  &:focus {
+    outline: none;
+    border-color: var(--theme-red-600);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+.modal_actions {
+  @include mixins.flexbox(row, flex-end, center);
+  gap: var(--space-0-5x);
+  margin-top: var(--space-0-5x);
+}
+
+.modal_cancel {
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  color: var(--foreground);
+  background: transparent;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  @include mixins.border-radius(6px);
+  @include mixins.transition();
+
+  &:hover:not(:disabled) {
+    background: var(--background-tertiary);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.modal_confirm {
+  padding: 0.5rem 1rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: white;
+  background: var(--theme-red-600);
+  border: none;
+  cursor: pointer;
+  @include mixins.border-radius(6px);
+  @include mixins.transition();
+
+  &:hover:not(:disabled) {
+    filter: brightness(0.92);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
   }
 }
