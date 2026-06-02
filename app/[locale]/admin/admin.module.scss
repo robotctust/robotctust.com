@@ -7,6 +7,7 @@
 
   .adminContent {
     max-width: 1200px;
+    width: 100%;
     margin: 0 auto;
     padding: var(--space-2x) var(--space);
     display: flex;
@@ -80,83 +81,53 @@
         }
       }
 
-      /* Roles Table */
-      .tableContainer {
-        background: var(--background-secondary);
-        border: 1px solid var(--border);
-        @include mixins.border-radius(20px);
+      /* Roles Table cell styles (used in Table column render functions) */
+      .userCell {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        min-width: 0;
         overflow: hidden;
 
-        .rolesTable {
-          width: 100%;
-          border-collapse: collapse;
-          text-align: left;
-
-          th, td {
-            padding: 16px 20px;
-            border-bottom: 1px solid var(--border);
-          }
-
-          th {
-            background: rgba(var(--background-secondary-rgb), 0.5);
-            font-size: 0.75rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--foreground-tertiary);
-          }
-
-          .userCell {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-
-            .userName {
-              font-weight: 600;
-              color: var(--foreground);
-            }
-
-            .selfBadge {
-              color: var(--theme-blue-400);
-              font-size: 0.75rem;
-              font-weight: 700;
-            }
-          }
-
-          .email {
-            color: var(--foreground-secondary);
-            font-size: 0.9rem;
-          }
-
-          .saveButton {
-            @include mixins.button('primary', 'small');
-            min-width: 90px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            font-size: 0.85rem;
-            transition: background 0.2s, color 0.2s, border-color 0.2s;
-          }
-
-          .saveButtonDirty {
-            background: var(--theme-orange-400);
-            color: #fff;
-            border-color: transparent;
-
-            &:hover {
-              background: var(--theme-orange-500);
-            }
-          }
-
-          .emptyRow {
-            text-align: center;
-            padding: 60px;
-            color: var(--foreground-tertiary);
-          }
-
-          .center { text-align: center; }
+        .userName {
+          font-weight: 600;
+          color: var(--foreground);
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          min-width: 0;
         }
+
+        .selfBadge {
+          color: var(--theme-blue-400);
+          font-size: 0.75rem;
+          font-weight: 700;
+          white-space: nowrap;
+          flex-shrink: 0;
+        }
+      }
+
+      .username {
+        font-size: 0.875rem;
+        color: var(--foreground-secondary);
+        font-family: var(--font-mono, monospace);
+      }
+
+      .email {
+        color: var(--foreground-secondary);
+        font-size: 0.9rem;
+      }
+
+      .rolesCell {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .saveSpinner {
+        font-size: 0.85rem;
+        color: var(--foreground-secondary);
+        flex-shrink: 0;
       }
 
       /* Sync Grid */

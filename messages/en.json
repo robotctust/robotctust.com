@@ -766,10 +766,21 @@
     "errors": {
       "passwordMismatch": "Passwords do not match",
       "passwordMinLength": "Password must be at least 8 characters",
-      "default": "Failed to update password. Please try again."
+      "default": "Failed to update password. Please try again.",
+      "passwordLowercase": "Password must contain a lowercase letter",
+      "passwordUppercase": "Password must contain an uppercase letter",
+      "passwordNumber": "Password must contain a number",
+      "passwordSpecial": "Password must contain at least one special character"
     },
     "meta": {
       "title": "Reset Password | Robotics Research Club of CTUST"
+    },
+    "rules": {
+      "length": "At least 8 characters",
+      "lowercase": "Contains a lowercase letter",
+      "uppercase": "Contains an uppercase letter",
+      "number": "Contains a number",
+      "special": "Contains a special character"
     }
   },
   "Settings": {

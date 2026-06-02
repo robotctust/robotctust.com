@@ -8,6 +8,7 @@ import React, {
   useMemo,
   useImperativeHandle,
 } from 'react'
+import { createPortal } from 'react-dom'
 import styles from './Selector.module.scss'
 import { SelectorProps, SelectorOption, SelectorRef } from './types'
 
@@ -43,6 +44,7 @@ function Selector<T = unknown>(
     onChange,
     values = [],
     onMultipleChange,
+    onClose,
     title,
     placeholder = '請選擇...',
     disabled = false,
@@ -57,6 +59,39 @@ function Selector<T = unknown>(
   const selectorRef = useRef<HTMLDivElement>(null)
   // 下拉選單引用
   const dropdownRef = useRef<HTMLDivElement>(null)
+  // portal dropdown 的 fixed 定位
+  const [dropdownPos, setDropdownPos] = useState({ top: 0, left: 0, width: 0 })
+
+  useEffect(() => {
+    if (!isOpen || !selectorRef.current) return
+    function updatePos() {
+      if (!selectorRef.current) return
+      const r = selectorRef.current.getBoundingClientRect()
+      setDropdownPos({ top: r.bottom, left: r.left, width: r.width })
+    }
+    updatePos()
+    window.addEventListener('scroll', updatePos, true)
+    window.addEventListener('resize', updatePos)
+    return () => {
+      window.removeEventListener('scroll', updatePos, true)
+      window.removeEventListener('resize', updatePos)
+    }
+  }, [isOpen])
+
+  // 用 ref 存 onClose 避免 effect 因 callback 換參考而重複觸發
+  const onCloseRef = useRef(onClose)
+  useEffect(() => { onCloseRef.current = onClose })
+
+  // dropdown 從 open → close 時呼叫 onClose
+  const didOpen = useRef(false)
+  useEffect(() => {
+    if (isOpen) {
+      didOpen.current = true
+    } else if (didOpen.current) {
+      didOpen.current = false
+      onCloseRef.current?.()
+    }
+  }, [isOpen])
 
   //* 合併所有選項（分組和非分組）
   const allOptions = useMemo(() => {
@@ -128,15 +163,15 @@ function Selector<T = unknown>(
     setIsOpen(!isOpen)
   }, [disabled, isOpen])
 
-  //* 點擊外部關閉選單
+  //* 點擊外部關閉選單（portal 版：需同時排除 dropdownRef）
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as Node
       if (
-        selectorRef.current &&
-        !selectorRef.current.contains(event.target as Node)
-      ) {
-        setIsOpen(false)
-      }
+        selectorRef.current?.contains(target) ||
+        dropdownRef.current?.contains(target)
+      ) return
+      setIsOpen(false)
     }
 
     if (isOpen) {
@@ -283,11 +318,17 @@ function Selector<T = unknown>(
         </span>
       </div>
 
-      {isOpen && (
+      {isOpen && createPortal(
         <div
-          className={styles.dropdown}
+          className={styles.dropdownPortal}
           ref={dropdownRef}
-          style={{ maxHeight: `${maxHeight}px` }}
+          style={{
+            position: 'fixed',
+            top: dropdownPos.top,
+            left: dropdownPos.left,
+            width: dropdownPos.width,
+            maxHeight: `${maxHeight}px`,
+          }}
           role="listbox"
           aria-multiselectable={mode === 'multiple'}
         >
@@ -305,7 +346,8 @@ function Selector<T = unknown>(
               </button>
             </div>
           )}
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   )

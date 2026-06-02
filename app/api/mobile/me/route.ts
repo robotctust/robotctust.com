@@ -23,7 +23,7 @@ export async function GET(request: NextRequest) {
     // 用 anon key + 把 token 給 getUser 來驗證 / 取 user
     const verifier = createSupabaseJSClient(
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
-      process.env.NEXT_PUBLIC_SUPABASE_PUBLISH_KEY!,
+      process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
       {
         auth: { autoRefreshToken: false, persistSession: false },
       },

@@ -36,6 +36,7 @@ import {
   faChevronRight,
   faCheck,
   faCircle,
+  faCircleCheck,
 } from '@fortawesome/free-solid-svg-icons'
 
 interface RegisterFormProps {
@@ -478,35 +479,33 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                 className={errors.password ? styles.error : ''}
                 placeholder={t('form.register.step2.passwordPlaceholder')}
               />
-
-              <div className={styles.password_rules}>
-                <div className={`${styles.rule_item} ${passwordRules.length ? styles.valid : ''}`}>
-                  <FontAwesomeIcon icon={passwordRules.length ? faCheck : faCircle} className={styles.rule_icon} />
-                  {t('form.register.step2.rules.length')}
-                </div>
-                <div className={`${styles.rule_item} ${passwordRules.hasLowercase ? styles.valid : ''}`}>
-                  <FontAwesomeIcon icon={passwordRules.hasLowercase ? faCheck : faCircle} className={styles.rule_icon} />
-                  {t('form.register.step2.rules.lowercase')}
-                </div>
-                <div className={`${styles.rule_item} ${passwordRules.hasUppercase ? styles.valid : ''}`}>
-                  <FontAwesomeIcon icon={passwordRules.hasUppercase ? faCheck : faCircle} className={styles.rule_icon} />
-                  {t('form.register.step2.rules.uppercase')}
-                </div>
-                <div className={`${styles.rule_item} ${passwordRules.hasNumber ? styles.valid : ''}`}>
-                  <FontAwesomeIcon icon={passwordRules.hasNumber ? faCheck : faCircle} className={styles.rule_icon} />
-                  {t('form.register.step2.rules.number')}
-                </div>
-                <div className={`${styles.rule_item} ${passwordRules.hasSpecial ? styles.valid : ''}`}>
-                  <FontAwesomeIcon icon={passwordRules.hasSpecial ? faCheck : faCircle} className={styles.rule_icon} />
-                  {t('form.register.step2.rules.special')}
-                </div>
-              </div>
-
               {errors.password && (
                 <span className={styles.field_error}>
                   {errors.password.message}
                 </span>
               )}
+              <div className={styles.password_rules}>
+                <div className={`${styles.rule_item} ${passwordRules.length ? styles.valid : ''}`}>
+                  <FontAwesomeIcon icon={passwordRules.length ? faCircleCheck : faCircle} className={styles.rule_icon} />
+                  {t('form.register.step2.rules.length')}
+                </div>
+                <div className={`${styles.rule_item} ${passwordRules.hasLowercase ? styles.valid : ''}`}>
+                  <FontAwesomeIcon icon={passwordRules.hasLowercase ? faCircleCheck : faCircle} className={styles.rule_icon} />
+                  {t('form.register.step2.rules.lowercase')}
+                </div>
+                <div className={`${styles.rule_item} ${passwordRules.hasUppercase ? styles.valid : ''}`}>
+                  <FontAwesomeIcon icon={passwordRules.hasUppercase ? faCircleCheck : faCircle} className={styles.rule_icon} />
+                  {t('form.register.step2.rules.uppercase')}
+                </div>
+                <div className={`${styles.rule_item} ${passwordRules.hasNumber ? styles.valid : ''}`}>
+                  <FontAwesomeIcon icon={passwordRules.hasNumber ? faCircleCheck : faCircle} className={styles.rule_icon} />
+                  {t('form.register.step2.rules.number')}
+                </div>
+                <div className={`${styles.rule_item} ${passwordRules.hasSpecial ? styles.valid : ''}`}>
+                  <FontAwesomeIcon icon={passwordRules.hasSpecial ? faCircleCheck : faCircle} className={styles.rule_icon} />
+                  {t('form.register.step2.rules.special')}
+                </div>
+              </div>
             </div>
 
             <div className={styles.form_group}>

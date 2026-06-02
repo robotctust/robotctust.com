@@ -296,6 +296,31 @@
   }
 }
 
+//* Portal dropdown（position: fixed，由 JS 注入 top/left/width）
+.dropdownPortal {
+  background: var(--background);
+  border: 1px solid var(--foreground-900);
+  border-top: none;
+  @include mixins.border-radius(0 0 8px 8px);
+  box-shadow: 0 4px 12px var(--shadow-color);
+  overflow-y: auto;
+  z-index: 9999;
+  @include mixins.animation-container(fadeIn 0.2s ease-out);
+
+  &:hover {
+    border: 1px solid var(--foreground-800);
+    border-top: none;
+  }
+
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: var(--background-secondary); }
+  &::-webkit-scrollbar-thumb {
+    background: var(--border);
+    @include mixins.border-radius(3px);
+  }
+  &::-webkit-scrollbar-thumb:hover { background: var(--foreground-300); }
+}
+
 //* 下拉選單底部
 .dropdownFooter {
   padding: var(--space-0-5x) var(--space);

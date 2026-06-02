@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { useRouter, Link } from '@/i18n/navigation'
 import { createClient } from '@/app/utils/supabase/client'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faCheck, faCircle, faCircleCheck } from '@fortawesome/free-solid-svg-icons'
 import styles from './reset-password.module.scss'
 
 type SessionState = 'loading' | 'valid' | 'invalid'
@@ -22,7 +24,31 @@ export default function ResetPasswordClient() {
   const [submitState, setSubmitState] = useState<SubmitState>('idle')
   const [password, setPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [confirmError, setConfirmError] = useState('')
   const [error, setError] = useState('')
+
+  const passwordRules = {
+    length: password.length >= 8,
+    hasLowercase: /[a-z]/.test(password),
+    hasUppercase: /[A-Z]/.test(password),
+    hasNumber: /[0-9]/.test(password),
+    hasSpecial: /[!@#$%^&*(),.?":{}|<>_\-+=[\]\\/'`;~]/.test(password),
+  }
+  const allRulesValid = Object.values(passwordRules).every(Boolean)
+
+  const passwordError = !password
+    ? ''
+    : !passwordRules.length
+      ? t('errors.passwordMinLength')
+      : !passwordRules.hasLowercase
+        ? t('errors.passwordLowercase')
+        : !passwordRules.hasUppercase
+          ? t('errors.passwordUppercase')
+          : !passwordRules.hasNumber
+            ? t('errors.passwordNumber')
+            : !passwordRules.hasSpecial
+              ? t('errors.passwordSpecial')
+              : ''
 
   // 頁面載入時確認是否有有效 session
   useEffect(() => {
@@ -35,6 +61,15 @@ export default function ResetPasswordClient() {
     }
     checkSession()
   }, [])
+
+  // confirmPassword 即時比對
+  useEffect(() => {
+    if (!confirmPassword) {
+      setConfirmError('')
+      return
+    }
+    setConfirmError(password !== confirmPassword ? t('errors.passwordMismatch') : '')
+  }, [password, confirmPassword, t])
 
   // 成功後自動跳轉
   useEffect(() => {
@@ -49,14 +84,8 @@ export default function ResetPasswordClient() {
     e.preventDefault()
     setError('')
 
-    if (password.length < 8) {
-      setError(t('errors.passwordMinLength'))
-      return
-    }
-    if (password !== confirmPassword) {
-      setError(t('errors.passwordMismatch'))
-      return
-    }
+    if (!allRulesValid) return
+    if (password !== confirmPassword) return
 
     setSubmitState('loading')
 
@@ -132,6 +161,31 @@ export default function ResetPasswordClient() {
               autoFocus
               autoComplete="new-password"
             />
+            <div className={styles.password_rules}>
+              <div className={`${styles.rule_item} ${passwordRules.length ? styles.valid : ''}`}>
+                <FontAwesomeIcon icon={passwordRules.length ? faCircleCheck : faCircle} className={styles.rule_icon} />
+                {t('rules.length')}
+              </div>
+              <div className={`${styles.rule_item} ${passwordRules.hasLowercase ? styles.valid : ''}`}>
+                <FontAwesomeIcon icon={passwordRules.hasLowercase ? faCircleCheck : faCircle} className={styles.rule_icon} />
+                {t('rules.lowercase')}
+              </div>
+              <div className={`${styles.rule_item} ${passwordRules.hasUppercase ? styles.valid : ''}`}>
+                <FontAwesomeIcon icon={passwordRules.hasUppercase ? faCircleCheck : faCircle} className={styles.rule_icon} />
+                {t('rules.uppercase')}
+              </div>
+              <div className={`${styles.rule_item} ${passwordRules.hasNumber ? styles.valid : ''}`}>
+                <FontAwesomeIcon icon={passwordRules.hasNumber ? faCircleCheck : faCircle} className={styles.rule_icon} />
+                {t('rules.number')}
+              </div>
+              <div className={`${styles.rule_item} ${passwordRules.hasSpecial ? styles.valid : ''}`}>
+                <FontAwesomeIcon icon={passwordRules.hasSpecial ? faCircleCheck : faCircle} className={styles.rule_icon} />
+                {t('rules.special')}
+              </div>
+            </div>
+            {passwordError && (
+              <span className={styles.field_error}>{passwordError}</span>
+            )}
           </div>
 
           <div className={styles.form_group}>
@@ -145,12 +199,15 @@ export default function ResetPasswordClient() {
               required
               autoComplete="new-password"
             />
+            {confirmError && (
+              <span className={styles.field_error}>{confirmError}</span>
+            )}
           </div>
 
           <button
             type="submit"
             className={styles.submit_button}
-            disabled={submitState === 'loading'}
+            disabled={submitState === 'loading' || !allRulesValid || password !== confirmPassword || !confirmPassword}
           >
             {submitState === 'loading' ? t('submitting') : t('submit')}
           </button>

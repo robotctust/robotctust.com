@@ -29,6 +29,7 @@ export interface SelectorProps<T = unknown> {
   // 多選模式屬性
   values?: T[] // 多選值陣列
   onMultipleChange?: (values: T[]) => void // 多選變更回調
+  onClose?: () => void // dropdown 關閉時回調（僅 dropdown variant 有效）
 
   // 顯示配置
   title?: string // 選擇器標題

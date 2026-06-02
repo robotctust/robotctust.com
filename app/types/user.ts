@@ -39,6 +39,19 @@ export interface UserProfile extends Record<string, unknown> {
   }
 }
 
+export const ALL_ROLES: UserRole[] = [
+  'super_admin',
+  'admin',
+  'admin_course',
+  'admin_achievement',
+  'admin_verifications',
+  'admin_news',
+  'admin_accounts',
+  'admin_members',
+  'admin_calendar',
+  'member',
+]
+
 export const getUserRoleName = (role: UserRole, t?: any) => {
   if (t) return t(role)
   switch (role) {

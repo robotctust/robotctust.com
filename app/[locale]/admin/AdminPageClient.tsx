@@ -8,9 +8,6 @@ import {
   faSpinner,
   faSync,
   faDatabase,
-  faCheck,
-  faExclamationTriangle,
-  faSave
 } from '@fortawesome/free-solid-svg-icons'
 import styles from './admin.module.scss'
 import Page from '@/app/components/page/Page'
@@ -18,28 +15,25 @@ import { AuthContext } from '@/app/contexts/AuthContext'
 import { batchSyncCompetitions } from '@/app/utils/competitionService'
 import { competitions } from '@/app/[locale]/competitions/Competitions'
 import { fetchAllUsers, updateUserRoles } from './actions'
-import { UserRole, getUserRoleName, UserProfile } from '@/app/types/user'
+import { UserRole, getUserRoleName, ALL_ROLES } from '@/app/types/user'
 import Selector from '@/app/components/Selector/Selector'
 import { useToast } from '@/app/contexts/ToastContext'
-
-// 自動生成選項，確保與 getUserRoleName 同步
-const ALL_ROLES: UserRole[] = [
-  'super_admin',
-  'admin',
-  'admin_course',
-  'admin_achievement',
-  'admin_verifications',
-  'admin_news',
-  'admin_accounts',
-  'admin_members',
-  'admin_calendar',
-  'member'
-]
+import { Table, TableColumn } from '@/app/components/Table'
 
 const ROLE_OPTIONS = ALL_ROLES.map(role => ({
   value: role,
   label: getUserRoleName(role)
 }))
+
+interface AdminUserRow {
+  id: string
+  email: string
+  username: string | null
+  display_name: string | null
+  avatar_url: string | null
+  roles: UserRole[]
+  created_at: string
+}
 
 export default function AdminPageClient() {
   const { showToast } = useToast()
@@ -55,7 +49,7 @@ export default function AdminPageClient() {
     loading: authLoading,
   } = context
   
-  const [users, setUsers] = useState<any[]>([])
+  const [users, setUsers] = useState<AdminUserRow[]>([])
   const [loading, setLoading] = useState(true)
   const [savingUserId, setSavingUserId] = useState<string | null>(null)
   const [dirtyUsers, setDirtyUsers] = useState<Set<string>>(new Set())
@@ -64,39 +58,36 @@ export default function AdminPageClient() {
   const [syncResult, setSyncResult] = useState<{ success: number; errors: string[] } | null>(null)
 
   const loadUsers = useCallback(async () => {
-    if (!supabaseUser) return
     try {
       setLoading(true)
       const data = await fetchAllUsers()
-      setUsers(data)
+      setUsers(data as AdminUserRow[])
       setDirtyUsers(new Set())
     } catch (error) {
       showToast(error instanceof Error ? error.message : '載入使用者失敗', 'error')
     } finally {
       setLoading(false)
     }
-  }, [supabaseUser, showToast])
+  }, [showToast])
 
+  const userId = supabaseUser?.id
   useEffect(() => {
-    if (!authLoading && supabaseUser && isCurrentUserSuperAdmin) {
+    if (!authLoading && userId && isCurrentUserSuperAdmin) {
       void loadUsers()
     } else if (!authLoading) {
       setLoading(false)
     }
-  }, [supabaseUser, isCurrentUserSuperAdmin, authLoading, loadUsers])
+  }, [authLoading, userId, isCurrentUserSuperAdmin, loadUsers])
 
-  const handleRolesChange = (targetUserId: string, newRoles: UserRole[]) => {
+  const handleRolesChange = useCallback((targetUserId: string, newRoles: UserRole[]) => {
     setUsers(prev => prev.map(u => {
-      if (u.id === targetUserId) {
-        const finalRoles = newRoles.length === 0 ? ['member'] : newRoles
-        return { ...u, roles: finalRoles }
-      }
-      return u
+      if (u.id !== targetUserId) return u
+      return { ...u, roles: newRoles.length === 0 ? (['member'] as UserRole[]) : newRoles }
     }))
     setDirtyUsers(prev => new Set(prev).add(targetUserId))
-  }
+  }, [])
 
-  const handleSaveRoles = async (targetUserId: string, newRoles: UserRole[]) => {
+  const handleSaveRoles = useCallback(async (targetUserId: string, newRoles: UserRole[]) => {
     try {
       setSavingUserId(targetUserId)
       await updateUserRoles(targetUserId, newRoles)
@@ -106,13 +97,59 @@ export default function AdminPageClient() {
         return next
       })
       showToast('權限已成功更新', 'success')
-    } catch (err: any) {
-      showToast(err.message || '儲存失敗', 'error')
+    } catch (err: unknown) {
+      showToast(err instanceof Error ? err.message : '儲存失敗', 'error')
       await loadUsers()
     } finally {
       setSavingUserId(null)
     }
-  }
+  }, [showToast, loadUsers])
+
+  const columns = useMemo<TableColumn<AdminUserRow>[]>(() => [
+    {
+      key: 'display_name',
+      header: '使用者',
+      width: '180px',
+      searchable: true,
+      searchAccessor: (u) => [u.display_name, u.username].filter(Boolean).join(' '),
+      render: (u) => (
+        <div className={styles.userCell}>
+          <span className={styles.userName}>{u.display_name || u.username || '未知身分'}</span>
+          {u.id === supabaseUser?.id && <span className={styles.selfBadge}>（您）</span>}
+        </div>
+      ),
+    },
+    {
+      key: 'username',
+      header: '帳號',
+      render: (u) => <span className={styles.username}>{u.username ?? '—'}</span>,
+    },
+    {
+      key: 'email',
+      header: '信箱',
+      render: (u) => <span className={styles.email}>{u.email}</span>,
+    },
+    {
+      key: 'roles',
+      header: '權限分配',
+      render: (u) => (
+        <div className={styles.rolesCell}>
+          <Selector<UserRole>
+            mode="multiple"
+            options={ROLE_OPTIONS}
+            values={Array.isArray(u.roles) ? u.roles : ['member']}
+            onMultipleChange={(vals) => handleRolesChange(u.id, vals)}
+            onClose={() => { if (dirtyUsers.has(u.id)) void handleSaveRoles(u.id, u.roles) }}
+            placeholder="請選擇權限..."
+            disabled={savingUserId === u.id}
+          />
+          {savingUserId === u.id && (
+            <FontAwesomeIcon icon={faSpinner} spin className={styles.saveSpinner} />
+          )}
+        </div>
+      ),
+    },
+  ], [supabaseUser?.id, dirtyUsers, savingUserId, handleRolesChange, handleSaveRoles])
 
   const handleSyncCompetitions = async () => {
     if (!supabaseUser) return
@@ -135,7 +172,7 @@ export default function AdminPageClient() {
     }
   }
 
-  if (authLoading || loading) {
+  if (authLoading) {
     return (
       <Page style={styles.adminContainer}>
         <div className={styles.adminContent}>
@@ -185,58 +222,15 @@ export default function AdminPageClient() {
             </p>
           </header>
 
-          <div className={styles.tableContainer}>
-            <table className={styles.rolesTable}>
-              <thead>
-                <tr>
-                  <th>使用者</th>
-                  <th>信箱</th>
-                  <th style={{ width: '300px' }}>權限分配</th>
-                  <th className={styles.center} style={{ width: '120px' }}>操作</th>
-                </tr>
-              </thead>
-              <tbody>
-                {users.map(u => (
-                  <tr key={u.id}>
-                    <td>
-                      <div className={styles.userCell}>
-                        <span className={styles.userName}>{u.display_name || u.username || '未知身分'}</span>
-                        {u.id === supabaseUser?.id && <span className={styles.selfBadge}>（您）</span>}
-                      </div>
-                    </td>
-                    <td><span className={styles.email}>{u.email}</span></td>
-                    <td>
-                      <Selector<UserRole>
-                        mode="multiple"
-                        options={ROLE_OPTIONS}
-                        values={Array.isArray(u.roles) ? u.roles : ['member']}
-                        onMultipleChange={(vals) => handleRolesChange(u.id, vals)}
-                        placeholder="請選擇權限..."
-                      />
-                    </td>
-                    <td className={styles.center}>
-                      <button
-                        onClick={() => void handleSaveRoles(u.id, u.roles || ['member'])}
-                        className={`${styles.saveButton}${dirtyUsers.has(u.id) ? ` ${styles.saveButtonDirty}` : ''}`}
-                        disabled={savingUserId === u.id}
-                      >
-                        {savingUserId === u.id
-                          ? <FontAwesomeIcon icon={faSpinner} spin />
-                          : <FontAwesomeIcon icon={dirtyUsers.has(u.id) ? faExclamationTriangle : faSave} />
-                        }
-                        <span>{dirtyUsers.has(u.id) ? '未儲存' : '儲存'}</span>
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-                {users.length === 0 && (
-                  <tr>
-                    <td colSpan={4} className={styles.emptyRow}>目前沒有使用者資料。</td>
-                  </tr>
-                )}
-              </tbody>
-            </table>
-          </div>
+          <Table<AdminUserRow>
+            columns={columns}
+            data={users}
+            rowKey={(u) => u.id}
+            loading={loading}
+            emptyMessage="目前沒有使用者資料。"
+            searchable
+            searchPlaceholder="搜尋名稱或帳號..."
+          />
         </section>
 
         <section className={styles.section}>
