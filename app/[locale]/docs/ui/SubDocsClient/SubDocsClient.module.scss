@@ -25,14 +25,14 @@
       overflow: hidden;
 
       // 左側文檔標題
-      > h4 {
-        @include mixins.flexbox(row, start, stretch);
+      > .subDocTitle {
+        @include mixins.flexbox(row, flex-start, flex-start);
         gap: var(--space);
         height: 100%;
         min-width: 180px;
         padding: var(--space);
         width: 100%;
-        background: var(--background-secondary);
+        background: rgba(var(--background-secondary-rgb), 0.5);
 
         > .subDocDate {
           padding: 3px 9px;
@@ -51,6 +51,12 @@
             background: var(--theme-orange-500);
             color: var(--color-white);
           }
+        }
+
+        > h4 {
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
 
@@ -75,7 +81,7 @@
           }
 
           &:hover {
-            background: var(--primary);
+            background: rgba(var(--background-secondary-rgb), 0.25);
             color: var(--color-white);
 
             > .subDocType {

@@ -29,7 +29,8 @@
       "about": "About",
       "dashboard": "Dashboard",
       "admin": "Admin"
-    }
+    },
+    "settings": "Settings"
   },
   "Footer": {
     "contactUs": {
@@ -149,7 +150,6 @@
           "robotProgramExamples": "Robot Program Examples",
           "robotBluetoothRemoteApp": "Robot Remote for Android",
           "robotBluetoothRemoteAppForIos": "Robot Remote for iOS"
-
         }
       }
     },
@@ -297,7 +297,8 @@
           "emailDetected": "This email is already registered. Redirecting you to the login page.",
           "emailSent": "Verification email sent! Please check your inbox.",
           "success": "Registration successful. Welcome aboard!",
-          "googleSuccess": "Signed in with Google. Welcome to the club!"
+          "googleSuccess": "Signed in with Google. Welcome to the club!",
+          "agreeTermsRequired": "Please read and agree to the Terms of Service and Privacy Policy first."
         },
         "errors": {
           "usernameTaken": "This username is already taken",
@@ -328,6 +329,19 @@
           "studentIdRequired": "CTUST students must provide their student ID",
           "studentIdMaxLength": "Student ID must be 20 characters or fewer",
           "studentIdPattern": "Student ID may only contain letters, numbers, underscores, and hyphens"
+        }
+      },
+      "forgotPassword": {
+        "title": "Forgot Password",
+        "description": "Enter your email address and we will send you a password reset link.",
+        "email": "Email",
+        "emailPlaceholder": "Enter your email address",
+        "submit": "Send Reset Link",
+        "submitting": "Sending...",
+        "sent": "A reset link has been sent to {email}. Please check your inbox. The link expires in 1 hour.",
+        "backToLogin": "Back to Login",
+        "errors": {
+          "default": "Failed to send. Please try again later."
         }
       }
     }
@@ -735,6 +749,134 @@
         "deletedError": "Delete failed",
         "deletedBulk": "Deleted {count} posts",
         "deletedPartial": "{success} deleted, {failed} failed"
+      }
+    }
+  },
+  "ResetPassword": {
+    "title": "Set New Password",
+    "description": "Please enter your new password.",
+    "password": "New Password",
+    "passwordPlaceholder": "Enter new password",
+    "confirmPassword": "Confirm New Password",
+    "confirmPasswordPlaceholder": "Re-enter new password",
+    "submit": "Update Password",
+    "submitting": "Updating...",
+    "success": "Password updated successfully. Redirecting to your profile...",
+    "invalidSession": "This link has expired or already been used. Please request a new password reset.",
+    "requestAgain": "Request Again",
+    "errors": {
+      "passwordMismatch": "Passwords do not match",
+      "passwordMinLength": "Password must be at least 8 characters",
+      "default": "Failed to update password. Please try again.",
+      "passwordLowercase": "Password must contain a lowercase letter",
+      "passwordUppercase": "Password must contain an uppercase letter",
+      "passwordNumber": "Password must contain a number",
+      "passwordSpecial": "Password must contain at least one special character"
+    },
+    "meta": {
+      "title": "Reset Password | Robotics Research Club of CTUST"
+    },
+    "rules": {
+      "length": "At least 8 characters",
+      "lowercase": "Contains a lowercase letter",
+      "uppercase": "Contains an uppercase letter",
+      "number": "Contains a number",
+      "special": "Contains a special character"
+    }
+  },
+  "Settings": {
+    "aside": {
+      "title": "Settings",
+      "backLink": "Back to Profile",
+      "nav": {
+        "account": "Account"
+      }
+    },
+    "account": {
+      "title": "Account",
+      "subtitle": "Manage your account security, data, and account status",
+      "loading": "Loading...",
+      "security": {
+        "sectionTitle": "Account Security",
+        "password": {
+          "sectionTitle": "Password",
+          "label": "Login Password",
+          "hint": "A reset link will be sent to {email}",
+          "action": "Reset Password",
+          "sending": "Sending...",
+          "sent": "Email Sent",
+          "confirmModal": {
+            "title": "Send password reset email?",
+            "desc": "We'll email a password reset link to {email}.",
+            "steps": [
+              "Open the email and click the reset link (check your spam folder if it isn't in your inbox).",
+              "On the page that opens, enter and save your new password.",
+              "Sign back in with your new password."
+            ],
+            "confirm": "Send Reset Email"
+          }
+        },
+        "email": {
+          "sectionTitle": "Email",
+          "label": "Current Email",
+          "change": "Change",
+          "cancel": "Cancel",
+          "placeholder": "Enter your new email address",
+          "confirm": "Confirm Change",
+          "confirming": "Confirming...",
+          "hint": "Confirmation emails will be sent to both your new and current addresses. Your email is updated only after you confirm via both links.",
+          "confirmModal": {
+            "title": "Send confirmation emails?",
+            "desc": "We'll send a confirmation link to your new address ({email}) and to your current address.",
+            "steps": [
+              "Open both inboxes — your new address and your current one.",
+              "Click the confirmation link in each of the two emails.",
+              "Your login email changes only after both links are confirmed."
+            ],
+            "confirm": "Send Confirmation"
+          }
+        },
+        "oauth": {
+          "title": "You are signed in with Google",
+          "desc": "Your password and email are managed by Google. Please update them in your Google Account settings.",
+          "link": "Go to Google Account settings →"
+        },
+        "toast": {
+          "resetSent": "Password reset email sent. Please check your inbox.",
+          "resetFailed": "Failed to send email. Please try again later.",
+          "emailSent": "Confirmation emails have been sent to both your new and current addresses. Click the link in each to complete the update."
+        },
+        "errors": {
+          "emailUpdateDefault": "Update failed. Please try again later."
+        }
+      },
+      "export": {
+        "sectionTitle": "Your Data",
+        "label": "Export your data",
+        "hint": "Download a copy of all your data on this site (JSON format)",
+        "action": "Export Data",
+        "exporting": "Preparing...",
+        "toastSuccess": "Data exported",
+        "toastFailed": "Export failed. Please try again later."
+      },
+      "danger": {
+        "sectionTitle": "Danger Zone",
+        "label": "Delete Account",
+        "hint": "Permanently delete your account and related data. This cannot be undone.",
+        "action": "Delete Account",
+        "modal": {
+          "title": "Delete your account?",
+          "warning": "This action cannot be undone.",
+          "consequenceProfile": "Your profile, learning progress, course completion records, and achievements will be permanently deleted.",
+          "consequencePosts": "Posts you authored will be kept, but the author will be shown as \"Deleted user\".",
+          "confirmHint": "Type your username {username} to confirm.",
+          "placeholder": "Enter username",
+          "cancel": "Cancel",
+          "confirm": "Permanently Delete Account",
+          "deleting": "Deleting..."
+        },
+        "toastSuccess": "Account deleted",
+        "toastFailed": "Deletion failed. Please try again later."
       }
     }
   }

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import styles from './dashboard.module.scss'
 import { getUserRoleName } from '@/app/types/user'
 import { DASHBOARD_MODULES, DashboardModuleConfig } from '@/app/types/dashboard'

@@ -1,9 +1,9 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
 import Image from 'next/image'
-import Link from 'next/link'
 import { redirect } from 'next/navigation'
-import { getTranslations } from 'next-intl/server'
+import { Link, getPathname } from '@/i18n/navigation'
+import { getTranslations, getLocale } from 'next-intl/server'
 import styles from './login.module.scss'
 
 // components
@@ -58,6 +58,7 @@ async function LoginPage({
   const nextRaw = typeof sParams.next === 'string' ? sParams.next : '/profile'
   const nextPath = isSafeRedirectPath(nextRaw) ? nextRaw : '/profile'
   const tLogin = await getTranslations('Login')
+  const locale = await getLocale()
 
   // 伺服器端驗證
   const supabase = await createClient()
@@ -69,10 +70,15 @@ async function LoginPage({
   if (user) {
     const profile = await getUserProfileServer(user.id)
     if (isUserOnboardingComplete(profile)) {
-      redirect(nextPath)
+      redirect(getPathname({ href: nextPath, locale }))
     } else {
       // 帶上 next 參數，以便完成 onboarding 後能跳轉回來
-      redirect(`/onboarding?next=${encodeURIComponent(nextPath)}`)
+      redirect(
+        getPathname({
+          href: `/onboarding?next=${encodeURIComponent(nextPath)}`,
+          locale,
+        }),
+      )
     }
   }
 

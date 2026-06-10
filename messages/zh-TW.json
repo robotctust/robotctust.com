@@ -29,7 +29,8 @@
       "about": "關於",
       "dashboard": "後台",
       "admin": "總控台"
-    }
+    },
+    "settings": "設定"
   },
   "Footer": {
     "contactUs": {
@@ -296,7 +297,8 @@
           "emailDetected": "偵測到此電子郵件已註冊，已為您跳轉至登入頁面。",
           "emailSent": "驗證信已寄出，請前往信箱完成驗證！",
           "success": "註冊成功，歡迎加入！",
-          "googleSuccess": "Google 登入成功，歡迎加入！"
+          "googleSuccess": "Google 登入成功，歡迎加入！",
+          "agreeTermsRequired": "請先閱讀並勾選同意 服務條款 及 隱私權政策。"
         },
         "errors": {
           "usernameTaken": "此帳號名稱已被使用",
@@ -327,6 +329,19 @@
           "studentIdRequired": "若您是本校學生，請輸入學號",
           "studentIdMaxLength": "學號最多 20 個字元",
           "studentIdPattern": "學號僅能使用英文字母、數字、底線與連字號"
+        }
+      },
+      "forgotPassword": {
+        "title": "忘記密碼",
+        "description": "輸入您的電子郵件，我們將寄送密碼重設連結給您。",
+        "email": "電子郵件",
+        "emailPlaceholder": "請輸入您的電子郵件",
+        "submit": "寄送重設連結",
+        "submitting": "寄送中...",
+        "sent": "重設連結已寄至 {email}，請查看信箱。連結將在 1 小時後失效。",
+        "backToLogin": "返回登入",
+        "errors": {
+          "default": "寄送失敗，請稍後再試"
         }
       }
     }
@@ -734,6 +749,134 @@
         "deletedError": "刪除失敗",
         "deletedBulk": "已刪除 {count} 篇文章",
         "deletedPartial": "刪除 {success} 篇成功，{failed} 篇失敗"
+      }
+    }
+  },
+  "ResetPassword": {
+    "title": "設定新密碼",
+    "description": "請輸入您的新密碼。",
+    "password": "新密碼",
+    "passwordPlaceholder": "請輸入新密碼",
+    "confirmPassword": "確認新密碼",
+    "confirmPasswordPlaceholder": "請再次輸入新密碼",
+    "submit": "更新密碼",
+    "submitting": "更新中...",
+    "success": "密碼已成功更新，正在帶您前往個人頁面...",
+    "invalidSession": "連結已失效或已使用，請重新申請密碼重設。",
+    "requestAgain": "重新申請",
+    "errors": {
+      "passwordMismatch": "兩次輸入的密碼不一致",
+      "passwordMinLength": "密碼至少需要 8 個字元",
+      "default": "密碼更新失敗，請稍後再試",
+      "passwordLowercase": "密碼必須包含小寫英文字母",
+      "passwordUppercase": "密碼必須包含大寫英文字母",
+      "passwordNumber": "密碼必須包含數字",
+      "passwordSpecial": "密碼必須包含至少一個特殊字元"
+    },
+    "meta": {
+      "title": "重設密碼｜中臺機器人研究社"
+    },
+    "rules": {
+      "length": "至少 8 個字元",
+      "lowercase": "包含小寫英文字母",
+      "uppercase": "包含大寫英文字母",
+      "number": "包含數字",
+      "special": "包含特殊字元"
+    }
+  },
+  "Settings": {
+    "aside": {
+      "title": "設定",
+      "backLink": "返回個人頁面",
+      "nav": {
+        "account": "帳號設定"
+      }
+    },
+    "account": {
+      "title": "帳號設定",
+      "subtitle": "管理你的帳號安全、個人資料與帳號狀態",
+      "loading": "載入中...",
+      "security": {
+        "sectionTitle": "帳號安全",
+        "password": {
+          "sectionTitle": "密碼",
+          "label": "登入密碼",
+          "hint": "重設連結將寄送至 {email}",
+          "action": "重設密碼",
+          "sending": "寄送中...",
+          "sent": "郵件已寄出",
+          "confirmModal": {
+            "title": "寄送重設密碼郵件？",
+            "desc": "我們將寄送一封重設密碼連結至 {email}。",
+            "steps": [
+              "開啟郵件並點擊重設連結（若收件匣沒有，請檢查垃圾郵件）。",
+              "在開啟的頁面中輸入並儲存新密碼。",
+              "使用新密碼重新登入。"
+            ],
+            "confirm": "寄送重設郵件"
+          }
+        },
+        "email": {
+          "sectionTitle": "電子郵件",
+          "label": "目前信箱",
+          "change": "更改",
+          "cancel": "取消",
+          "placeholder": "請輸入新的電子郵件",
+          "confirm": "確認更改",
+          "confirming": "確認中...",
+          "hint": "確認後將分別寄送驗證郵件至新、舊兩個信箱，兩封都點擊確認後，電子郵件才會正式更新。",
+          "confirmModal": {
+            "title": "寄送確認郵件？",
+            "desc": "我們將分別寄送確認連結至新信箱（{email}）與目前的信箱。",
+            "steps": [
+              "開啟新、舊兩個信箱的收件匣。",
+              "分別點擊兩封郵件中的確認連結。",
+              "兩封連結都確認後，登入信箱才會正式更新。"
+            ],
+            "confirm": "寄送確認郵件"
+          }
+        },
+        "oauth": {
+          "title": "您目前使用 Google 帳號登入",
+          "desc": "密碼與電子郵件由 Google 管理，請前往 Google 帳號設定頁面進行變更。",
+          "link": "前往 Google 帳號設定 →"
+        },
+        "toast": {
+          "resetSent": "重設密碼郵件已寄出，請查看信箱",
+          "resetFailed": "郵件寄送失敗，請稍後再試",
+          "emailSent": "確認郵件已寄至新、舊兩個信箱，請分別點擊兩封連結以完成更新"
+        },
+        "errors": {
+          "emailUpdateDefault": "更新失敗，請稍後再試"
+        }
+      },
+      "export": {
+        "sectionTitle": "我的資料",
+        "label": "匯出我的資料",
+        "hint": "下載一份你在本站所有資料的副本（JSON 格式）",
+        "action": "匯出資料",
+        "exporting": "準備中...",
+        "toastSuccess": "資料已匯出",
+        "toastFailed": "匯出失敗，請稍後再試"
+      },
+      "danger": {
+        "sectionTitle": "危險區域",
+        "label": "刪除帳號",
+        "hint": "永久刪除你的帳號與相關資料，此動作無法復原",
+        "action": "刪除帳號",
+        "modal": {
+          "title": "確定要刪除帳號嗎？",
+          "warning": "此動作無法復原。",
+          "consequenceProfile": "你的個人資料、學習進度、課程完成紀錄與成就將被永久刪除。",
+          "consequencePosts": "你發表過的文章會保留，但作者將顯示為「已刪除使用者」。",
+          "confirmHint": "請輸入你的使用者名稱 {username} 以確認。",
+          "placeholder": "輸入使用者名稱",
+          "cancel": "取消",
+          "confirm": "永久刪除帳號",
+          "deleting": "刪除中..."
+        },
+        "toastSuccess": "帳號已刪除",
+        "toastFailed": "刪除失敗，請稍後再試"
       }
     }
   }

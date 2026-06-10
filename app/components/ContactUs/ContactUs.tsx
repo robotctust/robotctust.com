@@ -1,5 +1,5 @@
 import styles from './ContactUs.module.scss'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons'
 import { getTranslations } from 'next-intl/server'

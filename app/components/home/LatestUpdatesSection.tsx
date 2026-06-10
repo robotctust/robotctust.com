@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import styles from './LatestUpdatesSection.module.scss'
 import { getLocale, getTranslations } from 'next-intl/server'
 // utils
@@ -51,8 +51,8 @@ const LatestUpdatesSection = async () => {
                       <Image
                         src={post.coverImageUrl}
                         alt={post.title}
-                        width={120}
-                        height={90}
+                        width={240}
+                        height={180}
                       />
                     </div>
                   )}

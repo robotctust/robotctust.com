@@ -2,7 +2,7 @@
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import styles from '../programs.module.scss'
 import { useProgramEditor } from '../useProgramEditor'
 

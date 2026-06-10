@@ -1,0 +1,254 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+// ─────────────────────────────────────────────
+// SettingsSection
+// ─────────────────────────────────────────────
+.section {
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space);
+}
+
+.section_title {
+  margin: 0;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--foreground-tertiary);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+
+  &.danger {
+    color: var(--theme-red-600);
+  }
+}
+
+// ─────────────────────────────────────────────
+// SettingsItem
+// ─────────────────────────────────────────────
+.item {
+  @include mixins.flexbox(row, space-between, center);
+  gap: var(--space);
+  padding: 0.875rem 1rem;
+  background: var(--background);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(12px);
+
+  @include mixins.respond-by-min-width(624px) {
+    background: rgba(var(--background-secondary-rgb), 0.5);
+  }
+
+  &.danger {
+    border-color: var(--theme-red-600);
+    background-color: var(--theme-red-100);
+  }
+
+  // 下方接著展開面板時，底緣切平角
+  &.attached {
+    @include mixins.border-radius(12px 12px 0 0);
+  }
+}
+
+.item_info {
+  @include mixins.flexbox(column, flex-start, flex-start);
+  gap: 0.2rem;
+  min-width: 0;
+  width: 100%;
+}
+
+.item_label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--foreground);
+}
+
+.item_hint {
+  font-size: 0.8rem;
+  color: var(--foreground-tertiary);
+  // overflow: hidden;
+  // text-overflow: ellipsis;
+  // white-space: nowrap;
+}
+
+// 附在 item 下方的展開面板（取代舊 .email_form）
+.panel {
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space-0-5x);
+  padding: var(--space);
+  background: var(--background);
+  border: 1px solid var(--border);
+  border-top: none;
+  margin-top: -0.75rem;
+  @include mixins.border-radius(0 0 12px 12px);
+
+  @include mixins.respond-by-min-width(624px) {
+    background: var(--background-secondary);
+  }
+}
+
+.panel_row {
+  @include mixins.flexbox(row, flex-start, center);
+  gap: var(--space-0-5x);
+}
+
+// ─────────────────────────────────────────────
+// Button
+// ─────────────────────────────────────────────
+.button {
+  flex-shrink: 0;
+  padding: 0.4375rem 0.875rem;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  border: 1px solid transparent;
+  cursor: pointer;
+  white-space: nowrap;
+  @include mixins.border-radius(6px);
+  @include mixins.transition();
+  @include mixins.hover-scale-effect;
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  // 尺寸
+  &.md {
+    padding: 0.5rem 1rem;
+  }
+
+  // 變體：outline（次要操作）
+  &.outline {
+    color: var(--foreground);
+    background: transparent;
+    border-color: var(--border);
+
+    &:hover:not(:disabled) {
+      background: var(--background-tertiary);
+    }
+  }
+
+  // 變體：primary（主要操作）
+  &.primary {
+    color: white;
+    background: var(--primary);
+    border-color: transparent;
+
+    &:hover:not(:disabled) {
+      background: var(--primary-hover);
+    }
+  }
+
+  // 變體：danger-outline（危險次要）
+  &.danger_outline {
+    color: var(--theme-red-600);
+    background: transparent;
+    border-color: var(--theme-red-600);
+
+    &:hover:not(:disabled) {
+      color: white;
+      background: var(--theme-red-600);
+    }
+  }
+
+  // 變體：danger-solid（危險主要）
+  &.danger_solid {
+    color: white;
+    background: var(--theme-red-600);
+    border-color: transparent;
+
+    &:hover:not(:disabled) {
+      filter: brightness(0.92);
+    }
+  }
+
+  // 成功態（如「已寄出」）
+  &.success {
+    color: #15803d;
+    background: #f0fdf4;
+    border-color: #bbf7d0;
+    pointer-events: none;
+  }
+}
+
+// ─────────────────────────────────────────────
+// Input
+// ─────────────────────────────────────────────
+.input {
+  width: 100%;
+  min-width: 0;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.875rem;
+  color: var(--foreground);
+  background: var(--background);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(6px);
+  @include mixins.transition();
+
+  &:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+  }
+
+  &.danger:focus {
+    border-color: var(--theme-red-600);
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.1);
+  }
+
+  &::placeholder {
+    color: var(--foreground-tertiary);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+  }
+}
+
+// ─────────────────────────────────────────────
+// ConfirmModal 內容（容器 / 標題 / footer 由共用 Modal 提供）
+// ─────────────────────────────────────────────
+.modal_desc {
+  margin: 0;
+  font-size: 0.875rem;
+  color: var(--foreground-secondary);
+  line-height: 1.6;
+}
+
+.modal_warning {
+  margin: 0;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--theme-red-600);
+}
+
+// 引導步驟（有序清單）
+.modal_steps {
+  margin: 0;
+  padding-left: 1.2rem;
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: 0.4rem;
+
+  > li {
+    font-size: 0.85rem;
+    color: var(--foreground-secondary);
+    line-height: 1.55;
+  }
+}
+
+.modal_list {
+  margin: 0;
+  padding-left: 1.2rem;
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: 0.35rem;
+
+  > li {
+    font-size: 0.85rem;
+    color: var(--foreground-secondary);
+    line-height: 1.55;
+  }
+}
+
+.modal_confirm_label {
+  font-size: 0.825rem;
+  color: var(--foreground-secondary);
+  line-height: 1.5;
+}

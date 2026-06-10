@@ -16,7 +16,7 @@ export async function updateSession(request: NextRequest, response?: NextRespons
   // 建立 Supabase Server Client
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_PUBLISH_KEY!,
+    process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY!,
     {
       cookies: {
         // 獲取所有 cookies

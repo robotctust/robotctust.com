@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faCode, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Program } from '@/app/types/course-admin'

@@ -1,10 +1,10 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from '@/i18n/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 import { useToast } from '@/app/contexts/ToastContext'
 import { ScheduleEvent } from '@/app/types/Schedule'
 import { SemesterOption } from '@/app/utils/scheduleService'

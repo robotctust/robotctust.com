@@ -44,6 +44,14 @@ header.header {
             }
           }
         }
+
+        //* 選單展開時，設定齒輪按鈕滑出顯示
+        > .settings_button {
+          opacity: 1;
+          visibility: visible;
+          pointer-events: auto;
+          @include mixins.transform-container(translateY(0) scale(1));
+        }
       }
       > .nav_links {
         background-color: #00000000;
@@ -243,15 +251,48 @@ header.header {
           }
         }
       }
+
+      //* 設定齒輪按鈕：自 menu button 正下方滑出（僅選單展開時可見）
+      > .settings_button {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        @include mixins.flexbox(row, center, center);
+        height: 48px;
+        margin-top: 8px;
+        font-size: 17px;
+        color: var(--foreground);
+        background-color: rgba(var(--background-secondary-rgb), 0.5);
+        border: 1px solid var(--border);
+        @include mixins.glass-blur(12px);
+        @include mixins.border-radius(12px);
+        @include mixins.transition(var(--transition-default));
+        opacity: 0;
+        visibility: hidden;
+        pointer-events: none;
+        @include mixins.transform-container(translateY(-50%) scale(0.85));
+        @include mixins.hover-scale-effect;
+
+        > svg {
+          @include mixins.transition(transform 0.4s var(--transition-bezier));
+        }
+
+        &:hover {
+          background-color: rgba(var(--background-tertiary-rgb), 0.6);
+          border-color: var(--border-hover);
+
+          > svg {
+            @include mixins.transform-container(rotate(90deg));
+          }
+        }
+      }
     }
 
     > .nav_links {
       @include mixins.flexbox(row, start, center);
       gap: 6px;
       padding: 6px;
-      border: 1px solid var(--border);
-      background-color: rgba(var(--background-secondary-rgb), 0.25);
-      @include mixins.glass-blur(12px);
       @include mixins.border-radius(12px);
       overflow-x: auto;
       overflow-y: hidden;
@@ -262,8 +303,9 @@ header.header {
       @include mixins.hide-scrollbar;
 
       &:hover {
-        // border: 1px solid var(--border-hover);
-        background-color: rgba(var(--background-secondary-rgb), 0.5);
+        @include mixins.glass-blur(12px);
+        border: 1px solid var(--border);
+        background-color: rgba(var(--background-secondary-rgb), 0.25);
       }
 
       > div.separator {
@@ -282,12 +324,12 @@ header.header {
         // scroll-snap-align: center;
 
         &:hover {
-          background-color: rgba(var(--background-tertiary-rgb), 0.25);
+          background-color: rgba(var(--background-tertiary-rgb), 0.5);
           // border: 1px solid var(--foreground-900);
         }
 
         &.active {
-          background-color: rgba(var(--background-tertiary-rgb), 0.5);
+          background-color: rgba(var(--background-tertiary-rgb), 0.75);
           border: 1px solid var(--border);
 
           &:hover {

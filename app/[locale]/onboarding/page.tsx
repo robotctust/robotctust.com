@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
-import Link from 'next/link'
+import { Link, getPathname } from '@/i18n/navigation'
+import { getLocale } from 'next-intl/server'
 import Image from 'next/image'
 import { Metadata } from 'next'
 import Page from '@/app/components/page/Page'
@@ -21,6 +22,7 @@ export default async function OnboardingPage({
   const sParams = await searchParams
   const nextRaw = typeof sParams.next === 'string' ? sParams.next : '/profile'
   const nextPath = isSafeRedirectPath(nextRaw) ? nextRaw : '/profile'
+  const locale = await getLocale()
 
   const supabase = await createClient()
   const {
@@ -29,7 +31,9 @@ export default async function OnboardingPage({
   } = await supabase.auth.getUser()
 
   if (authError || !user) {
-    redirect(`/login?next=${encodeURIComponent(nextPath)}`)
+    redirect(
+      getPathname({ href: `/login?next=${encodeURIComponent(nextPath)}`, locale }),
+    )
   }
 
   const { data: profile } = await supabase
@@ -65,7 +69,7 @@ export default async function OnboardingPage({
   }
 
   if (isUserOnboardingComplete(initialData)) {
-    redirect(nextPath)
+    redirect(getPathname({ href: nextPath, locale }))
   }
 
   return (

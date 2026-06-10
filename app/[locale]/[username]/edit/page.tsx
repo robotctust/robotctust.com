@@ -1,6 +1,7 @@
 import { Metadata } from 'next'
-import { redirect } from 'next/navigation'
-import { notFound } from 'next/navigation'
+import { notFound, redirect } from 'next/navigation'
+import { getLocale } from 'next-intl/server'
+import { getPathname } from '@/i18n/navigation'
 
 // util
 import { createClient } from '@/app/utils/supabase/server'
@@ -22,6 +23,8 @@ export default async function EditProfilePage({
 }: {
   params: Promise<{ username: string }>
 }) {
+  // 取得目前語系（供 locale-aware 重定向使用）
+  const locale = await getLocale()
   // 獲取使用者名稱
   const { username: rawUsername } = await params
   const decodedUsername = decodeURIComponent(rawUsername)
@@ -44,7 +47,7 @@ export default async function EditProfilePage({
 
   // 如果使用者未登入，則重定向到登入頁面
   if (!authUser) {
-    redirect(`/login`)
+    redirect(getPathname({ href: '/login', locale }))
   }
 
   // 取得登入使用者的資料
@@ -58,12 +61,12 @@ export default async function EditProfilePage({
 
   // 如果使用者資料不存在，則重定向到登入頁面
   if (!userRow) {
-    redirect(`/login`)
+    redirect(getPathname({ href: '/login', locale }))
   }
 
   // 如果使用者名稱不匹配，則重定向到使用者資訊頁面
   if (userRow.username !== urlUsername) {
-    redirect(`/@${userRow.username}`)
+    redirect(getPathname({ href: `/@${userRow.username}`, locale }))
   }
 
   return (

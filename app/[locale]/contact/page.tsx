@@ -2,7 +2,7 @@ import styles from './contact.module.scss'
 import { Metadata } from 'next'
 import { metadata } from '@/app/utils/metadata'
 import { getTranslations } from 'next-intl/server'
-import Link from 'next/link'
+import { Link } from '@/i18n/navigation'
 // components
 import Page from '@/app/components/page/Page'
 import OfficeLocationCard from '@/app/components/OfficeLocationCard/OfficeLocationCard'

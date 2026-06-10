@@ -1,3 +1,4 @@
+import { requireDashboardAccess } from '@/app/utils/dashboard/auth'
 import ProgramEditorClient from './ProgramEditorClient'
 
 export const metadata = {
@@ -9,6 +10,8 @@ export default async function ProgramPage({
 }: {
   params: Promise<{ programId: string }>
 }) {
+  await requireDashboardAccess('courses')
+
   const { programId } = await params
   return <ProgramEditorClient programId={programId} />
 }

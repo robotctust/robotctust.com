@@ -12,6 +12,7 @@ import * as yup from 'yup'
 
 // component
 import GoogleLoginButton from '../GoogleLoginButton/GoogleLoginButton'
+import { ForgotPasswordForm } from './ForgotPasswordForm'
 
 // context
 import { useAuth } from '../../contexts/AuthContext'
@@ -43,6 +44,7 @@ export function LoginForm({
   const [emailQuery] = useQueryState('email', parseAsString.withDefault(''))
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string>('')
+  const [showForgotPassword, setShowForgotPassword] = useState(false)
 
   const loginSchema = useMemo(
     () =>
@@ -62,6 +64,7 @@ export function LoginForm({
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
   } = useForm<LoginFormData>({
     resolver: yupResolver(loginSchema),
@@ -107,8 +110,9 @@ export function LoginForm({
     try {
       setIsLoading(true)
       setError('')
+      // 成功提示改由 /auth/callback 種 cookie、抵達後由 AuthFlashToast 顯示
+      // （此處 await 只代表「已發起整頁轉導」，並非登入成功）
       await signInWithGoogle(next)
-      showToast(t('form.login.toast.googleSuccess'), 'success')
     } catch (error) {
       console.error('Google sign-in failed:', error)
       setError(
@@ -118,6 +122,16 @@ export function LoginForm({
     } finally {
       setIsLoading(false)
     }
+  }
+
+  // 忘記密碼模式：替換整個表單內容
+  if (showForgotPassword) {
+    return (
+      <ForgotPasswordForm
+        onBack={() => setShowForgotPassword(false)}
+        initialEmail={getValues('email')}
+      />
+    )
   }
 
   return (
@@ -164,6 +178,14 @@ export function LoginForm({
             </span>
           )}
         </div>
+
+        <button
+          type="button"
+          className={styles.forgot_link}
+          onClick={() => setShowForgotPassword(true)}
+        >
+          {t('form.forgotPassword.title')}？
+        </button>
 
         <button
           type="submit"
