@@ -1,35 +1,31 @@
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import styles from './ClubOfficer.module.scss'
+import type { ClubOfficer as ClubOfficerType } from './club-officers'
 
 // utils
-import { getUserProfileByUsernameServer } from '@/app/utils/userServiceServer'
-
-interface ClubOfficer {
-  name: string // 名稱
-  position: string // 職位
-  description: string // 描述
-  username: string // 帳號名稱
-}
+import { getUserProfileByUidServer } from '@/app/utils/userServiceServer'
 
 /**
  * [Component] 社團幹部項目元件
  * @param clubOfficer - 社團幹部資料
  * @returns JSX.Element
  */
-async function ClubOfficerItem({ clubOfficer }: { clubOfficer: ClubOfficer }) {
+async function ClubOfficerItem({ clubOfficer }: { clubOfficer: ClubOfficerType }) {
   // 取得使用者頭像
   let avatarUrl = '/assets/image/userEmptyAvatar.png' // 預設頭像
-  if (clubOfficer.username) {
+  let username = ''
+  if (clubOfficer.userId) {
     try {
       // 取得使用者資料
-      const userProfile = await getUserProfileByUsernameServer(
-        clubOfficer.username,
+      const userProfile = await getUserProfileByUidServer(
+        clubOfficer.userId,
       )
       // 如果使用者頭像存在，則設定頭像 URL
       if (userProfile?.photoURL) {
         avatarUrl = userProfile.photoURL
       }
+      username = userProfile?.username || ''
     } catch (error) {
       console.error('獲取使用者頭像時發生錯誤:', error)
     }
@@ -42,10 +38,10 @@ async function ClubOfficerItem({ clubOfficer }: { clubOfficer: ClubOfficer }) {
    */
   const ClubOfficerItemLink = ({ children }: { children: React.ReactNode }) => {
     // 如果帳號名稱存在，則設定連結
-    if (clubOfficer.username) {
+    if (username) {
       return (
         <Link
-          href={`/@${clubOfficer.username}`}
+          href={`/@${username}`}
           className={`${styles.clubOfficerItem} ${styles.clubOfficerItemLink}`}
         >
           {children}
@@ -69,9 +65,9 @@ async function ClubOfficerItem({ clubOfficer }: { clubOfficer: ClubOfficer }) {
       <div className={styles.clubOfficerInfo}>
         <div className={styles.clubOfficerItemName}>
           <h1>{clubOfficer.name}</h1>
-          {clubOfficer.username && (
+          {username && (
             <p className={styles.clubOfficerItemUsername}>
-              @{clubOfficer.username}
+              @{username}
             </p>
           )}
         </div>
@@ -87,42 +83,42 @@ async function ClubOfficerItem({ clubOfficer }: { clubOfficer: ClubOfficer }) {
  * 社團幹部列表
  */
 export default function ClubOfficer() {
-  const clubOfficers: ClubOfficer[] = [
+  const clubOfficers: ClubOfficerType[] = [
     {
       name: '藍世錡',
       position: '社長',
       description: '社長',
-      username: 'blue0810',
+      userId: 'ba387c98-30d1-49aa-b4e5-fa21aeca1cd0'
     },
     {
       name: '趙泰齡',
       position: '副社長',
       description: '副社長',
-      username: '',
+      userId: '3e14215c-dade-41fa-b724-9045b3da7256'
     },
     {
       name: '王朝育',
       position: '活動',
       description: '活動',
-      username: 'f11308082',
+      userId: '86de539d-7512-4904-b508-dcd1d32d12a3'
     },
     {
       name: '林廷亘',
       position: '總務',
       description: '總務',
-      username: 'wsx060408',
+      userId: '478b65b6-f2ef-49ad-9301-ddda4b4c16fa'
     },
     {
       name: '陳宜均',
       position: '財務',
       description: '財務',
-      username: '',
+      userId: ''
     },
     {
       name: '林昌龍',
       position: '技術',
       description: '技術',
-      username: 'johnlin',
+      userId:  'd814a649-0f9b-4223-80ed-c334f93deba0'
     },
   ]
   return (

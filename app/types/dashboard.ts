@@ -1,5 +1,5 @@
 import { IconDefinition } from '@fortawesome/fontawesome-svg-core'
-import { faBook, faCalendar, faCheckCircle, faCode, faHouse, faNewspaper, faTrophy, faUserGroup } from '@fortawesome/free-solid-svg-icons'
+import { faBook, faCalendar, faCheckCircle, faCode, faHouse, faNewspaper, faTrophy, faUserGroup, faUserShield } from '@fortawesome/free-solid-svg-icons'
 
 // 角色
 export type Role =
@@ -45,7 +45,7 @@ export interface DashboardModuleConfig {
 //* 模組權限對應表
 export const MODULE_PERMISSIONS_MAP: Record<Role, DashboardModule[]> = {
   super_admin: ['courses', 'achievements', 'verifications', 'news', 'accounts', 'members', 'programs', 'calendar'],
-  admin: ['courses', 'achievements', 'verifications', 'news', 'programs', 'calendar'],
+  admin: ['courses', 'achievements', 'verifications', 'news', 'accounts', 'members', 'programs', 'calendar'],
   admin_course: ['courses', 'programs'],
   admin_achievement: ['achievements'],
   admin_verifications: ['verifications'],
@@ -99,6 +99,13 @@ export const DASHBOARD_MODULES: DashboardModuleConfig[] = [
     title: '社員管理',
     description: '社員名單、學期成員的管理。',
     href: '/dashboard/members',
+  },
+  {
+    key: 'accounts',
+    icon: faUserShield,
+    title: '帳號管理',
+    description: '管理使用者角色與權限分配。',
+    href: '/dashboard/accounts',
   },
   {
     key: 'achievements',

@@ -1,17 +1,25 @@
+import { Metadata } from 'next'
 import { requireDashboardAccess } from '@/app/utils/dashboard/auth'
-import dashboardStyles from '../dashboard.module.scss'
+import { getAssignableRoles } from '@/app/utils/auth/roles'
+import { UserRole } from '@/app/types/user'
+import AccountsClient from './AccountsClient'
+
+export const metadata: Metadata = {
+  title: '帳號管理 - 控制台',
+  description: '管理使用者角色與權限分配',
+}
 
 /**
- * 帳號與社員管理後台頁面
- * @returns 帳號與社員管理後台頁面
+ * 帳號與角色管理後台頁面
  */
 export default async function DashboardAccountsPage() {
-  await requireDashboardAccess('accounts')
+  const actor = await requireDashboardAccess('accounts')
+  const actorRoles = actor.roles as UserRole[]
 
   return (
-    <section className={dashboardStyles.content}>
-      <h2>帳號管理後台（預留）</h2>
-      <p>此模組預留給後續社員名單、學期成員與角色授權管理。</p>
-    </section>
+    <AccountsClient
+      currentUserId={actor.userId}
+      assignableRoles={getAssignableRoles(actorRoles)}
+    />
   )
 }
