@@ -10,6 +10,7 @@ import { GoogleAnalytics } from '@next/third-parties/google'
 // components
 import Header from '@/app/components/Header/Header'
 import ThemeColorMeta from '@/app/components/ThemeColorMeta'
+import AuthFlashToast from '@/app/components/AuthFlashToast/AuthFlashToast'
 // contexts
 import { AuthProvider } from '@/app/contexts/AuthContext'
 import { ThemeProvider } from '@/app/contexts/ThemeContext'
@@ -166,6 +167,7 @@ export default async function RootLayout({
           <ThemeProvider>
             <AuthProvider>
               <ToastProvider>
+                <AuthFlashToast />
                 <NuqsAdapter>
                   <HeaderProvider config={HEADER_SCROLL_CONFIG}>
                     <ThemeColorMeta />

@@ -48,8 +48,16 @@ export async function GET(request: NextRequest) {
         }
       }
 
-      // 重定向到 next 頁面
-      return NextResponse.redirect(`${origin}${next}`)
+      // 重定向到 next 頁面，並種下 flash cookie 供抵達後顯示「登入成功」Toast
+      // （OAuth 為整頁轉導，成功與否只有此 callback 知道，故不能在點擊當下提示）
+      const response = NextResponse.redirect(`${origin}${next}`)
+      response.cookies.set('auth_flash', 'google_success', {
+        path: '/',
+        maxAge: 30,
+        httpOnly: false,
+        sameSite: 'lax',
+      })
+      return response
     }
   }
 

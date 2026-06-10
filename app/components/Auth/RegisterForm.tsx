@@ -322,12 +322,17 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
   }
 
   const handleGoogleSignIn = async () => {
+    // 使用 Google 註冊前須先同意服務條款與隱私權政策
+    if (!agreeTerms) {
+      showToast(t('form.register.toast.agreeTermsRequired'), 'error')
+      return
+    }
     try {
       setIsLoading(true)
       setError('')
+      // 成功提示改由 /auth/callback 種 cookie、抵達後由 AuthFlashToast 顯示
+      // （此處 await 只代表「已發起整頁轉導」，並非註冊/登入成功；轉導後本頁即卸載）
       await signInWithGoogle(next)
-      showToast(t('form.register.toast.googleSuccess'), 'success')
-      onClose?.()
     } catch (err: unknown) {
       setError(
         getErrorMessage((err as { message?: string })?.message || 'unknown'),

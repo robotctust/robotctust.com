@@ -6,6 +6,13 @@ import { useRouter } from '@/i18n/navigation'
 import { createClient } from '@/app/utils/supabase/client'
 import { useToast } from '@/app/contexts/ToastContext'
 import type { User } from '@supabase/supabase-js'
+import {
+  SettingsSection,
+  SettingsItem,
+  Button,
+  Input,
+  ConfirmModal,
+} from '@/app/components/Settings'
 import { exportMyData, deleteAccount } from './actions'
 import styles from './account.module.scss'
 
@@ -38,19 +45,20 @@ export default function AccountSettingsClient({
   const [resetPasswordState, setResetPasswordState] = useState<
     'idle' | 'loading' | 'sent'
   >('idle')
+  const [showResetConfirm, setShowResetConfirm] = useState(false)
 
   //* 更改電子郵件
   const [showEmailForm, setShowEmailForm] = useState(false)
   const [newEmail, setNewEmail] = useState('')
   const [emailUpdateLoading, setEmailUpdateLoading] = useState(false)
   const [emailUpdateError, setEmailUpdateError] = useState('')
+  const [showEmailConfirm, setShowEmailConfirm] = useState(false)
 
   //* 匯出資料
   const [exporting, setExporting] = useState(false)
 
   //* 刪除帳號
   const [showDeleteModal, setShowDeleteModal] = useState(false)
-  const [deleteConfirm, setDeleteConfirm] = useState('')
   const [deleting, setDeleting] = useState(false)
 
   /**
@@ -95,6 +103,14 @@ export default function AccountSettingsClient({
   }
 
   /**
+   * [Function] 二次確認後寄送重設密碼郵件，完成後關閉彈窗
+   */
+  const handleResetConfirm = async () => {
+    await handleResetPassword()
+    setShowResetConfirm(false)
+  }
+
+  /**
    * [Function] 更改電子郵件
    */
   const handleUpdateEmail = async () => {
@@ -120,6 +136,15 @@ export default function AccountSettingsClient({
     } finally {
       setEmailUpdateLoading(false)
     }
+  }
+
+  /**
+   * [Function] 二次確認後送出更改 Email，完成後關閉彈窗
+   * 失敗時 inline 表單會顯示錯誤
+   */
+  const handleEmailConfirm = async () => {
+    await handleUpdateEmail()
+    setShowEmailConfirm(false)
   }
 
   /**
@@ -153,11 +178,12 @@ export default function AccountSettingsClient({
 
   /**
    * [Function] 永久刪除帳號
+   * ConfirmModal 已確保輸入字串等於 username 才會觸發
    */
   const handleDeleteAccount = async () => {
     setDeleting(true)
     try {
-      const result = await deleteAccount(deleteConfirm)
+      const result = await deleteAccount(username)
       if (!result.success) throw new Error(result.error)
 
       // 清除本地 session 後導回首頁
@@ -175,7 +201,6 @@ export default function AccountSettingsClient({
   const closeDeleteModal = () => {
     if (deleting) return
     setShowDeleteModal(false)
-    setDeleteConfirm('')
   }
 
   return (
@@ -191,29 +216,19 @@ export default function AccountSettingsClient({
       ) : (
         <>
           {/* ── 帳號安全 ── */}
-          <section className={styles.section}>
-            <h2 className={styles.section_title}>
-              {t('security.sectionTitle')}
-            </h2>
-
+          <SettingsSection title={t('security.sectionTitle')}>
             {hasEmailIdentity ? (
               <>
                 {/* 密碼 */}
-                <div className={styles.item}>
-                  <div className={styles.item_info}>
-                    <span className={styles.item_label}>
-                      {t('security.password.label')}
-                    </span>
-                    <span className={styles.item_hint}>
-                      {t('security.password.hint', {
-                        email: authUser?.email ?? '',
-                      })}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    className={`${styles.action_button} ${resetPasswordState === 'sent' ? styles.sent : ''}`}
-                    onClick={handleResetPassword}
+                <SettingsItem
+                  label={t('security.password.label')}
+                  hint={t('security.password.hint', {
+                    email: authUser?.email ?? '',
+                  })}
+                >
+                  <Button
+                    success={resetPasswordState === 'sent'}
+                    onClick={() => setShowResetConfirm(true)}
                     disabled={
                       resetPasswordState === 'loading' ||
                       resetPasswordState === 'sent'
@@ -224,20 +239,50 @@ export default function AccountSettingsClient({
                       : resetPasswordState === 'loading'
                         ? t('security.password.sending')
                         : t('security.password.action')}
-                  </button>
-                </div>
+                  </Button>
+                </SettingsItem>
 
                 {/* 電子郵件 */}
-                <div className={styles.item}>
-                  <div className={styles.item_info}>
-                    <span className={styles.item_label}>
-                      {t('security.email.label')}
-                    </span>
-                    <span className={styles.item_hint}>{authUser?.email}</span>
-                  </div>
-                  <button
-                    type="button"
-                    className={styles.action_button}
+                <SettingsItem
+                  label={t('security.email.label')}
+                  hint={authUser?.email}
+                  expanded={
+                    showEmailForm ? (
+                      <>
+                        <div className={styles.email_form_row}>
+                          <Input
+                            type="email"
+                            placeholder={t('security.email.placeholder')}
+                            value={newEmail}
+                            onChange={(e) => setNewEmail(e.target.value)}
+                            autoFocus
+                          />
+                          <Button
+                            variant="primary"
+                            onClick={() => {
+                              setEmailUpdateError('')
+                              setShowEmailConfirm(true)
+                            }}
+                            disabled={emailUpdateLoading || !newEmail.trim()}
+                          >
+                            {emailUpdateLoading
+                              ? t('security.email.confirming')
+                              : t('security.email.confirm')}
+                          </Button>
+                        </div>
+                        <p className={styles.email_form_hint}>
+                          {t('security.email.hint')}
+                        </p>
+                        {emailUpdateError && (
+                          <p className={styles.email_form_error}>
+                            {emailUpdateError}
+                          </p>
+                        )}
+                      </>
+                    ) : undefined
+                  }
+                >
+                  <Button
                     onClick={() => {
                       setShowEmailForm((v) => !v)
                       setEmailUpdateError('')
@@ -247,41 +292,8 @@ export default function AccountSettingsClient({
                     {showEmailForm
                       ? t('security.email.cancel')
                       : t('security.email.change')}
-                  </button>
-                </div>
-
-                {showEmailForm && (
-                  <div className={styles.email_form}>
-                    <div className={styles.email_form_row}>
-                      <input
-                        type="email"
-                        className={styles.email_input}
-                        placeholder={t('security.email.placeholder')}
-                        value={newEmail}
-                        onChange={(e) => setNewEmail(e.target.value)}
-                        autoFocus
-                      />
-                      <button
-                        type="button"
-                        className={styles.confirm_button}
-                        onClick={handleUpdateEmail}
-                        disabled={emailUpdateLoading || !newEmail.trim()}
-                      >
-                        {emailUpdateLoading
-                          ? t('security.email.confirming')
-                          : t('security.email.confirm')}
-                      </button>
-                    </div>
-                    <p className={styles.email_form_hint}>
-                      {t('security.email.hint')}
-                    </p>
-                    {emailUpdateError && (
-                      <p className={styles.email_form_error}>
-                        {emailUpdateError}
-                      </p>
-                    )}
-                  </div>
-                )}
+                  </Button>
+                </SettingsItem>
               </>
             ) : (
               /* Google OAuth 使用者 */
@@ -298,103 +310,98 @@ export default function AccountSettingsClient({
                 </a>
               </div>
             )}
-          </section>
+          </SettingsSection>
 
           {/* ── 匯出我的資料 ── */}
-          <section className={styles.section}>
-            <h2 className={styles.section_title}>{t('export.sectionTitle')}</h2>
-            <div className={styles.item}>
-              <div className={styles.item_info}>
-                <span className={styles.item_label}>{t('export.label')}</span>
-                <span className={styles.item_hint}>{t('export.hint')}</span>
-              </div>
-              <button
-                type="button"
-                className={styles.action_button}
-                onClick={handleExport}
-                disabled={exporting}
-              >
+          <SettingsSection title={t('export.sectionTitle')}>
+            <SettingsItem label={t('export.label')} hint={t('export.hint')}>
+              <Button onClick={handleExport} disabled={exporting}>
                 {exporting ? t('export.exporting') : t('export.action')}
-              </button>
-            </div>
-          </section>
+              </Button>
+            </SettingsItem>
+          </SettingsSection>
 
           {/* ── 危險區域 ── */}
-          <section className={styles.section}>
-            <h2 className={`${styles.section_title} ${styles.danger_title}`}>
-              {t('danger.sectionTitle')}
-            </h2>
-            <div className={`${styles.item} ${styles.danger_item}`}>
-              <div className={styles.item_info}>
-                <span className={styles.item_label}>{t('danger.label')}</span>
-                <span className={styles.item_hint}>{t('danger.hint')}</span>
-              </div>
-              <button
-                type="button"
-                className={styles.danger_button}
+          <SettingsSection title={t('danger.sectionTitle')} variant="danger">
+            <SettingsItem
+              label={t('danger.label')}
+              hint={t('danger.hint')}
+              variant="danger"
+            >
+              <Button
+                variant="danger-outline"
                 onClick={() => setShowDeleteModal(true)}
               >
                 {t('danger.action')}
-              </button>
-            </div>
-          </section>
+              </Button>
+            </SettingsItem>
+          </SettingsSection>
         </>
       )}
 
+      {/* 重設密碼 二次確認 Modal */}
+      <ConfirmModal
+        open={showResetConfirm}
+        title={t('security.password.confirmModal.title')}
+        description={t('security.password.confirmModal.desc', {
+          email: authUser?.email ?? '',
+        })}
+        steps={t.raw('security.password.confirmModal.steps') as string[]}
+        confirmLabel={
+          resetPasswordState === 'loading'
+            ? t('security.password.sending')
+            : t('security.password.confirmModal.confirm')
+        }
+        cancelLabel={t('security.email.cancel')}
+        onConfirm={handleResetConfirm}
+        onClose={() => {
+          if (resetPasswordState !== 'loading') setShowResetConfirm(false)
+        }}
+        loading={resetPasswordState === 'loading'}
+      />
+
+      {/* 更改 Email 二次確認 Modal */}
+      <ConfirmModal
+        open={showEmailConfirm}
+        title={t('security.email.confirmModal.title')}
+        description={t('security.email.confirmModal.desc', {
+          email: newEmail.trim(),
+        })}
+        steps={t.raw('security.email.confirmModal.steps') as string[]}
+        confirmLabel={
+          emailUpdateLoading
+            ? t('security.email.confirming')
+            : t('security.email.confirmModal.confirm')
+        }
+        cancelLabel={t('security.email.cancel')}
+        onConfirm={handleEmailConfirm}
+        onClose={() => {
+          if (!emailUpdateLoading) setShowEmailConfirm(false)
+        }}
+        loading={emailUpdateLoading}
+      />
+
       {/* 刪除帳號確認 Modal */}
-      {showDeleteModal && (
-        <div
-          className={styles.modal_overlay}
-          onClick={closeDeleteModal}
-          role="presentation"
-        >
-          <div
-            className={styles.modal}
-            onClick={(e) => e.stopPropagation()}
-            role="dialog"
-            aria-modal="true"
-          >
-            <h3 className={styles.modal_title}>{t('danger.modal.title')}</h3>
-            <p className={styles.modal_warning}>{t('danger.modal.warning')}</p>
-            <ul className={styles.modal_list}>
-              <li>{t('danger.modal.consequenceProfile')}</li>
-              <li>{t('danger.modal.consequencePosts')}</li>
-            </ul>
-            <label className={styles.modal_confirm_label}>
-              {t('danger.modal.confirmHint', { username })}
-            </label>
-            <input
-              type="text"
-              className={styles.modal_input}
-              placeholder={t('danger.modal.placeholder')}
-              value={deleteConfirm}
-              onChange={(e) => setDeleteConfirm(e.target.value)}
-              autoFocus
-              disabled={deleting}
-            />
-            <div className={styles.modal_actions}>
-              <button
-                type="button"
-                className={styles.modal_cancel}
-                onClick={closeDeleteModal}
-                disabled={deleting}
-              >
-                {t('danger.modal.cancel')}
-              </button>
-              <button
-                type="button"
-                className={styles.modal_confirm}
-                onClick={handleDeleteAccount}
-                disabled={deleting || deleteConfirm.trim() !== username}
-              >
-                {deleting
-                  ? t('danger.modal.deleting')
-                  : t('danger.modal.confirm')}
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
+      <ConfirmModal
+        open={showDeleteModal}
+        variant="danger"
+        title={t('danger.modal.title')}
+        warning={t('danger.modal.warning')}
+        consequences={[
+          t('danger.modal.consequenceProfile'),
+          t('danger.modal.consequencePosts'),
+        ]}
+        confirmationPhrase={username}
+        confirmationHint={t('danger.modal.confirmHint', { username })}
+        confirmationPlaceholder={t('danger.modal.placeholder')}
+        confirmLabel={
+          deleting ? t('danger.modal.deleting') : t('danger.modal.confirm')
+        }
+        cancelLabel={t('danger.modal.cancel')}
+        onConfirm={handleDeleteAccount}
+        onClose={closeDeleteModal}
+        loading={deleting}
+      />
     </div>
   )
 }

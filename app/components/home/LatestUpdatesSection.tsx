@@ -51,8 +51,8 @@ const LatestUpdatesSection = async () => {
                       <Image
                         src={post.coverImageUrl}
                         alt={post.title}
-                        width={120}
-                        height={90}
+                        width={240}
+                        height={180}
                       />
                     </div>
                   )}

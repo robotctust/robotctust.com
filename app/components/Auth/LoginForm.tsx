@@ -110,8 +110,9 @@ export function LoginForm({
     try {
       setIsLoading(true)
       setError('')
+      // 成功提示改由 /auth/callback 種 cookie、抵達後由 AuthFlashToast 顯示
+      // （此處 await 只代表「已發起整頁轉導」，並非登入成功）
       await signInWithGoogle(next)
-      showToast(t('form.login.toast.googleSuccess'), 'success')
     } catch (error) {
       console.error('Google sign-in failed:', error)
       setError(

@@ -38,7 +38,7 @@ export default function SubDocsClient() {
 
             return (
               <div className={styles.subDoc} key={subDoc.id}>
-                <h4 className={styles.subDocTitle}>
+                <div className={styles.subDocTitle}>
                   <span
                     className={`${styles.subDocDate} ${
                       isToday ? styles.subDocToday : ''
@@ -50,8 +50,8 @@ export default function SubDocsClient() {
                         ? t('dateLabels.tomorrow')
                         : date}
                   </span>
-                  {subDoc.title}
-                </h4>
+                  <h4>{subDoc.title}</h4>
+                </div>
                 <div className={styles.subDocDocs}>
                   {subDoc.docs.map((doc) => (
                     <Link

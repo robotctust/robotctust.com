@@ -297,7 +297,8 @@
           "emailDetected": "This email is already registered. Redirecting you to the login page.",
           "emailSent": "Verification email sent! Please check your inbox.",
           "success": "Registration successful. Welcome aboard!",
-          "googleSuccess": "Signed in with Google. Welcome to the club!"
+          "googleSuccess": "Signed in with Google. Welcome to the club!",
+          "agreeTermsRequired": "Please read and agree to the Terms of Service and Privacy Policy first."
         },
         "errors": {
           "usernameTaken": "This username is already taken",
@@ -803,7 +804,17 @@
           "hint": "A reset link will be sent to {email}",
           "action": "Reset Password",
           "sending": "Sending...",
-          "sent": "Email Sent"
+          "sent": "Email Sent",
+          "confirmModal": {
+            "title": "Send password reset email?",
+            "desc": "We'll email a password reset link to {email}.",
+            "steps": [
+              "Open the email and click the reset link (check your spam folder if it isn't in your inbox).",
+              "On the page that opens, enter and save your new password.",
+              "Sign back in with your new password."
+            ],
+            "confirm": "Send Reset Email"
+          }
         },
         "email": {
           "sectionTitle": "Email",
@@ -813,7 +824,17 @@
           "placeholder": "Enter your new email address",
           "confirm": "Confirm Change",
           "confirming": "Confirming...",
-          "hint": "Confirmation emails will be sent to both your new and current addresses. Your email is updated only after you confirm via both links."
+          "hint": "Confirmation emails will be sent to both your new and current addresses. Your email is updated only after you confirm via both links.",
+          "confirmModal": {
+            "title": "Send confirmation emails?",
+            "desc": "We'll send a confirmation link to your new address ({email}) and to your current address.",
+            "steps": [
+              "Open both inboxes — your new address and your current one.",
+              "Click the confirmation link in each of the two emails.",
+              "Your login email changes only after both links are confirmed."
+            ],
+            "confirm": "Send Confirmation"
+          }
         },
         "oauth": {
           "title": "You are signed in with Google",

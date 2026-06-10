@@ -293,9 +293,6 @@ header.header {
       @include mixins.flexbox(row, start, center);
       gap: 6px;
       padding: 6px;
-      border: 1px solid var(--border);
-      background-color: rgba(var(--background-secondary-rgb), 0.25);
-      @include mixins.glass-blur(12px);
       @include mixins.border-radius(12px);
       overflow-x: auto;
       overflow-y: hidden;
@@ -306,8 +303,9 @@ header.header {
       @include mixins.hide-scrollbar;
 
       &:hover {
-        // border: 1px solid var(--border-hover);
-        background-color: rgba(var(--background-secondary-rgb), 0.5);
+        @include mixins.glass-blur(12px);
+        border: 1px solid var(--border);
+        background-color: rgba(var(--background-secondary-rgb), 0.25);
       }
 
       > div.separator {
@@ -326,12 +324,12 @@ header.header {
         // scroll-snap-align: center;
 
         &:hover {
-          background-color: rgba(var(--background-tertiary-rgb), 0.25);
+          background-color: rgba(var(--background-tertiary-rgb), 0.5);
           // border: 1px solid var(--foreground-900);
         }
 
         &.active {
-          background-color: rgba(var(--background-tertiary-rgb), 0.5);
+          background-color: rgba(var(--background-tertiary-rgb), 0.75);
           border: 1px solid var(--border);
 
           &:hover {

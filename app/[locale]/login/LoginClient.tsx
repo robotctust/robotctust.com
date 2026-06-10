@@ -14,6 +14,7 @@ import { RegisterForm } from '@/app/components/Auth/RegisterForm'
 
 // contexts
 import { useAuth } from '@/app/contexts/AuthContext'
+import { useToast } from '@/app/contexts/ToastContext'
 import { isUserOnboardingComplete } from '@/app/utils/auth/onboarding'
 
 /**
@@ -27,6 +28,7 @@ export default function LoginClient({ next }: { next?: string }) {
   const router = useRouter()
   // 使用者狀態
   const { user, loading } = useAuth()
+  const { showToast } = useToast()
   // 模式
   const [mode, setMode] = useQueryState(
     'mode',
@@ -41,6 +43,23 @@ export default function LoginClient({ next }: { next?: string }) {
       .withDefault('')
       .withOptions({ clearOnDefault: true, scroll: false }),
   )
+  // OAuth 失敗回跳參數（/auth/callback 失敗時帶上 error=auth_failed）
+  const [authError, setAuthError] = useQueryState(
+    'error',
+    parseAsString
+      .withDefault('')
+      .withOptions({ clearOnDefault: true, scroll: false }),
+  )
+
+  /**
+   * [Effect] OAuth 登入失敗時顯示錯誤 Toast 並清除 error 參數
+   */
+  useEffect(() => {
+    if (authError === 'auth_failed') {
+      showToast(t('form.login.toast.googleFailed'), 'error')
+      setAuthError('')
+    }
+  }, [authError, setAuthError, showToast, t])
 
   /**
    * [Effect] 若使用者已登入則導向個人頁面或指定頁面

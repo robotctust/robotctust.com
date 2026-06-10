@@ -23,6 +23,7 @@ import { faBars, faXmark, faGear } from '@fortawesome/free-solid-svg-icons'
 
 // configs
 import { NAV_AUTO_CENTER_CONFIG } from './headerScrollConfig'
+import { getVisibleSettingsSections } from '@/app/[locale]/settings/sections'
 
 //* 需要隱藏 Header 的頁面路徑列表
 const HIDDEN_HEADER_PATHS = [
@@ -67,7 +68,8 @@ export default function Header() {
   // 獲取當前路徑
   const pathname = usePathname()
   // 獲取登入資訊與管理權限
-  const { isAdmin, isSuperAdmin } = useAuth()
+  const { isAdmin, isSuperAdmin, supabaseUser } = useAuth()
+  const hasSettings = getVisibleSettingsSections(!!supabaseUser).length > 0
   // 選單狀態
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   // Header 的縮放狀態
@@ -239,18 +241,20 @@ export default function Header() {
               <FontAwesomeIcon icon={faBars} className={styles.faBars} />
               <FontAwesomeIcon icon={faXmark} className={styles.faXmark} />
             </button>
-            {/* 設定入口：常駐顯示，選單展開時自 menu button 下方滑出 */}
-            <Link
-              href="/settings"
-              onClick={handleCloseMenu}
-              className={styles.settings_button}
-              aria-label={t('settings')}
-              title={t('settings')}
-              tabIndex={isMenuOpen ? 0 : -1}
-              aria-hidden={!isMenuOpen}
-            >
-              <FontAwesomeIcon icon={faGear} />
-            </Link>
+            {/* 設定入口：有可見設定分類時才顯示，選單展開時自 menu button 下方滑出 */}
+            {hasSettings && (
+              <Link
+                href="/settings"
+                onClick={handleCloseMenu}
+                className={styles.settings_button}
+                aria-label={t('settings')}
+                title={t('settings')}
+                tabIndex={isMenuOpen ? 0 : -1}
+                aria-hidden={!isMenuOpen}
+              >
+                <FontAwesomeIcon icon={faGear} />
+              </Link>
+            )}
           </div>
         </div>
       </header>
