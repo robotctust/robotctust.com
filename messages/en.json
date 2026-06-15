@@ -796,6 +796,18 @@
       "title": "Account",
       "subtitle": "Manage your account security, data, and account status",
       "loading": "Loading...",
+      "privacy": {
+        "sectionTitle": "Privacy",
+        "followersPublic": {
+          "label": "Show followers list",
+          "hint": "When off, others can see your follower count but not who follows you"
+        },
+        "followingPublic": {
+          "label": "Show following list",
+          "hint": "When off, others can see your following count but not who you follow"
+        },
+        "toastFailed": "Failed to update privacy settings, please try again"
+      },
       "security": {
         "sectionTitle": "Account Security",
         "password": {

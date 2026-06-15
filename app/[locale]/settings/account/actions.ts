@@ -15,6 +15,47 @@ export interface ExportDataResult {
   error?: string
 }
 
+/**
+ * [Action] 更新追蹤清單可見性設定
+ *
+ * 以 cookie session 驗證身分，僅更新本人 users 列（RLS 亦會把關）。
+ */
+export interface UpdateFollowPrivacyResult {
+  success: boolean
+  error?: string
+}
+
+export async function updateFollowPrivacy(input: {
+  followersPublic?: boolean
+  followingPublic?: boolean
+}): Promise<UpdateFollowPrivacyResult> {
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+
+  if (!user) return { success: false, error: 'unauthorized' }
+
+  const payload: Record<string, boolean> = {}
+  if (typeof input.followersPublic === 'boolean') {
+    payload.followers_public = input.followersPublic
+  }
+  if (typeof input.followingPublic === 'boolean') {
+    payload.following_public = input.followingPublic
+  }
+  if (Object.keys(payload).length === 0) {
+    return { success: false, error: 'no_changes' }
+  }
+
+  const { error } = await supabase
+    .from('users')
+    .update(payload)
+    .eq('id', user.id)
+
+  if (error) return { success: false, error: error.message }
+  return { success: true }
+}
+
 export async function exportMyData(): Promise<ExportDataResult> {
   const supabase = await createClient()
   const {

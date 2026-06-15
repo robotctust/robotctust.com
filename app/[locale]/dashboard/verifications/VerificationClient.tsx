@@ -6,8 +6,9 @@ import styles from './verification.module.scss'
 // utils
 import { createClient } from '@/app/utils/supabase/client'
 import { useToast } from '@/app/contexts/ToastContext'
-import { Modal } from '@/app/[locale]/dashboard/components/Modal'
+import { Modal } from '@/app/components/Modal'
 import { Skeleton } from '@/app/components/Skeleton'
+import { Table, TableColumn } from '@/app/components/Table'
 
 interface VerificationItem {
   id: string
@@ -24,6 +25,15 @@ interface VerificationItem {
     id: string
     name: string
   } | null
+}
+
+function formatSubmittedAt(iso: string) {
+  return new Date(iso).toLocaleString('zh-TW', {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  })
 }
 
 /**
@@ -142,32 +152,140 @@ export default function VerificationClient() {
   /**
    * [Function] 處理課程驗證項目 (核准/退回)
    */
-  async function handleAction(id: string, action: 'approve' | 'reject') {
-    setProcessingId(id)
+  const handleAction = useCallback(
+    async (id: string, action: 'approve' | 'reject') => {
+      setProcessingId(id)
 
-    try {
-      const res = await fetch(`/api/dashboard/verifications/${id}/${action}`, {
-        method: 'PATCH',
-      })
-      const data = (await res.json()) as { success?: boolean; error?: string }
+      try {
+        const res = await fetch(`/api/dashboard/verifications/${id}/${action}`, {
+          method: 'PATCH',
+        })
+        const data = (await res.json()) as { success?: boolean; error?: string }
 
-      if (!res.ok || data.error) {
-        throw new Error(
-          data.error || `無法${action === 'approve' ? '核准' : '退回'}`,
+        if (!res.ok || data.error) {
+          throw new Error(
+            data.error || `無法${action === 'approve' ? '核准' : '退回'}`,
+          )
+        }
+
+        await Promise.all([fetchPending(), fetchProcessed()])
+        showToast(
+          `驗證單已${action === 'approve' ? '核准' : '退回'}`,
+          'success',
         )
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : '操作失敗', 'error')
+      } finally {
+        setProcessingId(null)
       }
+    },
+    [fetchPending, fetchProcessed, showToast],
+  )
 
-      await Promise.all([fetchPending(), fetchProcessed()])
-      showToast(
-        `驗證單已${action === 'approve' ? '核准' : '退回'}`,
-        'success',
-      )
-    } catch (error) {
-      showToast(error instanceof Error ? error.message : '操作失敗', 'error')
-    } finally {
-      setProcessingId(null)
-    }
-  }
+  const pendingColumns = useMemo<TableColumn<VerificationItem>[]>(
+    () => [
+      {
+        key: 'created_at',
+        header: '送審時間',
+        nowrap: true,
+        className: styles.timestamp,
+        sortable: true,
+        sortAccessor: (row) => new Date(row.created_at),
+        render: (row) => formatSubmittedAt(row.created_at),
+      },
+      {
+        key: 'course',
+        header: '課程',
+        className: styles.courseName,
+        searchable: true,
+        searchAccessor: (row) => row.courses?.name || row.course_id,
+        render: (row) => row.courses?.name || row.course_id,
+      },
+      {
+        key: 'student',
+        header: '學員',
+        searchable: true,
+        searchAccessor: (row) =>
+          [
+            row.users?.display_name,
+            row.users?.username,
+            row.users?.student_id,
+            row.user_id,
+          ]
+            .filter(Boolean)
+            .join(' '),
+        render: (row) => (
+          <div className={styles.studentInfo}>
+            <span className={styles.studentName}>
+              {row.users?.display_name || row.users?.username || row.user_id}
+            </span>
+            <span className={styles.studentId}>
+              {row.users?.student_id || '-'}
+            </span>
+          </div>
+        ),
+      },
+      {
+        key: 'actions',
+        header: '操作',
+        nowrap: true,
+        className: styles.actionCell,
+        render: (row) => (
+          <div className={styles.actions}>
+            <button
+              type="button"
+              disabled={processingId === row.id}
+              onClick={() => void handleAction(row.id, 'approve')}
+            >
+              核准
+            </button>
+            <button
+              type="button"
+              disabled={processingId === row.id}
+              onClick={() => void handleAction(row.id, 'reject')}
+            >
+              退回
+            </button>
+          </div>
+        ),
+      },
+    ],
+    [handleAction, processingId],
+  )
+
+  const processedColumns = useMemo<TableColumn<VerificationItem>[]>(
+    () => [
+      ...pendingColumns.slice(0, 3),
+      {
+        key: 'status',
+        header: '狀態',
+        className: styles.statusCell,
+        render: (row) => (
+          <span className={`${styles.statusBadge} ${styles[row.status]}`}>
+            {row.status === 'approved' ? '已核准' : '已退回'}
+          </span>
+        ),
+      },
+      {
+        key: 'actions',
+        header: '操作',
+        nowrap: true,
+        className: styles.actionCell,
+        render: (row) => (
+          <div className={styles.actions}>
+            <button
+              type="button"
+              disabled={processingId === row.id}
+              onClick={() => setRevokeTarget(row.id)}
+            >
+              撤回
+            </button>
+          </div>
+        ),
+      },
+    ],
+    [pendingColumns, processingId],
+  )
 
   /**
    * [Function] 撤回課程驗證項目（確認後執行）
@@ -226,129 +344,25 @@ export default function VerificationClient() {
         <>
           <section className={styles.section}>
             <h3 className={styles.sectionTitle}>待審核清單</h3>
-            <div className={styles.tableWrap}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>送審時間</th>
-                    <th>課程</th>
-                    <th>學員</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pendingRows.map((row) => (
-                    <tr
-                      key={row.id}
-                      className={newIds.has(row.id) ? styles.newRow : undefined}
-                    >
-                      <td className={styles.timestamp}>
-                        {new Date(row.created_at).toLocaleString('zh-TW', {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </td>
-                      <td className={styles.courseName}>
-                        {row.courses?.name || row.course_id}
-                      </td>
-                      <td>
-                        <div className={styles.studentInfo}>
-                          <span className={styles.studentName}>
-                            {row.users?.display_name ||
-                              row.users?.username ||
-                              row.user_id}
-                          </span>
-                          <span className={styles.studentId}>
-                            {row.users?.student_id || '-'}
-                          </span>
-                        </div>
-                      </td>
-                      <td className={styles.actions}>
-                        <button
-                          disabled={processingId === row.id}
-                          onClick={() => void handleAction(row.id, 'approve')}
-                        >
-                          核准
-                        </button>
-                        <button
-                          disabled={processingId === row.id}
-                          onClick={() => void handleAction(row.id, 'reject')}
-                        >
-                          退回
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {!pendingRows.length && (
-                <p className={styles.emptyState}>目前沒有待審核請求。</p>
-              )}
-            </div>
+            <Table<VerificationItem>
+              columns={pendingColumns}
+              data={pendingRows}
+              rowKey={(row) => row.id}
+              emptyMessage="目前沒有待審核請求。"
+              rowClassName={(row) =>
+                newIds.has(row.id) ? styles.newRow : undefined
+              }
+            />
           </section>
 
           <section className={styles.section} style={{ marginTop: '2rem' }}>
             <h3 className={styles.sectionTitle}>最近已認證紀錄</h3>
-            <div className={styles.tableWrap}>
-              <table className={styles.table}>
-                <thead>
-                  <tr>
-                    <th>送審時間</th>
-                    <th>課程</th>
-                    <th>學員</th>
-                    <th>狀態</th>
-                    <th>操作</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {processedRows.map((row) => (
-                    <tr key={row.id}>
-                      <td className={styles.timestamp}>
-                        {new Date(row.created_at).toLocaleString('zh-TW', {
-                          month: 'short',
-                          day: 'numeric',
-                          hour: '2-digit',
-                          minute: '2-digit',
-                        })}
-                      </td>
-                      <td className={styles.courseName}>
-                        {row.courses?.name || row.course_id}
-                      </td>
-                      <td>
-                        <div className={styles.studentInfo}>
-                          <span className={styles.studentName}>
-                            {row.users?.display_name ||
-                              row.users?.username ||
-                              row.user_id}
-                          </span>
-                          <span className={styles.studentId}>
-                            {row.users?.student_id || '-'}
-                          </span>
-                        </div>
-                      </td>
-                      <td>
-                        <span className={`${styles.statusBadge} ${styles[row.status]}`}>
-                          {row.status === 'approved' ? '已核准' : '已退回'}
-                        </span>
-                      </td>
-                      <td className={styles.actions}>
-                        <button
-                          disabled={processingId === row.id}
-                          onClick={() => setRevokeTarget(row.id)}
-                        >
-                          撤回
-                        </button>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-              {!processedRows.length && (
-                <p className={styles.emptyState}>目前沒有已處理的紀錄。</p>
-              )}
-            </div>
+            <Table<VerificationItem>
+              columns={processedColumns}
+              data={processedRows}
+              rowKey={(row) => row.id}
+              emptyMessage="目前沒有已處理的紀錄。"
+            />
           </section>
         </>
       )}
@@ -358,10 +372,23 @@ export default function VerificationClient() {
         onClose={() => setRevokeTarget(null)}
         title="確認撤回"
         maxWidth="480px"
+        compact
         footer={
           <>
-            <button onClick={() => setRevokeTarget(null)}>取消</button>
-            <button onClick={() => void confirmRevoke()}>確認撤回</button>
+            <button
+              type="button"
+              className={styles.modalCancelButton}
+              onClick={() => setRevokeTarget(null)}
+            >
+              取消
+            </button>
+            <button
+              type="button"
+              className={styles.modalDangerButton}
+              onClick={() => void confirmRevoke()}
+            >
+              確認撤回
+            </button>
           </>
         }
       >

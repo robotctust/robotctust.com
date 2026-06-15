@@ -20,6 +20,9 @@ export interface SerializedUserProfile {
   // 新增社群功能相關欄位
   bio?: string
   backgroundURL?: string
+  // 追蹤清單可見性
+  followersPublic: boolean
+  followingPublic: boolean
   // 統計資料
   stats: {
     exp: number

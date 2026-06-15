@@ -4,6 +4,7 @@ import styles from './User.module.scss'
 
 // utils
 import { getUserProfileStatusByUsername } from '@/app/utils/userServiceServer'
+import { getFollowCounts } from '@/app/utils/followService'
 import { serializeUserProfile } from '@/app/types/serialized'
 import { metadata } from '@/app/utils/metadata'
 
@@ -41,12 +42,19 @@ export default async function UserPage({
   const serializedUserProfile =
     result.status === 'found' ? serializeUserProfile(result.profile) : null
 
+  //* 取得追蹤數字（永遠公開）
+  const initialFollowCounts =
+    result.status === 'found'
+      ? await getFollowCounts(result.profile.uid)
+      : null
+
   return (
     <div className={`page ${styles.user_page}`}>
       <div className={styles.user_page_container}>
         <UserProfileClient
           username={username}
           initialUserProfile={serializedUserProfile}
+          initialFollowCounts={initialFollowCounts}
           isPrivate={result.status === 'private'}
         />
         <div className={`page-container ${styles.user_contents}`}>

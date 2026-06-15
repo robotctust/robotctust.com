@@ -43,6 +43,8 @@ function mapToUserProfile(data: Record<string, unknown>): UserProfile {
     schoolIdentity:
       (data.school_identity as UserProfile['schoolIdentity']) || null,
     clubIdentity: (data.club_identity as UserProfile['clubIdentity']) || null,
+    followersPublic: (data.followers_public as boolean) ?? true,
+    followingPublic: (data.following_public as boolean) ?? true,
     stats,
   } as UserProfile
 }

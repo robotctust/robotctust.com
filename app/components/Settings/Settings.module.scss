@@ -252,3 +252,43 @@
   color: var(--foreground-secondary);
   line-height: 1.5;
 }
+
+// ─────────────────────────────────────────────
+// Toggle 開關（switch）
+// ─────────────────────────────────────────────
+.toggle {
+  position: relative;
+  @include mixins.flexbox(row, flex-start, center);
+  flex-shrink: 0;
+  padding: 2px;
+  width: 44px;
+  height: 24px;
+  background: var(--border);
+  border: none;
+  cursor: pointer;
+  @include mixins.border-radius(12px);
+  @include mixins.transition(
+    background var(--transition-duration) var(--transition-bezier)
+  );
+
+  &.toggle_on {
+    justify-content: flex-end;
+    background: var(--primary);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: default;
+  }
+}
+
+.toggle_thumb {
+  width: 20px;
+  height: 20px;
+  background: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  @include mixins.border-radius(50%);
+  @include mixins.transition(
+    transform var(--transition-duration) var(--transition-bezier)
+  );
+}

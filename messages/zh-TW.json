@@ -796,6 +796,18 @@
       "title": "帳號設定",
       "subtitle": "管理你的帳號安全、個人資料與帳號狀態",
       "loading": "載入中...",
+      "privacy": {
+        "sectionTitle": "隱私設定",
+        "followersPublic": {
+          "label": "公開追蹤者清單",
+          "hint": "關閉後，其他人只看得到追蹤者數量，無法查看是誰追蹤你"
+        },
+        "followingPublic": {
+          "label": "公開追蹤中清單",
+          "hint": "關閉後，其他人只看得到追蹤中數量，無法查看你追蹤了誰"
+        },
+        "toastFailed": "更新隱私設定失敗，請稍後再試"
+      },
       "security": {
         "sectionTitle": "帳號安全",
         "password": {

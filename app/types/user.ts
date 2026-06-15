@@ -31,6 +31,9 @@ export interface UserProfile extends Record<string, unknown> {
   studentId?: string | null
   schoolIdentity?: SchoolIdentity | null
   clubIdentity?: ClubIdentity | null
+  // 追蹤清單可見性
+  followersPublic: boolean // 是否公開「追蹤者」清單
+  followingPublic: boolean // 是否公開「追蹤中」清單
   // 統計資料
   stats: {
     exp: number
@@ -166,6 +169,8 @@ export const createDefaultUserProfile = (
     backgroundURL: additionalData.backgroundURL,
     provider: additionalData.provider || 'email',
     roles: ['member'],
+    followersPublic: true,
+    followingPublic: true,
     stats: DEFAULT_USER_STATS,
     createdAt: new Date(),
     updatedAt: new Date(),
