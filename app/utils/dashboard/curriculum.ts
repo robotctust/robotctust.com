@@ -348,7 +348,7 @@ export async function createSemester(
     const { error: resetError } = await admin
       .from('semesters')
       .update({ is_active: false })
-      .neq('id', '')
+      .eq('is_active', true) // id 為 uuid，不能用 neq('id', '')，會觸發 22P02
     if (resetError) throw new Error(resetError.message)
   }
 
