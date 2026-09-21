@@ -28,6 +28,7 @@
       font-weight: 800;
       letter-spacing: -0.03em;
       line-height: 1.15;
+      white-space: pre-line; // 依訊息中的 \n 換行
       color: var(--foreground);
     }
 

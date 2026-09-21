@@ -82,10 +82,10 @@ The course system is normalized PostgreSQL (semester → chapter → course → 
 ## Commit & versioning workflow
 - **One commit = one feature or fix.** Don't batch unrelated work; split unrelated changes (e.g. copy/contact info vs. a page redesign) into separate commits. Related docs (this file, `messages/*`) go in the same commit as the change.
 - **Claude never runs `git add` / `git commit`.** When a piece of work is finished and verified (`npx tsc --noEmit` + dev SSR smoke test), Claude writes the message to `COMMIT_MESSAGE.md` at the repo root and bumps the version; the maintainer reviews, deletes the file, and commits.
-- **Version** is written in three places that must move together: the commit title, `SITE_CONFIG.version` (`app/utils/siteConfigs.ts`, shown in the footer as `v{version}`), and `package.json` `version` (must stay valid semver). The target release is picked when a series starts (new features → next minor, e.g. `2.5`; fix / perf / refactor only → next patch). Every commit on `dev` bumps the beta counter:
+- **Version** is written in three places that must move together: the commit title, `SITE_CONFIG.version` (`app/utils/siteConfigs.ts`, shown in the footer as `v{version}`), and `package.json` `version` (beta uses the short `X.Y-beta.N` form, same as `SITE_CONFIG.version`; pnpm accepts it even though it isn't strict semver). The target release is picked when a series starts (new features → next minor, e.g. `2.5`; fix / perf / refactor only → next patch). Every commit on `dev` bumps the beta counter:
 
   | Commit title | `SITE_CONFIG.version` | `package.json` |
   | --- | --- | --- |
-  | `v2.5 Beta 3 …` | `'2.5 Beta 3'` | `2.5.0-beta.3` |
+  | `v2.5 Beta 4 …` | `'2.5-beta.4'` | `2.5-beta.4` |
   | `v2.5.0 …` (stable merge into `main`) | `'2.5.0'` | `2.5.0` |
 - **Message format:** copy the structure of recent `git log` entries — `vX.Y Beta N <type>: <title>` (plain `vX.Y.Z` on `main`), a one-line English summary on the next line, then categorized bullets (Feature Addition, Bug Fix, UI Adjustments, Refactoring, …; omit empty ones). One line per bullet saying what changed; no per-file detail, no verification log.
