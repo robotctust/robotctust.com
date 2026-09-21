@@ -6,37 +6,39 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faImage } from '@fortawesome/free-solid-svg-icons'
+import { SITE_CONFIG } from '@/app/utils/siteConfigs'
 import styles from './ActivityShowcase.module.scss'
 
 /**
  * 活動照片牆：每排不同比例的圖格，隨捲動輕微左右漂移（視差）。
- * 要加照片：把圖放進 public/assets/image/about/activity/，
- * 再把路徑填進下方 rows 陣列的 src 欄位。
+ * 圖存放在 R2 的 about/activity/，檔號對應 rows 的出現順序。
  */
 type Tile = { ratio: number; src: string }
+
+const MEDIA = `${SITE_CONFIG.mediaBase}/about/activity`
 
 // src 留空時顯示佔位框；比例設計讓各排視覺上高度一致但寬度各異
 const rows: Tile[][] = [
   [
-    { ratio: 16 / 9,  src: '' },
-    { ratio: 1,       src: '' },
-    { ratio: 4 / 3,   src: '' },
-    { ratio: 3 / 4,   src: '' },
-    { ratio: 16 / 10, src: '' },
+    { ratio: 16 / 9,  src: `${MEDIA}/01.webp` },
+    { ratio: 1,       src: `${MEDIA}/02.webp` },
+    { ratio: 4 / 3,   src: `${MEDIA}/03.webp` },
+    { ratio: 3 / 4,   src: `${MEDIA}/04.webp` },
+    { ratio: 16 / 10, src: `${MEDIA}/05.webp` },
   ],
   [
-    { ratio: 3 / 4,   src: '' },
-    { ratio: 16 / 9,  src: '' },
-    { ratio: 1,       src: '' },
-    { ratio: 4 / 3,   src: '' },
-    { ratio: 4 / 5,   src: '' },
+    { ratio: 3 / 4,   src: `${MEDIA}/06.webp` },
+    { ratio: 16 / 9,  src: `${MEDIA}/07.webp` },
+    { ratio: 1,       src: `${MEDIA}/08.webp` },
+    { ratio: 4 / 3,   src: `${MEDIA}/09.webp` },
+    { ratio: 4 / 5,   src: `${MEDIA}/10.webp` },
   ],
   [
-    { ratio: 4 / 3,   src: '' },
-    { ratio: 3 / 4,   src: '' },
-    { ratio: 16 / 9,  src: '' },
-    { ratio: 1,       src: '' },
-    { ratio: 16 / 10, src: '' },
+    { ratio: 4 / 3,   src: `${MEDIA}/11.webp` },
+    { ratio: 3 / 4,   src: `${MEDIA}/12.webp` },
+    { ratio: 16 / 9,  src: `${MEDIA}/13.webp` },
+    { ratio: 1,       src: `${MEDIA}/14.webp` },
+    { ratio: 16 / 10, src: `${MEDIA}/15.webp` },
   ],
 ]
 

@@ -37,6 +37,7 @@ pnpm start    # serve production build
 ### Data backends (migration in progress)
 - **Supabase** is the primary backend: auth (Email + Google OAuth), PostgreSQL with Row Level Security, the user/profile/course/follow/schedule data. Services: `courseService.ts`, `profileService.ts`, `userService.ts`, `followService.ts`, `scheduleService.ts`.
 - **Firebase** is legacy, still serving some data while being migrated out: `competitionService.ts`, parts of `postService.ts`, `firebaseService.ts`. Prefer Supabase for new work.
+- **Static media** (activity photos etc.) lives on **Cloudflare R2**, served from `https://img.robotctust.com` (`SITE_CONFIG.mediaBase`; the host is whitelisted in `next.config.ts` `remotePatterns` and images go through `next/image`). Keys mirror usage: `home/about-hook/NN.webp`, `about/activity/NN.webp`. Upload manually with `wrangler r2 object put <bucket>/<key> --remote --file … --content-type image/webp --cache-control "public, max-age=31536000, immutable"` — `--remote` is required (wrangler defaults to a local simulator). Objects are immutable-cached, so **replace an image by uploading a new filename**, never by overwriting.
 - **Firebase security rules** (`firestore.rules`, `storage.rules`, `database.rules.json`) in the repo are reference copies only — the maintainer edits the live rules **directly in the Firebase Console**, not by deploying these files. Do not assume the repo files are authoritative or deploy them; if rules need changing, instruct the user to update them in the Console.
 
 ### Supabase clients (pick the right one)
@@ -81,5 +82,10 @@ The course system is normalized PostgreSQL (semester → chapter → course → 
 ## Commit & versioning workflow
 - **One commit = one feature or fix.** Don't batch unrelated work; split unrelated changes (e.g. copy/contact info vs. a page redesign) into separate commits. Related docs (this file, `messages/*`) go in the same commit as the change.
 - **Claude never runs `git add` / `git commit`.** When a piece of work is finished and verified (`npx tsc --noEmit` + dev SSR smoke test), Claude writes the message to `COMMIT_MESSAGE.md` at the repo root and bumps the version; the maintainer reviews, deletes the file, and commits.
-- **Version** lives in `SITE_CONFIG.version` (`app/utils/siteConfigs.ts`; `package.json` stays `0.1.0`). New feature → bump minor, reset patch; fix / perf / refactor → bump patch. On `dev` (not `main`), write `vX.Y.Z Beta N`; the final merge uses plain `vX.Y.Z`.
-- **Message format:** copy the structure of recent `git log` entries — `vX.Y.Z [Beta N] <type>: <title>`, a one-line English summary on the next line, then categorized bullets (Feature Addition, Bug Fix, UI Adjustments, Refactoring, …; omit empty ones). One line per bullet saying what changed; no per-file detail, no verification log.
+- **Version** is written in three places that must move together: the commit title, `SITE_CONFIG.version` (`app/utils/siteConfigs.ts`, shown in the footer as `v{version}`), and `package.json` `version` (must stay valid semver). The target release is picked when a series starts (new features → next minor, e.g. `2.5`; fix / perf / refactor only → next patch). Every commit on `dev` bumps the beta counter:
+
+  | Commit title | `SITE_CONFIG.version` | `package.json` |
+  | --- | --- | --- |
+  | `v2.5 Beta 3 …` | `'2.5 Beta 3'` | `2.5.0-beta.3` |
+  | `v2.5.0 …` (stable merge into `main`) | `'2.5.0'` | `2.5.0` |
+- **Message format:** copy the structure of recent `git log` entries — `vX.Y Beta N <type>: <title>` (plain `vX.Y.Z` on `main`), a one-line English summary on the next line, then categorized bullets (Feature Addition, Bug Fix, UI Adjustments, Refactoring, …; omit empty ones). One line per bullet saying what changed; no per-file detail, no verification log.

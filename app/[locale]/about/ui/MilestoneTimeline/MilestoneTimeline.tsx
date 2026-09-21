@@ -7,6 +7,7 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faImage } from '@fortawesome/free-solid-svg-icons'
+import { SITE_CONFIG } from '@/app/utils/siteConfigs'
 import styles from './MilestoneTimeline.module.scss'
 
 interface Milestone {
@@ -15,9 +16,16 @@ interface Milestone {
   description: string
 }
 
-// index 與 i18n origin.timeline 對應；留空顯示佔位框。
-// 新增照片：圖放 public/assets/image/about/milestones/，再把路徑填入對應位置。
-const milestoneImages: string[] = ['', '', '', '', '']
+const MEDIA = `${SITE_CONFIG.mediaBase}/about/milestones`
+
+// index 與 i18n origin.timeline 對應；圖存放在 R2 的 about/milestones/，留空顯示佔位框。
+const milestoneImages: string[] = [
+  `${MEDIA}/01.webp`,
+  `${MEDIA}/02.webp`,
+  `${MEDIA}/03.webp`,
+  `${MEDIA}/04.webp`,
+  `${MEDIA}/05.webp`,
+]
 
 /**
  * 里程碑時間軸：捲到此區時「定住」，改為橫向推進。

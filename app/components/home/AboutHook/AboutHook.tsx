@@ -4,10 +4,13 @@ import { getTranslations } from 'next-intl/server'
 import styles from './AboutHook.module.scss'
 import StaggerReveal from './StaggerReveal'
 import ScrollParallax from '@/app/components/animation/ScrollParallax/ScrollParallax'
+import { SITE_CONFIG } from '@/app/utils/siteConfigs'
+
+const MEDIA = `${SITE_CONFIG.mediaBase}/home/about-hook`
 
 /**
  * 懸浮裝飾圖：散落在卡片上下緣、隨捲動輕微上下漂移，並與整塊一起模糊淡入。
- * 全部 src 留空＝顯示圓角佔位框先看效果；之後改 src 補上社團活動照即可。
+ * 圖存放在 R2 的 home/about-hook/，檔號對應 floats 的出現順序。
  *
  * 設計：以卡片寬度置中錨定（translateX(-50%)+left%）、尺寸 clamp 響應式 → 窄螢幕不溢出；
  * 只放上/下緣、pointer-events:none 不擋互動；位置/尺寸/比例/旋轉/漂移各異以營造隨意感。
@@ -31,7 +34,7 @@ const floats: FloatSpec[] = [
     ratio: styles.arL,
     rotate: -6,
     drift: [-28, 18],
-    src: '',
+    src: `${MEDIA}/01.webp`,
   },
   {
     edge: 'top',
@@ -40,7 +43,7 @@ const floats: FloatSpec[] = [
     ratio: styles.arS,
     rotate: 5,
     drift: [-34, 12],
-    src: '',
+    src: `${MEDIA}/02.webp`,
   },
   {
     edge: 'top',
@@ -49,7 +52,7 @@ const floats: FloatSpec[] = [
     ratio: styles.arL,
     rotate: 7,
     drift: [-20, 26],
-    src: '',
+    src: `${MEDIA}/03.webp`,
   },
   {
     edge: 'top',
@@ -58,7 +61,7 @@ const floats: FloatSpec[] = [
     ratio: styles.arL,
     rotate: -4,
     drift: [-30, 16],
-    src: '',
+    src: `${MEDIA}/04.webp`,
   },
   {
     edge: 'bottom',
@@ -67,7 +70,7 @@ const floats: FloatSpec[] = [
     ratio: styles.arL,
     rotate: 6,
     drift: [24, -28],
-    src: '',
+    src: `${MEDIA}/05.webp`,
   },
   {
     edge: 'bottom',
@@ -76,7 +79,7 @@ const floats: FloatSpec[] = [
     ratio: styles.arL,
     rotate: -7,
     drift: [18, -32],
-    src: '',
+    src: `${MEDIA}/06.webp`,
   },
   {
     edge: 'bottom',
@@ -85,7 +88,7 @@ const floats: FloatSpec[] = [
     ratio: styles.arS,
     rotate: 4,
     drift: [28, -18],
-    src: '',
+    src: `${MEDIA}/07.webp`,
   },
 ]
 
