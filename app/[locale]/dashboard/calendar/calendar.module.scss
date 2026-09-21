@@ -85,6 +85,7 @@
 }
 
 .titleCell {
+  min-width: 220px; // 其他欄位皆 nowrap，避免標題被擠到最窄；空間不足時由 .tableWrap 橫向捲動
   max-width: 280px;
 
   .titleLink {
