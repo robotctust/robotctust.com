@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from '@/i18n/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSave, faArrowLeft } from '@fortawesome/free-solid-svg-icons'
@@ -20,9 +20,10 @@ const TYPE_OPTIONS: { value: ScheduleEvent['type']; label: string }[] = [
 
 interface Props {
   event?: ScheduleEvent
+  semesters: SemesterOption[]
 }
 
-export default function CalendarEditorClient({ event }: Props) {
+export default function CalendarEditorClient({ event, semesters }: Props) {
   const router = useRouter()
   const { showToast } = useToast()
   const isEdit = !!event
@@ -39,15 +40,7 @@ export default function CalendarEditorClient({ event }: Props) {
   const [priority, setPriority] = useState(event?.priority ?? 0)
   const [published, setPublished] = useState(event?.published ?? false)
   const [semesterId, setSemesterId] = useState<string>(event?.semesterId ?? '')
-  const [semesters, setSemesters] = useState<SemesterOption[]>([])
   const [saving, setSaving] = useState(false)
-
-  useEffect(() => {
-    fetch('/api/dashboard/semesters')
-      .then((r) => r.json())
-      .then((data: SemesterOption[]) => setSemesters(data))
-      .catch(() => { /* 非必要欄位，靜默失敗 */ })
-  }, [])
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()

@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faPlus,
@@ -28,13 +28,15 @@ type DeleteState = null | {
   label: string
 }
 
-export default function MembersClient() {
+export default function MembersClient({
+  initialOverview,
+}: {
+  initialOverview: MembersOverviewPayload
+}) {
   const { showToast } = useToast()
   
-  const [overview, setOverview] = useState<MembersOverviewPayload>({
-    semesters: [],
-  })
-  const [loading, setLoading] = useState(true)
+  const [overview, setOverview] = useState<MembersOverviewPayload>(initialOverview)
+  const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<ModalState>(null)
   const [deleteTarget, setDeleteTarget] = useState<DeleteState>(null)
 
@@ -52,10 +54,6 @@ export default function MembersClient() {
       setLoading(false)
     }
   }
-
-  useEffect(() => {
-    void loadOverview()
-  }, [])
 
   const totals = useMemo(() => {
     return overview.semesters.reduce(

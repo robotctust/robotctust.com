@@ -73,6 +73,7 @@ Schema changes are tracked as Supabase migrations (latest: `add_follows_feature`
 
 ### API routes
 - `app/api/dashboard/*` — admin console operations (courses, members, accounts, news, calendar, verifications). Service-role + in-code authz as above.
+- **Dashboard pages load first-screen data on the server:** each `dashboard/**/page.tsx` calls `requireDashboardAccess(module)` first, then the same service function the API's GET uses (`app/utils/dashboard/*`, `postService`, `scheduleService`…), and passes it to the `XxxClient` as `initialXxx` props. Clients must not fetch on mount; the API GETs are only for refreshing after a mutation. `getDashboardActor()` is wrapped in React `cache()`, so layout + aside + page share one auth check per request.
 - `app/api/mobile/*` — JSON endpoints for the companion iOS app (`posts`, `events`, `me`).
 - `app/api/courses/[slug]/verify` — course completion verification submissions.
 

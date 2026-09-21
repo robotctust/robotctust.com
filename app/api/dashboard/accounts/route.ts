@@ -10,6 +10,7 @@ import {
   canManageTargetUser,
 } from '@/app/utils/auth/roles'
 import { UserRole, getUserRoleName } from '@/app/types/user'
+import { getAccountUsers } from '@/app/utils/dashboard/accounts'
 
 const UUID_RE =
   /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
@@ -22,18 +23,8 @@ export async function GET() {
   try {
     await requireDashboardAccess('accounts')
 
-    const admin = createAdminClient()
-    const { data, error } = await admin
-      .from('users')
-      .select('id, email, username, display_name, avatar_url, roles, created_at')
-      .order('created_at', { ascending: false })
-
-    if (error) {
-      console.error('Failed to fetch users', error)
-      return Response.json({ error: '讀取使用者資料失敗，請稍後再試' }, { status: 500 })
-    }
-
-    return Response.json({ users: data })
+    const users = await getAccountUsers()
+    return Response.json({ users })
   } catch (error) {
     return toRouteErrorResponse(error)
   }

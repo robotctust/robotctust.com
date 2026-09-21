@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCalendarDays,
@@ -22,9 +22,13 @@ type ModalState =
   | { mode: 'create' }
   | { mode: 'edit'; semester: SemesterTreeNode }
 
-export default function SemestersManagerClient() {
-  const [semesters, setSemesters] = useState<SemesterTreeNode[]>([])
-  const [loading, setLoading] = useState(true)
+export default function SemestersManagerClient({
+  initialSemesters,
+}: {
+  initialSemesters: SemesterTreeNode[]
+}) {
+  const [semesters, setSemesters] = useState<SemesterTreeNode[]>(initialSemesters)
+  const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [modal, setModal] = useState<ModalState>(null)
@@ -44,10 +48,6 @@ export default function SemestersManagerClient() {
       setLoading(false)
     }
   }
-
-  useEffect(() => {
-    void load()
-  }, [])
 
   function openCreate() {
     setName('')

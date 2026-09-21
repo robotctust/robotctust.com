@@ -7,7 +7,6 @@ import styles from './verification.module.scss'
 import { createClient } from '@/app/utils/supabase/client'
 import { useToast } from '@/app/contexts/ToastContext'
 import { Modal } from '@/app/components/Modal'
-import { Skeleton } from '@/app/components/Skeleton'
 import { Table, TableColumn } from '@/app/components/Table'
 
 interface VerificationItem {
@@ -40,23 +39,29 @@ function formatSubmittedAt(iso: string) {
  * [Component] 課程審核中控台
  * @returns 課程審核中控台
  */
-export default function VerificationClient() {
+export default function VerificationClient({
+  initialPending,
+  initialProcessed,
+}: {
+  initialPending: VerificationItem[]
+  initialProcessed: VerificationItem[]
+}) {
   const { showToast } = useToast()
   // 建立 Supabase Client
   const supabase = useMemo(() => createClient(), [])
   // 待審核的課程驗證項目列表
-  const [pendingRows, setPendingRows] = useState<VerificationItem[]>([])
+  const [pendingRows, setPendingRows] = useState<VerificationItem[]>(initialPending)
   // 最近已處理的課程驗證項目列表
-  const [processedRows, setProcessedRows] = useState<VerificationItem[]>([])
-  // 是否正在載入
-  const [loading, setLoading] = useState(true)
+  const [processedRows, setProcessedRows] = useState<VerificationItem[]>(initialProcessed)
   // 正在處理的課程驗證項目 ID
   const [processingId, setProcessingId] = useState<string | null>(null)
   // 等待撤回確認的驗證單 ID
   const [revokeTarget, setRevokeTarget] = useState<string | null>(null)
   // 本次 realtime 更新中新出現的 ID（用於 highlight 動畫）
   const [newIds, setNewIds] = useState<Set<string>>(new Set())
-  const prevPendingIdsRef = useRef<Set<string>>(new Set())
+  const prevPendingIdsRef = useRef<Set<string>>(
+    new Set(initialPending.map((r) => r.id)),
+  )
 
   /**
    * [Function] 獲取待審核的課程驗證項目
@@ -113,20 +118,9 @@ export default function VerificationClient() {
   }, [])
 
   /**
-   * [Function] 初始化獲取資料
-   */
-  const fetchAll = useCallback(async () => {
-    setLoading(true)
-    await Promise.all([fetchPending(), fetchProcessed()])
-    setLoading(false)
-  }, [fetchPending, fetchProcessed])
-
-  /**
-   * [Effect] 獲取課程驗證項目並監聽變化
+   * [Effect] 監聽課程驗證變化（首屏資料由伺服器帶入，不必再抓）
    */
   useEffect(() => {
-    void fetchAll()
-
     // 建立 Supabase Channel
     const channel = supabase
       .channel('dashboard-verifications')
@@ -147,7 +141,7 @@ export default function VerificationClient() {
     return () => {
       supabase.removeChannel(channel)
     }
-  }, [supabase, fetchAll, fetchPending, fetchProcessed])
+  }, [supabase, fetchPending, fetchProcessed])
 
   /**
    * [Function] 處理課程驗證項目 (核准/退回)
@@ -333,39 +327,28 @@ export default function VerificationClient() {
         </article>
       </section>
 
-      {loading ? (
-        <>
-          <Skeleton variant="stat"      count={1} layout="row" />
-          <Skeleton variant="table-row" count={5} layout="list" />
-        </>
-      ) : null}
+      <section className={styles.section}>
+        <h3 className={styles.sectionTitle}>待審核清單</h3>
+        <Table<VerificationItem>
+          columns={pendingColumns}
+          data={pendingRows}
+          rowKey={(row) => row.id}
+          emptyMessage="目前沒有待審核請求。"
+          rowClassName={(row) =>
+            newIds.has(row.id) ? styles.newRow : undefined
+          }
+        />
+      </section>
 
-      {!loading && (
-        <>
-          <section className={styles.section}>
-            <h3 className={styles.sectionTitle}>待審核清單</h3>
-            <Table<VerificationItem>
-              columns={pendingColumns}
-              data={pendingRows}
-              rowKey={(row) => row.id}
-              emptyMessage="目前沒有待審核請求。"
-              rowClassName={(row) =>
-                newIds.has(row.id) ? styles.newRow : undefined
-              }
-            />
-          </section>
-
-          <section className={styles.section} style={{ marginTop: '2rem' }}>
-            <h3 className={styles.sectionTitle}>最近已認證紀錄</h3>
-            <Table<VerificationItem>
-              columns={processedColumns}
-              data={processedRows}
-              rowKey={(row) => row.id}
-              emptyMessage="目前沒有已處理的紀錄。"
-            />
-          </section>
-        </>
-      )}
+      <section className={styles.section} style={{ marginTop: '2rem' }}>
+        <h3 className={styles.sectionTitle}>最近已認證紀錄</h3>
+        <Table<VerificationItem>
+          columns={processedColumns}
+          data={processedRows}
+          rowKey={(row) => row.id}
+          emptyMessage="目前沒有已處理的紀錄。"
+        />
+      </section>
 
       <Modal
         isOpen={revokeTarget !== null}

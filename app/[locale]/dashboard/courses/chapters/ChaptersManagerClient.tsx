@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faArrowDown,
@@ -25,10 +25,20 @@ type ModalState =
   | { mode: 'create' }
   | { mode: 'edit'; chapter: ChapterTreeNode }
 
-export default function ChaptersManagerClient() {
-  const [semesters, setSemesters] = useState<SemesterTreeNode[]>([])
-  const [selectedSemesterId, setSelectedSemesterId] = useState('')
-  const [loading, setLoading] = useState(true)
+export default function ChaptersManagerClient({
+  initialSemesters,
+}: {
+  initialSemesters: SemesterTreeNode[]
+}) {
+  const [semesters, setSemesters] = useState<SemesterTreeNode[]>(initialSemesters)
+  // 預設選目前學期，沒有就選第一個
+  const [selectedSemesterId, setSelectedSemesterId] = useState(
+    () =>
+      initialSemesters.find((semester) => semester.is_active)?.id ||
+      initialSemesters[0]?.id ||
+      '',
+  )
+  const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
   const [modal, setModal] = useState<ModalState>(null)
@@ -58,10 +68,6 @@ export default function ChaptersManagerClient() {
       setLoading(false)
     }
   }
-
-  useEffect(() => {
-    void load()
-  }, [])
 
   const selectedSemester = useMemo(
     () => semesters.find((semester) => semester.id === selectedSemesterId) || null,

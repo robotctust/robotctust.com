@@ -2,7 +2,7 @@
 
 import { Link } from '@/i18n/navigation'
 import { useRouter } from '@/i18n/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faArrowRight,
@@ -23,10 +23,14 @@ import {
 } from '../client-utils'
 import styles from './courses-library.module.scss'
 
-export default function CoursesLibraryClient() {
+export default function CoursesLibraryClient({
+  initialSemesters,
+}: {
+  initialSemesters: SemesterTreeNode[]
+}) {
   const router = useRouter()
-  const [semesters, setSemesters] = useState<SemesterTreeNode[]>([])
-  const [loading, setLoading] = useState(true)
+  const [semesters, setSemesters] = useState<SemesterTreeNode[]>(initialSemesters)
+  const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
 
@@ -37,7 +41,9 @@ export default function CoursesLibraryClient() {
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<CourseTreeNode | null>(null)
   const [newCourseName, setNewCourseName] = useState('')
-  const [newCourseChapterId, setNewCourseChapterId] = useState('')
+  const [newCourseChapterId, setNewCourseChapterId] = useState(
+    initialSemesters[0]?.chapters[0]?.id || '',
+  )
 
   const allCourses = useMemo(() => flattenCourses(semesters), [semesters])
 
@@ -54,10 +60,6 @@ export default function CoursesLibraryClient() {
       setLoading(false)
     }
   }
-
-  useEffect(() => {
-    void load()
-  }, [])
 
   const filteredCourses = useMemo(() => {
     return allCourses.filter(({ semester, course }) => {

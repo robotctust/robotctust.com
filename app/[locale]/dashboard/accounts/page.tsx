@@ -3,6 +3,7 @@ import { requireDashboardAccess } from '@/app/utils/dashboard/auth'
 import { getAssignableRoles } from '@/app/utils/auth/roles'
 import { UserRole } from '@/app/types/user'
 import AccountsClient from './AccountsClient'
+import { getAccountUsers } from '@/app/utils/dashboard/accounts'
 
 export const metadata: Metadata = {
   title: '帳號管理 - 控制台',
@@ -15,11 +16,14 @@ export const metadata: Metadata = {
 export default async function DashboardAccountsPage() {
   const actor = await requireDashboardAccess('accounts')
   const actorRoles = actor.roles as UserRole[]
+  // 首屏資料在伺服器抓好，不必等瀏覽器載完 JS 再打 API
+  const users = await getAccountUsers()
 
   return (
     <AccountsClient
       currentUserId={actor.userId}
       assignableRoles={getAssignableRoles(actorRoles)}
+      initialUsers={users}
     />
   )
 }

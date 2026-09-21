@@ -1,5 +1,5 @@
 import { requireDashboardAccess } from '@/app/utils/dashboard/auth'
-import { getScheduleEventById } from '@/app/utils/scheduleService'
+import { getAllSemesters, getScheduleEventById } from '@/app/utils/scheduleService'
 import { notFound } from 'next/navigation'
 import CalendarEditorClient from '../CalendarEditorClient'
 
@@ -12,7 +12,11 @@ export default async function EditCalendarEventPage({
 }) {
   await requireDashboardAccess('calendar')
   const { eventId } = await params
-  const event = await getScheduleEventById(eventId)
+  // 事件與學期選項並行抓，學期選項抓不到不影響編輯
+  const [event, semesters] = await Promise.all([
+    getScheduleEventById(eventId),
+    getAllSemesters().catch(() => []),
+  ])
   if (!event) notFound()
-  return <CalendarEditorClient event={event} />
+  return <CalendarEditorClient event={event} semesters={semesters} />
 }

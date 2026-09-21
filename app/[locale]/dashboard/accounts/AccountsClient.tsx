@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useEffect, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSpinner } from '@fortawesome/free-solid-svg-icons'
 import styles from './accounts.module.scss'
@@ -18,11 +18,14 @@ interface AccountsClientProps {
   currentUserId: string
   /** 操作者可指派的角色（super_admin / admin 為全部；admin_accounts 為模組管理員 + member） */
   assignableRoles: UserRole[]
+  /** 首屏資料由伺服器帶入 */
+  initialUsers: AccountUserRow[]
 }
 
 export default function AccountsClient({
   currentUserId,
   assignableRoles,
+  initialUsers,
 }: AccountsClientProps) {
   const { showToast } = useToast()
 
@@ -39,8 +42,8 @@ export default function AccountsClient({
     [assignableRoles],
   )
 
-  const [users, setUsers] = useState<AccountUserRow[]>([])
-  const [loading, setLoading] = useState(true)
+  const [users, setUsers] = useState<AccountUserRow[]>(initialUsers)
+  const [loading, setLoading] = useState(false)
   const [savingUserId, setSavingUserId] = useState<string | null>(null)
   const [dirtyUsers, setDirtyUsers] = useState<Set<string>>(new Set())
 
@@ -59,10 +62,6 @@ export default function AccountsClient({
       setLoading(false)
     }
   }, [showToast])
-
-  useEffect(() => {
-    void loadUsers()
-  }, [loadUsers])
 
   const handleRolesChange = useCallback(
     (targetUserId: string, newRoles: UserRole[]) => {

@@ -23,18 +23,18 @@ import Image from 'next/image'
 export default async function DashboardHomePage() {
   // 獲取使用者資料
   const actor = await requireDashboardAccess()
-  const userProfile = await getUserProfileByUidServer(actor.userId)
 
-  // 若使用者有課程審核權限，取得待審核數量以在卡片上顯示 badge
-  let pendingVerificationCount = 0
-  if (actor.modules.includes('verifications')) {
-    const admin = createAdminClient()
-    const { count } = await admin
-      .from('course_verifications')
-      .select('*', { count: 'exact', head: true })
-      .eq('status', 'pending')
-    pendingVerificationCount = count ?? 0
-  }
+  // 個人資料與待審核數量並行查詢；有課程審核權限才查數量（顯示在卡片 badge）
+  const [userProfile, pendingVerificationCount] = await Promise.all([
+    getUserProfileByUidServer(actor.userId),
+    actor.modules.includes('verifications')
+      ? createAdminClient()
+          .from('course_verifications')
+          .select('*', { count: 'exact', head: true })
+          .eq('status', 'pending')
+          .then(({ count }) => count ?? 0)
+      : 0,
+  ])
 
   // 獲取可見模組
   const visibleModules = DASHBOARD_MODULES.filter((module) =>

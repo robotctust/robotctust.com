@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from '@/i18n/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faEdit, faTrash, faCalendar, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
@@ -32,11 +32,17 @@ type SemesterFilter = string | 'all'
 
 interface SemesterOpt { id: string; name: string }
 
-export default function CalendarListClient() {
+export default function CalendarListClient({
+  initialEvents,
+  initialSemesters,
+}: {
+  initialEvents: ScheduleEvent[]
+  initialSemesters: SemesterOpt[]
+}) {
   const { showToast } = useToast()
-  const [events, setEvents] = useState<ScheduleEvent[]>([])
-  const [semesters, setSemesters] = useState<SemesterOpt[]>([])
-  const [loading, setLoading] = useState(true)
+  const [events, setEvents] = useState<ScheduleEvent[]>(initialEvents)
+  const [semesters, setSemesters] = useState<SemesterOpt[]>(initialSemesters)
+  const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
   const [publishFilter, setPublishFilter] = useState<PublishFilter>('all')
@@ -61,8 +67,6 @@ export default function CalendarListClient() {
       setLoading(false)
     }
   }
-
-  useEffect(() => { void loadEvents() }, [])
 
   const filteredEvents = useMemo(() => {
     return events.filter((ev) => {

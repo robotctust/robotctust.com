@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Link } from '@/i18n/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faCode, faTrash } from '@fortawesome/free-solid-svg-icons'
@@ -10,10 +10,14 @@ import { Modal } from '@/app/[locale]/dashboard/components/Modal'
 import { Skeleton } from '@/app/components/Skeleton'
 import styles from './programs.module.scss'
 
-export default function ProgramsListClient() {
+export default function ProgramsListClient({
+  initialPrograms,
+}: {
+  initialPrograms: Program[]
+}) {
   const { showToast } = useToast()
-  const [programs, setPrograms] = useState<Program[]>([])
-  const [loading, setLoading] = useState(true)
+  const [programs, setPrograms] = useState<Program[]>(initialPrograms)
+  const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState('')
   const [deleteTarget, setDeleteTarget] = useState<Program | null>(null)
   const [deleting, setDeleting] = useState(false)
@@ -31,10 +35,6 @@ export default function ProgramsListClient() {
       setLoading(false)
     }
   }
-
-  useEffect(() => {
-    void loadPrograms()
-  }, [])
 
   const filteredPrograms = programs.filter(p =>
     p.name.toLowerCase().includes(search.toLowerCase()) ||

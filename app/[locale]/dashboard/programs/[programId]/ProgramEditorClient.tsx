@@ -5,15 +5,16 @@ import { faSave, faChevronLeft } from '@fortawesome/free-solid-svg-icons'
 import { Link } from '@/i18n/navigation'
 import styles from '../programs.module.scss'
 import { useProgramEditor } from '../useProgramEditor'
+import { Program } from '@/app/types/course-admin'
 
 interface ProgramEditorClientProps {
   programId: string // 'new' for creating a new program
+  /** 編輯既有程式時由伺服器帶入 */
+  program?: Program
 }
 
-export default function ProgramEditorClient({ programId }: ProgramEditorClientProps) {
-  const { state, actions } = useProgramEditor(programId)
-
-  if (state.loading) return <div className={styles.loading}>載入中...</div>
+export default function ProgramEditorClient({ programId, program }: ProgramEditorClientProps) {
+  const { state, actions } = useProgramEditor(programId, program)
 
   return (
     <div className={styles.editorContainer}>

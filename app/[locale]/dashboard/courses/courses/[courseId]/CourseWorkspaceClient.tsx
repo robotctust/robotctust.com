@@ -33,7 +33,6 @@ import {
 import {
   buildReorderRows,
   COURSE_CONTENT_TYPE_OPTIONS,
-  fetchCourseWorkspace,
   requestJson,
 } from '../../client-utils'
 import styles from './course-workspace.module.scss'
@@ -55,6 +54,9 @@ function withRecalculatedOrder(contents: CourseContent[]): CourseContent[] {
 
 interface CourseWorkspaceClientProps {
   courseId: string
+  /** 由伺服器帶入；讀取失敗時為 null，並附上 initialError */
+  initialWorkspace: CourseWorkspacePayload | null
+  initialError?: string
 }
 
 /* --- Sortable Block Component --- */
@@ -144,17 +146,19 @@ function SortableBlock({ content, index, onEdit, onDelete }: SortableBlockProps)
 /* --- Main Component --- */
 export default function CourseWorkspaceClient({
   courseId,
+  initialWorkspace,
+  initialError = '',
 }: CourseWorkspaceClientProps) {
-  const [workspace, setWorkspace] = useState<CourseWorkspacePayload | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState('')
+  const [workspace, setWorkspace] = useState<CourseWorkspacePayload | null>(initialWorkspace)
+  const [error, setError] = useState(initialError)
   const [isSavingContent, setIsSavingContent] = useState(false)
 
-  const [courseName, setCourseName] = useState('')
-  const [courseDescription, setCourseDescription] = useState('')
-  const [courseRewardExp, setCourseRewardExp] = useState('0')
-  const [courseIsPublished, setCourseIsPublished] = useState(false)
-  const [courseChapterId, setCourseChapterId] = useState('')
+  const initialCourse = initialWorkspace?.course
+  const [courseName, setCourseName] = useState(initialCourse?.name ?? '')
+  const [courseDescription, setCourseDescription] = useState(initialCourse?.description || '')
+  const [courseRewardExp, setCourseRewardExp] = useState(String(initialCourse?.reward_exp ?? 0))
+  const [courseIsPublished, setCourseIsPublished] = useState(initialCourse?.is_published ?? false)
+  const [courseChapterId, setCourseChapterId] = useState(initialCourse?.chapter_id ?? '')
 
   const [syncStatus, setSyncStatus] = useState<'synced' | 'saving' | 'unsynced' | 'error'>('synced')
   const syncRevisionRef = useRef(0)
@@ -224,27 +228,6 @@ export default function CourseWorkspaceClient({
     setNewProgramCode('')
   }
 
-  async function loadWorkspace() {
-    setLoading(true)
-    setError('')
-    try {
-      const payload = await fetchCourseWorkspace(courseId)
-      setWorkspace(payload)
-      setCourseName(payload.course.name)
-      setCourseDescription(payload.course.description || '')
-      setCourseRewardExp(String(payload.course.reward_exp))
-      setCourseIsPublished(payload.course.is_published)
-      setCourseChapterId(payload.course.chapter_id)
-      markSyncStatus('synced')
-    } catch (loadError) {
-      setError(loadError instanceof Error ? loadError.message : '載入工作台失敗')
-    } finally {
-      setLoading(false)
-    }
-  }
-
-  useEffect(() => { void loadWorkspace() }, [courseId])
-
   useEffect(() => {
     return () => {
       if (reorderTimeoutRef.current !== null) {
@@ -311,7 +294,7 @@ export default function CourseWorkspaceClient({
 
   // 自動儲存課程設定 (Debounced)
   useEffect(() => {
-    if (!workspace || loading) return
+    if (!workspace) return
     if (!isSettingsModified) return
 
     markSyncStatus('unsynced')
@@ -534,12 +517,7 @@ export default function CourseWorkspaceClient({
 
       {error && <div className={styles.errorBanner}>{error}</div>}
 
-      {loading ? (
-        <div className={styles.loadingContainer}>
-          <div className={styles.spinner}></div>
-          <p>初始化工作台…</p>
-        </div>
-      ) : workspace ? (
+      {workspace ? (
         <div className={styles.editorMain}>
           <section className={styles.heroPanel}>
             <div className={styles.heroMain}>
