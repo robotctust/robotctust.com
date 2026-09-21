@@ -1,105 +1,45 @@
 @use '@/app/styles/_mixins.scss' as mixins;
 
 .hero {
-  position: relative;
   width: 100%;
-  min-height: 75vh;
-  margin: 0 auto;
+  // 不滿版：讓下一區（活動照片）緊接著浮現
+  min-height: 58vh;
   @include mixins.flexbox(column, center, flex-start);
-  padding: 80px 0 100px;
-  overflow: hidden;
+  padding: var(--space-8x) 0 var(--space-6x);
 
-  > .container {
-    position: relative;
-    z-index: 1;
+  @include mixins.respond-to('phone') {
+    min-height: 48vh;
+    padding: var(--space-6x) 0 var(--space-4x);
+  }
+
+  > .inner {
     @include mixins.flexbox(column, flex-start, flex-start);
-    gap: 20px;
+    gap: var(--space-2x);
     max-width: 1200px;
     width: calc(100% - var(--space-4x));
     margin: 0 auto;
     padding: 0 var(--space-2x);
 
     @include mixins.respond-to('phone') {
-      padding: 0;
+      width: 100%;
     }
 
-    > .eyebrow {
-      span {
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--primary);
-      }
+    > .headline h1 {
+      margin: 0;
+      max-width: 18ch;
+      font-size: clamp(2.75rem, 8vw, 5.5rem);
+      font-weight: 800;
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      color: var(--foreground);
     }
 
-    > .headline {
-      h1 {
-        margin: 0;
-        font-size: clamp(2.5rem, 6vw, 6rem);
-        font-weight: 800;
-        line-height: 1.1;
-        letter-spacing: -0.03em;
-        color: var(--foreground);
-      }
-    }
-
-    > .tagline {
-      p {
-        margin: 0;
-        font-size: clamp(1rem, 2vw, 1.2rem);
-        line-height: 1.9;
-        color: var(--foreground-secondary);
-      }
-    }
-
-    > .foundingNote {
-      p {
-        @include mixins.flexbox(row, flex-start, center);
-        gap: 9px;
-        margin: 8px 0 0;
-        font-size: 0.8rem;
-        letter-spacing: 0.12em;
-        color: var(--foreground-tertiary);
-
-        &::before {
-          content: '';
-          display: block;
-          width: 28px;
-          height: 1px;
-          background: var(--foreground-tertiary);
-          flex-shrink: 0;
-        }
-      }
-    }
-  }
-
-  > .watermark {
-    position: absolute;
-    right: var(--space);
-    bottom: 0;
-    @include mixins.flexbox(row, flex-end, flex-end);
-    // font-size 放在容器，讓各 letter 的 margin em 單位一致
-    font-size: clamp(100px, 22vw, 220px);
-    font-weight: 900;
-    line-height: 1;
-    user-select: none;
-    pointer-events: none;
-    z-index: 0;
-
-    > .letter {
-      // 模擬原本 letter-spacing: -0.05em 的視覺效果
-      margin-right: -0.05em;
-
-      &:last-child {
-        margin-right: 0;
-      }
-
-      span {
-        display: block;
-        color: transparent;
-        -webkit-text-stroke: 1px var(--foreground-900);
-      }
+    > .subtitle p {
+      margin: 0;
+      max-width: 48ch;
+      font-size: clamp(1rem, 2vw, 1.25rem);
+      line-height: 1.7;
+      color: var(--foreground-secondary);
     }
   }
 }

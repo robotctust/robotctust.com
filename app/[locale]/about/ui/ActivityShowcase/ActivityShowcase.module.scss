@@ -1,0 +1,59 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.showcase {
+  @include mixins.flexbox(column, center, stretch);
+  gap: var(--space-2x);
+  width: 100%;
+  overflow: hidden; // 裁掉漂移時超出的部分，避免出現橫向捲軸
+  padding: var(--space-4x) 0;
+
+  --row-h: 240px;
+
+  @include mixins.respond-to('tablet') {
+    --row-h: 180px;
+  }
+
+  @include mixins.respond-to('phone') {
+    --row-h: 150px;
+    gap: var(--space);
+    padding: var(--space-2x) 0;
+  }
+
+  > .row {
+    @include mixins.flexbox(row, center, center);
+    gap: var(--space-2x);
+    // 超出容器 200px（左右各 100px），確保 GSAP 最大漂移 90px 後兩側仍無縫隙
+    width: calc(100% + 200px);
+    margin-left: -100px;
+    will-change: transform;
+
+    @include mixins.respond-to('phone') {
+      gap: var(--space);
+      // 手機 GSAP AMOUNT ≈ min(90, 0.12×390) ≈ 47px，60px 緩衝已足夠
+      width: calc(100% + 120px);
+      margin-left: -60px;
+    }
+
+    > .tile {
+      position: relative;
+      flex: 1 0 auto; // 可生長以撐滿整排，aspect-ratio 決定自然寬度下限
+      height: var(--row-h);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      background: var(--background-secondary);
+      @include mixins.border-radius(12px);
+
+      img {
+        object-fit: cover;
+      }
+
+      > .placeholder {
+        @include mixins.flexbox(row, center, center);
+        width: 100%;
+        height: 100%;
+        color: var(--foreground-tertiary);
+        font-size: 1.5rem;
+      }
+    }
+  }
+}

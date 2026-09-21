@@ -1,22 +1,27 @@
 @use '@/app/styles/_mixins.scss' as mixins;
 
 .clubOfficer {
-  @include mixins.flexbox(column, flex-start, center);
-  gap: var(--space);
-  width: fit-content;
-  max-width: 100%;
-  margin: 0 auto;
-  padding: var(--space-4x) 0;
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space-2x);
+  width: 100%;
+  padding: var(--space-6x) 0;
 
+  // 標題對齊頁面內容測量線（max 1200 置中）
   > .clubOfficerTitle {
+    width: 100%;
+    max-width: 1200px;
+    margin: 0 auto;
     padding: 0 var(--space-2x);
 
     > h2 {
       margin: 0;
-      font-size: 2rem;
+      font-size: clamp(1.75rem, 4vw, 3rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
     }
   }
 
+  // 橫向滑軌：起點對齊內容，向右出血到視窗邊緣
   > .clubOfficerList {
     display: flex;
     flex-direction: row;
@@ -26,12 +31,18 @@
     scroll-snap-type: x mandatory;
     -webkit-overflow-scrolling: touch;
     overscroll-behavior-x: contain;
-    // 底部 padding 為 scrollbar 預留空間
-    padding: 4px 0 var(--space);
+    padding-top: 4px;
+    padding-bottom: var(--space);
+    padding-left: max(
+      var(--space-2x),
+      calc((100% - 1200px) / 2 + var(--space-2x))
+    );
+    padding-right: var(--space-2x);
     @include mixins.hide-scrollbar;
 
     > .clubOfficerItem {
-      // 縱向置中排版
+      position: relative;
+      overflow: hidden;
       @include mixins.flexbox(column, flex-start, center);
       flex-shrink: 0;
       gap: 12px;
@@ -45,11 +56,27 @@
       scroll-snap-align: center;
       cursor: default;
 
-      &:first-child {
-        margin-left: var(--space-4x);
+      // hover 時斜掃過卡面的反光線條
+      > .clubOfficerSheen {
+        position: absolute;
+        top: 0;
+        left: -75%;
+        z-index: 2;
+        width: 50%;
+        height: 100%;
+        pointer-events: none;
+        background: linear-gradient(
+          100deg,
+          transparent,
+          rgba(255, 255, 255, 0.18),
+          transparent
+        );
+        @include mixins.transform-container(skewX(-20deg));
+        @include mixins.transition(left 0.6s var(--transition-bezier));
       }
-      &:last-child {
-        margin-right: var(--space-4x);
+
+      &:hover > .clubOfficerSheen {
+        left: 125%;
       }
 
       &.clubOfficerItemLink {
@@ -101,6 +128,14 @@
             font-size: 0.8rem;
             color: var(--foreground-secondary);
           }
+        }
+
+        // 一句話介紹（留空時不渲染）
+        > .clubOfficerItemTagline {
+          margin: 10px 0 0;
+          font-size: 0.78rem;
+          line-height: 1.6;
+          color: var(--foreground-tertiary);
         }
       }
     }

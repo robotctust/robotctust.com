@@ -1,0 +1,176 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+// --aspect-ratio 由 prop 透過 inline style 設定
+.carousel {
+  position: relative;
+  width: 100%;
+  overflow: hidden;
+  padding: 40px 0;
+
+  --card-width: 800px;
+  --gap: 32px;
+
+  @include mixins.respond-by-max-width(900px) {
+    --card-width: 80vw;
+    --gap: 12px;
+  }
+
+  @include mixins.respond-by-max-width(768px) {
+    padding-bottom: 0;
+  }
+
+  > .track {
+    display: flex;
+    gap: var(--gap);
+    padding-left: calc(50vw - (var(--card-width) / 2));
+    padding-right: calc(50vw - (var(--card-width) / 2));
+    width: max-content;
+    @include mixins.transition(transform 0.6s cubic-bezier(0.25, 1, 0.5, 1));
+
+    > .slide {
+      position: relative;
+      flex: 0 0 var(--card-width);
+      width: var(--card-width);
+      aspect-ratio: var(--aspect-ratio, 16 / 9);
+      overflow: hidden;
+      border: 1px solid var(--border);
+      opacity: 0.4;
+      @include mixins.border-radius(20px);
+      @include mixins.transform-container(scale(0.9));
+      @include mixins.transition(all 0.6s cubic-bezier(0.25, 1, 0.5, 1));
+
+      &[aria-hidden='false'] {
+        opacity: 1;
+        @include mixins.transform-container(scale(1));
+      }
+
+      @include mixins.respond-by-max-width(768px) {
+        aspect-ratio: 3 / 4;
+        max-height: 75vh;
+      }
+
+      > .imageWrapper {
+        position: absolute;
+        inset: 0;
+        z-index: 1;
+
+        img {
+          object-fit: cover;
+          object-position: center;
+        }
+      }
+
+      // 底部漸層，讓 content 文字在深色背景上清晰
+      > .overlay {
+        position: absolute;
+        inset: auto 0 0;
+        height: 70%;
+        z-index: 5;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.72) 0%, transparent 100%);
+        pointer-events: none;
+      }
+
+      > .content {
+        position: absolute;
+        inset: auto var(--space-4x) var(--space-4x);
+        z-index: 10;
+        color: white;
+
+        @include mixins.respond-by-max-width(768px) {
+          inset: auto var(--space-3x) var(--space-3x);
+        }
+      }
+    }
+  }
+
+  > .navButton {
+    z-index: 10;
+    position: absolute;
+    top: 50%;
+    @include mixins.flexbox(row, center, center);
+    width: 42px;
+    height: 42px;
+    color: var(--foreground);
+    @include mixins.border-radius(50%);
+    @include mixins.transform-container(translateY(-50%));
+    @include mixins.transition(all 0.3s ease);
+    cursor: pointer;
+
+    &:hover {
+      background-color: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      @include mixins.transform-container(translateY(-50%) scale(1.05));
+      @include mixins.glass-blur(6px);
+    }
+
+    &.prev { left:  calc(50vw - (var(--card-width) / 2) - 42px - 12px); }
+    &.next { right: calc(50vw - (var(--card-width) / 2) - 42px - 12px); }
+
+    @include mixins.respond-by-max-width(768px) { display: none; }
+  }
+
+  > .controls {
+    @include mixins.flexbox(row, center, center);
+    gap: var(--space-2x);
+    margin-top: calc(var(--space-2x) * -1);
+
+    > .playPause {
+      @include mixins.flexbox(row, center, center);
+      width: 42px;
+      height: 42px;
+      color: var(--foreground-secondary);
+      background-color: rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(0, 0, 0, 0.05);
+      @include mixins.border-radius(50%);
+      @include mixins.glass-blur(6px);
+      @include mixins.transition(all 0.2s ease);
+      cursor: pointer;
+
+      :global(html.dark) & {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-color: rgba(255, 255, 255, 0.1);
+      }
+
+      &:hover { color: var(--foreground); }
+
+      > .playIcon { margin-left: 3px; }
+    }
+
+    > .dots {
+      @include mixins.flexbox(row, center, center);
+      gap: var(--space-2x);
+
+      @include mixins.respond-by-max-width(768px) { gap: var(--space); }
+
+      > .dot {
+        position: relative;
+        width: 12px;
+        height: 12px;
+        overflow: hidden;
+        background-color: rgba(0, 0, 0, 0.15);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+        @include mixins.border-radius(6px);
+        @include mixins.transition(all 0.4s ease);
+        cursor: pointer;
+
+        :global(html.dark) & { background-color: rgba(255, 255, 255, 0.15); }
+
+        &.active {
+          width: 56px;
+          background-color: rgba(0, 0, 0, 0.25);
+          :global(html.dark) & { background-color: rgba(255, 255, 255, 0.25); }
+
+          @include mixins.respond-by-max-width(768px) { width: 40px; }
+        }
+
+        &:hover { background-color: rgba(0, 0, 0, 0.25); }
+
+        > .progress {
+          position: absolute;
+          inset: 0 auto 0 0;
+          background-color: var(--theme-purple-600);
+        }
+      }
+    }
+  }
+}

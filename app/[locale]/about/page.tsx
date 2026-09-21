@@ -3,18 +3,14 @@ import Page from '@/app/components/page/Page'
 import Footer from '@/app/components/Footer/Footer'
 import { metadata } from '@/app/utils/metadata'
 import { getTranslations } from 'next-intl/server'
-
-// sections
 import AboutHeroSection from './ui/AboutHeroSection/AboutHeroSection'
+import ActivityShowcase from './ui/ActivityShowcase/ActivityShowcase'
 import OriginSection from './ui/OriginSection/OriginSection'
+import MilestoneTimeline from './ui/MilestoneTimeline/MilestoneTimeline'
 import CultureSection from './ui/CultureSection/CultureSection'
-import PhilosophySection from './ui/PhilosophySection/PhilosophySection'
+import JoinHook from './ui/JoinHook/JoinHook'
 import ClubOfficer from './ui/ClubOfficer/ClubOfficer'
-import OfficeLocationCard from '@/app/components/OfficeLocationCard/OfficeLocationCard'
 
-/**
- * 關於頁面
- */
 export default function About() {
   return (
     <Page
@@ -25,9 +21,11 @@ export default function About() {
       config={{ paddingBottom: false }}
     >
       <AboutHeroSection />
+      <ActivityShowcase />
       <OriginSection />
+      <MilestoneTimeline />
       <CultureSection />
-      <PhilosophySection />
+      <JoinHook />
       <ClubOfficer />
       <Footer />
     </Page>

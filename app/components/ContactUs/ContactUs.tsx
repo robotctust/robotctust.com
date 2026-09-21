@@ -17,11 +17,11 @@ async function ContactUs() {
       <div className={styles.contactItem}>
         <p className={styles.labelTitle}>{t('contactUs.email')}</p>
         <Link
-          href="mailto:robotctust@gmail.com"
+          href="mailto:contact@robotctust.com"
           className="link"
           target="_blank"
         >
-          robotctust@gmail.com
+          contact@robotctust.com
         </Link>
       </div>
       <div className={styles.contactItem}>

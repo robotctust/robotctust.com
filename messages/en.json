@@ -453,30 +453,36 @@
         }
       }
     },
-    "LessonIntro": {
-      "title": "Course Overview",
-      "lessons": {
-        "0": {
-          "title": "General Meeting & Orientation",
-          "description": "The first session of our club starts with getting to know each other. We introduce the mission, bylaws, and future plans, guide members through the website's features, and complete interest-based grouping to lay a solid foundation for upcoming hands-on courses."
-        },
-        "1": {
-          "title": "Robot Hardware Assembly",
-          "description": "The first large-scale hands-on event. Starting from individual components, members assemble the robot car's structure and connect circuits based on schematics, experiencing the creative process of turning parts into a complete robot."
-        },
-        "2": {
-          "title": "Robot Programming",
-          "description": "After hardware assembly, we breathe life into the robot. Starting from Arduino IDE installation, members learn to read sensor values and write logic to make the robot car truly move."
-        },
-        "3": {
-          "title": "Robotics Competition",
-          "description": "The club's first internal competition combined with an on-site workshop. Officers explain core algorithms, and members adjust code and familiarize themselves with the track on the spot before robots attempt to navigate the map autonomously."
-        }
-      }
-    },
     "LatestUpdates": {
       "title": "Latest Updates",
       "viewAll": "View All Posts"
+    },
+    "CourseJourney": {
+      "title": "Our Club Journey",
+      "scrollLabel": "Here's a glimpse of what we get up to in the club!",
+      "lessons": {
+        "0": {
+          "title": "General Meeting & Orientation",
+          "description": "Our first session starts with getting to know each other. We cover the club's mission and plans, walk through the website, and form interest-based groups to set up the hands-on courses ahead."
+        },
+        "1": {
+          "title": "Robot Hardware Assembly",
+          "description": "The club's first big hands-on event. Starting from individual parts and schematics, members assemble the robot car's structure and wiring, seeing how parts become a real robot."
+        },
+        "2": {
+          "title": "Robot Programming",
+          "description": "With the hardware built, we give the robot its \"soul.\" Starting from the Arduino IDE, members read sensor values and write the logic that makes the car actually move."
+        },
+        "3": {
+          "title": "Robotics Competition",
+          "description": "The club's first internal contest, paired with a live workshop. After officers explain the core algorithms, members tune their code on the spot before robots navigate the map on their own."
+        }
+      }
+    },
+    "AboutHook": {
+      "heading": "There's a story worth knowing...",
+      "support": "Explore our origins, culture, officers, and activity highlights — see what this community is really about.",
+      "ctaLabel": "Learn More"
     }
   },
   "Calendar": {
@@ -587,45 +593,68 @@
   "About": {
     "meta": {
       "title": "About | Robotics Research Club of CTUST",
-      "description": "Learn about the CTUST Robotics Research Club — our founding mission, activities, and members. We are dedicated to promoting robotics education and providing students with hands-on learning opportunities.",
+      "description": "Learn about the CTUST Robotics Research Club: our founding mission, activities, and members. We are dedicated to promoting robotics education and providing students with hands-on learning opportunities.",
       "keywords": "about us,club introduction,members,club mission"
     },
     "hero": {
-      "eyebrow": "ROBOT CTUST · About Us",
       "title": "Discover the Endless Possibilities of Robotics",
-      "subtitle": "Explore, build, and grow alongside a community of like-minded enthusiasts — one step, one creation at a time.",
-      "foundingNote": "Founded in 2025 · by three students"
+      "subtitle": "In the fall of 2025, a group of students came together over a shared love of robotics."
     },
     "origin": {
-      "label": "Our Story",
-      "heading": "Sparked by a Shared Passion for Robotics",
-      "paragraph1": "In the fall of 2025, Shih-Chi, Tai-Ling, and Chang-Lung crossed paths through their shared love of robotics. Seeing fellow students on campus pouring themselves into their own projects, they asked themselves: what if there were a place where everyone could come together — to build, to learn, and to grow? That question is what led them to found the CTUST Robotics Research Club.",
-      "paragraph2": "The idea quickly turned into action. At the October club fair, the newly formed club made its debut — drawing nearly thirty new members to sign up. The first workshop followed soon after. There were bumps along the way: technical hiccups, curriculum tweaks, and plenty of on-the-fly adjustments. But the three founders believed those rough edges were all part of the process. Each setback helped them find the teaching style and club culture that felt right.",
-      "paragraph3": "Today, the club is no longer just three people's dream — it's a learning community of dozens of passionate members. We still carry the same founding spirit: that every hands-on session and every moment of shared discovery is what makes this club worth building. We look forward to exploring this journey alongside you — from parts to machine, one step at a time."
-    },
-    "culture": {
-      "label": "Club Culture",
-      "heading": "Feeling the Pulse of Robotics Through Practice",
-      "narrative": "We believe the real learning journey in robotics doesn't happen in textbooks — it happens the moment you start building. Step into one of our workshops and you'll see it: newcomers focused intently on assembling their first robot, veterans patiently walking a friend through a tricky circuit, everyone learning through trial and discussion. There's no such thing as a bad question here — just people helping each other and always pushing to improve. No matter where you're starting from, if you care about robotics, there's a place for you here.",
-      "moments": [
+      "heading": "A Club That Began With a Single Idea",
+      "paragraph1": "In the fall of 2025, Shih-Chi, Tai-Ling, and Chang-Lung crossed paths through their shared love of robotics. Watching fellow students on campus each buried in their own projects, a thought struck them: what if there were a place where everyone could come together to build, to learn, and to grow? The CTUST Robotics Research Club began with exactly that idea.",
+      "paragraph2": "We believe that transparency and close connections between members are the foundation a club is built on. From the fumbling of our very first workshop to the first time we stepped onto a competition stage, we've treated every imperfection as something to grow from. Today the club is no longer just three people's dream. It's a learning community of passionate members.",
+      "timelineLabel": "Our first year, step by step",
+      "timeline": [
         {
-          "title": "Hands-On Building",
-          "description": "From parts to assembly — only by building it yourself do you truly feel the joy of creation."
+          "date": "2025.09",
+          "title": "Debut at the club fair",
+          "description": "On day one at the club fair, nearly 30 students were drawn in by the robots and signed up. This is where the club officially began."
         },
         {
-          "title": "Learning Together",
-          "description": "No bad questions. Just teammates exploring side by side, helping each other grow."
+          "date": "2025.10",
+          "title": "Robot Car DIY, hands on",
+          "description": "Our first major event. Members assembled robot cars from circuit boards, motors, and wheels by hand, and the officers stood up as teachers for the first time."
         },
         {
-          "title": "Always Improving",
-          "description": "Listen, reflect, and iterate — finding better ways forward with every step."
+          "date": "2026.04",
+          "title": "First line-following contest",
+          "description": "Nine teams went head to head. Stuck robots, sensor tuning, last-minute code fixes. We don't hide how green our first contest was, but every hiccup became fuel."
+        },
+        {
+          "date": "2026.05",
+          "title": "Onto the AERC Asian stage",
+          "description": "With less than a year of experience, our members represented the school at the AERC Asian robotics championship and brought home category awards."
+        },
+        {
+          "date": "2026.05",
+          "title": "Eight-team robot battle",
+          "description": "The end-of-semester robot battle. Eight teams went head to head and crowned the club's very first champion."
         }
       ]
     },
-    "philosophy": {
-      "heading": "From Parts to Machine, Together",
-      "body": "Every robot begins with a single part, and every person's growth begins with the willingness to try. We believe the most valuable part of the journey isn't the finished product — it's the warmth of building something alongside others, the shared thinking, and the memories made along the way.",
-      "invitation": "Whether you're just starting out or already deep into the world of robotics, you're welcome here. We look forward to taking each step alongside you — building from parts to machine, and finding our story together."
+    "culture": {
+      "marqueeTags": [
+        "Hands-on",
+        "Open source",
+        "No bad questions",
+        "Fail forward",
+        "Grow together",
+        "Parts to machine",
+        "Figure it out"
+      ],
+      "heading": "We believe",
+      "beliefs": [
+        "The best learning starts with your hands.",
+        "There are no bad questions here.",
+        "Sharing gets everyone there faster.",
+        "Every \"what if\" is worth a try."
+      ]
+    },
+    "hook": {
+      "heading": "No experience needed. We start from the very first screw.",
+      "support": "In under a year we went from our first robot car to the AERC Asian stage. Want the next chapter to include you?",
+      "ctaLabel": "Join Us"
     }
   },
   "Contact": {

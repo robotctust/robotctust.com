@@ -11,7 +11,8 @@ import CoreProjects from '@/app/components/home/CoreProjects/CoreProjects'
 import LatestUpdatesSection from '@/app/components/home/LatestUpdatesSection'
 import Loading from '@/app/components/Loading/Loading'
 import Marquee from '@/app/components/home/Marquee/Marquee'
-import LessonIntro from '@/app/components/home/LessonIntro/LessonIntro'
+import CourseJourney from '@/app/components/home/CourseJourney/CourseJourney'
+import AboutHook from '@/app/components/home/AboutHook/AboutHook'
 import ScrollAnimation from '@/app/components/animation/ScrollAnimation/ScrollAnimation'
 
 // utils
@@ -57,7 +58,8 @@ export default async function Home() {
         speed={60}
       />
       <ClubFeaturesSection />
-      <LessonIntro />
+      <CourseJourney />
+      <AboutHook />
 
       <Suspense fallback={<Loading />}>
         <LatestUpdatesSection />

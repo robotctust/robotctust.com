@@ -1,5 +1,5 @@
 export const SITE_CONFIG = {
-  version: '2.4.1 Beta 1',
+  version: '2.4.1 Beta 2',
   name: '中臺機器人研究社',
   shortName: '中臺機器人研究社',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://robotctust.com',

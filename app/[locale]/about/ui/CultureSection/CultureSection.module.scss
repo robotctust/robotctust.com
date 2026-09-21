@@ -1,110 +1,51 @@
 @use '@/app/styles/_mixins.scss' as mixins;
 
 .culture {
-  margin: 0 auto;
-  width: calc(100% - var(--space-4x));
-  max-width: 860px;
-  padding: var(--space-4x);
-  background: rgba(var(--background-secondary-rgb), 0.25);
-  border: 1px solid var(--border);
-  @include mixins.border-radius(16px);
-  @include mixins.glass-blur(24px);
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space-5x);
+  width: 100%;
+  padding: var(--space-6x) 0;
 
-  @include mixins.respond-by-max-width('600px') {
-    padding: var(--space-2x);
-    padding-top: var(--space-4x);
+  @include mixins.respond-to('phone') {
+    gap: var(--space-3x);
   }
 
-  > .container {
+  > .marquee {
+    width: 100%;
+  }
+
+  > .inner {
     @include mixins.flexbox(column, flex-start, flex-start);
-    gap: 32px;
-    max-width: 900px;
+    gap: var(--space-3x);
+    max-width: 1200px;
+    width: calc(100% - var(--space-4x));
     margin: 0 auto;
+    padding: 0 var(--space-2x);
 
-    @include mixins.respond-by-max-width('600px') {
-      gap: var(--space-2x);
+    @include mixins.respond-to('phone') {
+      width: 100%;
     }
 
-    // sectionLabel + h2 的 animated.div 包裝器
-    > .headingGroup {
+    > .heading h2 {
+      margin: 0;
+      font-size: 1.25rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      color: var(--primary);
+    }
+
+    > .beliefs {
       @include mixins.flexbox(column, flex-start, flex-start);
-      gap: 6px;
-
-      span {
-        font-size: 0.75rem;
-        font-weight: 600;
-        letter-spacing: 0.2em;
-        text-transform: uppercase;
-        color: var(--primary);
-      }
-
-      h2 {
-        margin: 0;
-        font-size: 2rem;
-        font-weight: 700;
-        letter-spacing: -0.02em;
-        line-height: 1.25;
-        color: var(--foreground);
-      }
-    }
-
-    // 敘述段落的 animated.div 包裝器
-    > .narrative {
-      p {
-        margin: 0;
-        font-size: 0.95rem;
-        line-height: 1.9;
-        color: var(--foreground-secondary);
-      }
-    }
-
-    > .momentGrid {
-      @include mixins.grid-layout(3, 20px);
+      gap: var(--space-2x);
       width: 100%;
 
-      @include mixins.respond-to('phone') {
-        @include mixins.grid-layout(1, 16px);
-      }
-
-      @include mixins.respond-to('tablet') {
-        @include mixins.grid-layout(2, 16px);
-      }
-
-      // animated.div 本身就是卡片本體
-      .momentCard {
-        @include mixins.flexbox(column, flex-start, flex-start);
-        gap: 12px;
-        padding: 24px;
-        height: 100%;
-        border: 1px solid var(--border);
-        border-radius: 12px;
-        background: var(--background);
-
-        .iconWrapper {
-          @include mixins.flexbox(row, center, center);
-          width: 40px;
-          height: 40px;
-          border-radius: 10px;
-          background: var(--background-secondary);
-          border: 1px solid var(--border);
-          color: var(--primary);
-          font-size: 1rem;
-          flex-shrink: 0;
-        }
-
-        > h3 {
-          margin: 0;
-          font-size: 0.95rem;
-          font-weight: 600;
-          color: var(--foreground);
-        }
-
-        > p {
-          margin: 0;
-          font-size: 0.85rem;
-          line-height: 1.7;
-          color: var(--foreground-secondary);
-        }
+      > .belief p {
+        margin: 0;
+        font-size: clamp(1.5rem, 4.5vw, 3rem);
+        font-weight: 700;
+        line-height: 1.25;
+        letter-spacing: -0.02em;
+        color: var(--foreground);
       }
     }
   }

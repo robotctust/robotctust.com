@@ -1,0 +1,136 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.hook {
+  width: 100%;
+  padding: var(--space-2x) 0 30vh;
+}
+
+// 卡片＝StaggerReveal 的根（整塊 blur/淡入套在此），同時作為懸浮圖的定位基準。
+// 不設 overflow（保持 visible），讓懸浮圖從上下緣探出。
+.inner {
+  position: relative;
+  @include mixins.flexbox(row, space-between, center);
+  gap: var(--space-5x);
+  max-width: 1100px;
+  width: calc(100% - var(--space-4x));
+  margin: 0 auto;
+  padding: var(--space-4x) var(--space-5x);
+  border: 1px solid var(--border);
+  background: rgba(var(--background-rgb), 0.25);
+  @include mixins.border-radius(20px);
+  @include mixins.glass-blur(20px);
+
+  @include mixins.respond-to('tablet') {
+    @include mixins.flexbox(column, flex-start, flex-start);
+    gap: var(--space-3x);
+  }
+
+  @include mixins.respond-to('phone') {
+    @include mixins.flexbox(column, flex-start, flex-start);
+    gap: var(--space-2x);
+    padding: var(--space-3x) var(--space-2x);
+  }
+
+  > .text {
+    @include mixins.flexbox(column, flex-start, flex-start);
+    flex: 1;
+    min-width: 0;
+    gap: var(--space);
+
+    > h2 {
+      margin: 0;
+      // 中間值改為 4vw，讓手機（390px≈15.6px）確實被下限撐到 1.375rem=22px
+      font-size: clamp(1.375rem, 4vw, 1.875rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      line-height: 1.3;
+      color: var(--foreground);
+    }
+
+    > p {
+      margin: 0;
+      font-size: 0.925rem;
+      line-height: 1.75;
+      color: var(--foreground-secondary);
+    }
+  }
+
+  > .cta {
+    flex-shrink: 0;
+    @include mixins.button('primary', 'large');
+    white-space: nowrap;
+
+    span[aria-hidden] {
+      @include mixins.transition(
+        transform var(--transition-duration) var(--transition-bezier)
+      );
+    }
+
+    &:hover span[aria-hidden] {
+      transform: translateX(3px);
+    }
+  }
+}
+
+// ── 懸浮裝飾圖 ───────────────────────────────────────────────
+// .float = ScrollParallax 外層（定位 + 漂移）；在內容之上、不擋互動。
+.float {
+  position: absolute;
+  z-index: 2;
+  pointer-events: none;
+}
+
+// 上/下緣錨定：只微微探入卡片邊緣（-14px），不碰中間內容
+.edgeTop {
+  bottom: 100%;
+  margin-bottom: -14px;
+}
+.edgeBottom {
+  top: 100%;
+  margin-top: -14px;
+}
+
+// .floatTilt = 視覺方塊（圓角／陰影／旋轉）；transform 由 inline 設
+// （translateX(-50%) 以 left% 為中心錨定 + rotate）。
+.floatTilt {
+  display: block;
+  position: relative; // next/image fill 基準
+  overflow: hidden;
+  border: 1px solid var(--border);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+  @include mixins.border-radius(16px);
+}
+
+// 尺寸（clamp 響應式，窄螢幕自動縮小）
+.fS {
+  width: clamp(120px, 26vw, 184px);
+}
+.fM {
+  width: clamp(156px, 33vw, 240px);
+}
+.fL {
+  width: clamp(196px, 40vw, 300px);
+}
+
+// 長寬比（高度由此導出，增加隨意感）
+.arP {
+  aspect-ratio: 3 / 4;
+}
+.arL {
+  aspect-ratio: 4 / 3;
+}
+.arS {
+  aspect-ratio: 1;
+}
+
+// src 留空時的圓角佔位框
+.floatPlaceholder {
+  display: block;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    135deg,
+    rgba(var(--theme-purple-100-rgb), 0.28) 0%,
+    var(--background-secondary) 100%
+  );
+}

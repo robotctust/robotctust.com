@@ -10,6 +10,7 @@ import {
   faThreads,
   faXTwitter,
   faGithub,
+  faDiscord,
 } from '@fortawesome/free-brands-svg-icons'
 // utils
 import { SITE_CONFIG } from '@/app/utils/siteConfigs'
@@ -46,7 +47,7 @@ export default async function Footer({
                 width={100}
                 height={100}
               />
-              <h1>{tIndex('clubName')}</h1>
+              <h1>{tIndex('title')}</h1>
             </div>
             <div className={styles.headerRight}>
               <div className={styles.social}>
@@ -78,6 +79,13 @@ export default async function Footer({
                     target="_blank"
                   >
                     <FontAwesomeIcon icon={faGithub} />
+                  </Link>
+                  <Link
+                    href="https://discord.gg/M3msfbUxrD"
+                    className={`${styles.socialItem} ${styles.discord}`}
+                    target="_blank"
+                  >
+                    <FontAwesomeIcon icon={faDiscord} />
                   </Link>
                 </div>
               </div>

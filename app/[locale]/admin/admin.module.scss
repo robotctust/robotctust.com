@@ -226,18 +226,31 @@
         margin-bottom: 12px;
       }
 
-      h2 { margin: 0; font-size: 1.75rem; }
-      p { color: var(--foreground-secondary); }
+      h2 {
+        margin: 0;
+        font-size: 1.75rem;
+      }
+      p {
+        color: var(--foreground-secondary);
+      }
     }
   }
 }
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 @keyframes superAdminGradientFlow {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 200% 50%; }
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 200% 50%;
+  }
 }
