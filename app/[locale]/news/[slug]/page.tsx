@@ -28,7 +28,7 @@ import { CATEGORY_TO_SLUG } from '@/app/types/post'
 import { serializePost } from '@/app/types/serialized'
 
 // 重新整理時間
-export const revalidate = 60
+export const revalidate = 300
 
 // 動態參數
 export const dynamicParams = true

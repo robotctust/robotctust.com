@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
       return Response.json({ error: '建立文章失敗' }, { status: 500 })
     }
 
-    await revalidateUpdatePage(postId)
+    await revalidateUpdatePage()
 
     return Response.json({ postId }, { status: 201 })
   } catch (error) {

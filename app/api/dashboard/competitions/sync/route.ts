@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server'
+import { revalidatePath } from 'next/cache'
 import { adminDb } from '@/app/utils/firebaseAdmin'
 import { FieldValue, Timestamp } from 'firebase-admin/firestore'
 import { requireAdminAccess } from '@/app/utils/auth/admin'
@@ -94,6 +95,7 @@ export async function POST(request: Request) {
 
     await batch.commit()
 
+    revalidatePath('/[locale]/competitions/[slug]', 'page')
     return NextResponse.json({ success: successCount, errors })
   } catch (error: any) {
     console.error('API batch sync error:', error)

@@ -21,7 +21,7 @@ pnpm start    # serve production build
 - No `.env.example` exists yet. Local dev needs Supabase keys (`NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SUPABASE_SERVICE_ROLE_KEY`), Firebase keys (`NEXT_PUBLIC_FIREBASE_*` + admin SA), and `NEXT_PUBLIC_ADMIN_EMAIL`.
 
 ## Deployment
-- Hosted on **Vercel** (project is already linked — `.vercel/` exists; there is no `vercel.json`, so Vercel's default Next.js build is used).
+- Hosted on **Vercel** (project is already linked — `.vercel/` exists). `vercel.json` only pins `regions: ["bom1"]` (Mumbai, same region as Supabase) so server renders and API routes sit next to the DB; otherwise Vercel's default Next.js build is used. Middleware is **not** governed by `regions` — it runs near the visitor — so keep network calls out of it.
 - `pnpm deploy` runs `vercel --prod` for a manual production deploy. Pushing to the connected git branch also triggers Vercel's normal build/deploy.
 - Environment variables live in the **Vercel project settings** (and locally in `.env`), not in the repo. When adding a new env var, remember it must be set in Vercel too or the production build will break.
 - One-off data/migration scripts live in `scripts/` (e.g. `migrate-posts-to-supabase.ts`); they are run manually, not part of the build.
@@ -40,11 +40,18 @@ pnpm start    # serve production build
 - **Static media** (activity photos etc.) lives on **Cloudflare R2**, served from `https://img.robotctust.com` (`SITE_CONFIG.mediaBase`; the host is whitelisted in `next.config.ts` `remotePatterns` and images go through `next/image`). Keys mirror usage: `home/about-hook/NN.webp`, `about/activity/NN.webp`. Upload manually with `wrangler r2 object put <bucket>/<key> --remote --file … --content-type image/webp --cache-control "public, max-age=31536000, immutable"` — `--remote` is required (wrangler defaults to a local simulator). Objects are immutable-cached, so **replace an image by uploading a new filename**, never by overwriting.
 - **Firebase security rules** (`firestore.rules`, `storage.rules`, `database.rules.json`) in the repo are reference copies only — the maintainer edits the live rules **directly in the Firebase Console**, not by deploying these files. Do not assume the repo files are authoritative or deploy them; if rules need changing, instruct the user to update them in the Console.
 
+### Rendering & caching (public pages must stay static)
+All public pages (home, about, news, calendar, competitions, docs, contact, privacy, terms…) are prerendered (`●` in `next build`) and served from Vercel's CDN; only per-user pages (courses, profile, login, onboarding, settings, dashboard) are dynamic. Caching breaks **silently** — no build error, the page still renders — so after touching a public page run `pnpm build` and confirm it is still `●`, not `ƒ`. Rules:
+- Every page and `generateMetadata` in `[locale]/layout.tsx` calls `setRequestLocale(locale)`; a public page whose server components use `useTranslations`/`getLocale` must call it too, or next-intl reads `headers()` and the page goes dynamic.
+- Public pages must not call `cookies()`/`headers()` or read `searchParams` on the server. Read data with `createPublicClient()` or `createAdminClient()` (neither touches cookies).
+- Pages with DB data set `export const revalidate = 300`, and dashboard writes clear them on demand. `revalidatePath` must use the route pattern (`revalidatePath('/[locale]/news', 'page')`) — a literal URL like `'/news'` misses zh-TW, which is internally rewritten to `/zh-TW/news`. See `app/action/revalidate.ts`.
+
 ### Supabase clients (pick the right one)
 - `app/utils/supabase/client.ts` — browser/client components.
 - `app/utils/supabase/server.ts` — server components/route handlers; uses the publishable (anon) key, **respects RLS**.
+- `app/utils/supabase/public.ts` — `createPublicClient()`: publishable key, **no cookies**, acts as an anonymous visitor under RLS. Use it for public data on public pages; `server.ts` reads `cookies()` and forces the whole page dynamic.
 - `app/utils/supabase/admin.ts` — `createAdminClient()` uses the service-role key and **bypasses RLS**. Server-only, never import into client code.
-- `app/utils/supabase/middleware.ts` — `updateSession()` session-cookie refresh used by `middleware.ts`.
+- `app/utils/supabase/middleware.ts` — `updateSession()` session-cookie refresh used by `middleware.ts`. Uses `getClaims()` (JWT is asymmetric ES256, verified locally against cached JWKS), not `getUser()`, so middleware makes no network call per request; server code that must confirm the account is still valid calls `getUser()` itself.
 
 ### Supabase database (schema & change policy)
 Project **Robot CTUST** (ref `fdejhtwkvqrccnnpivwa`, ap-south-1, Postgres 17). **Every `public` table has RLS enabled.** Inspect the live schema with the Supabase MCP tools (`list_tables`, `list_migrations`, etc.) before relying on this summary — it can drift.

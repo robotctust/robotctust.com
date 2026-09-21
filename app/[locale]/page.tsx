@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import styles from './home.module.scss'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 // components
 import Page from '@/app/components/page/Page'
@@ -22,10 +22,18 @@ import { metadata } from '@/app/utils/metadata'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBullseye } from '@fortawesome/free-solid-svg-icons'
 
+// 靜態快取，最新資訊每 5 分鐘更新；後台改文章時會即時清（app/action/revalidate.ts）
+export const revalidate = 300
+
 /**
  * 首頁
  */
-export default async function Home() {
+export default async function Home({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  setRequestLocale((await params).locale)
   const t = await getTranslations('Home')
 
   return (

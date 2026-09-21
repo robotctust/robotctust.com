@@ -2,15 +2,17 @@
 
 import { revalidatePath } from 'next/cache'
 
-export async function revalidateUpdatePage(postId?: string) {
+/**
+ * 後台新增/編輯/刪除文章後清快取：首頁（最新資訊）、新聞列表、新聞內頁。
+ * 要用路由樣式 '/[locale]/…'，寫實際網址（'/news'）清不到 zh-TW——
+ * 它經 middleware rewrite 後內部路徑是 /zh-TW/news。
+ */
+export async function revalidateUpdatePage() {
   try {
-    revalidatePath('/news')
-    revalidatePath('/en/news')
-
-    if (postId) {
-      revalidatePath(`/news/${postId}`)
-      revalidatePath(`/en/news/${postId}`)
-    }
+    revalidatePath('/[locale]', 'page')
+    revalidatePath('/[locale]/news', 'page')
+    // 內頁整組清掉，含被刪除的那篇
+    revalidatePath('/[locale]/news/[slug]', 'page')
 
     return {
       success: true,

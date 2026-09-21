@@ -4,11 +4,16 @@ import styles from './docs.module.scss'
 import { mainDocs } from './docs'
 import { Metadata } from 'next'
 import { metadata } from '@/app/utils/metadata'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import Page from '@/app/components/page/Page'
 import SubDocsClient from './ui/SubDocsClient/SubDocsClient'
 
-export default async function DocsPage() {
+export default async function DocsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  setRequestLocale((await params).locale)
   const t = await getTranslations('Docs')
 
   return (

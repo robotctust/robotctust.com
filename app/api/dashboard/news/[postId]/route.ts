@@ -84,7 +84,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       return Response.json({ error: '更新文章失敗' }, { status: 500 })
     }
 
-    await revalidateUpdatePage(postId)
+    await revalidateUpdatePage()
 
     return Response.json({ success: true })
   } catch (error) {
@@ -114,7 +114,7 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
       return Response.json({ error: '刪除文章失敗' }, { status: 500 })
     }
 
-    await revalidateUpdatePage(postId)
+    await revalidateUpdatePage()
 
     return Response.json({ success: true })
   } catch (error) {

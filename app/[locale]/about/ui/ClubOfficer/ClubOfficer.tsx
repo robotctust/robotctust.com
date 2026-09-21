@@ -2,11 +2,11 @@ import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import styles from './ClubOfficer.module.scss'
 import { CLUB_OFFICERS, type ClubOfficer as ClubOfficerType } from './club-officers'
-import { getUserProfileByUidServer } from '@/app/utils/userServiceServer'
+import { createPublicClient } from '@/app/utils/supabase/public'
 
 /**
  * 單張幹部卡片（Server Component）。
- * userId 有值 → 向 Supabase 查頭像與 username；
+ * userId 有值 → 向 Supabase 查頭像與 username（用不帶 cookie 的 client，關於頁才能靜態快取）；
  * username 有值 → 卡片變為可點擊的個人頁連結。
  */
 async function ClubOfficerItem({ clubOfficer }: { clubOfficer: ClubOfficerType }) {
@@ -15,9 +15,13 @@ async function ClubOfficerItem({ clubOfficer }: { clubOfficer: ClubOfficerType }
 
   if (clubOfficer.userId) {
     try {
-      const userProfile = await getUserProfileByUidServer(clubOfficer.userId)
-      if (userProfile?.photoURL) avatarUrl = userProfile.photoURL
-      username = userProfile?.username || ''
+      const { data } = await createPublicClient()
+        .from('users')
+        .select('avatar_url, username')
+        .eq('id', clubOfficer.userId)
+        .maybeSingle()
+      if (data?.avatar_url) avatarUrl = data.avatar_url
+      username = data?.username || ''
     } catch (error) {
       console.error('獲取使用者頭像時發生錯誤:', error)
     }
