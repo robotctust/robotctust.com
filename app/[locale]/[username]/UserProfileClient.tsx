@@ -9,11 +9,7 @@ import styles from './User.module.scss'
 import { useAuth } from '@/app/contexts/AuthContext'
 
 // types
-import { UserProfile } from '@/app/types/user'
-import {
-  SerializedUserProfile,
-  deserializeUserProfile,
-} from '@/app/types/serialized'
+import { PublicUserProfile } from '@/app/types/user'
 
 // components
 import FollowListModal from './FollowListModal'
@@ -33,7 +29,7 @@ interface FollowCounts {
 
 interface UserProfileClientProps {
   username: string
-  initialUserProfile: SerializedUserProfile | null
+  initialUserProfile: PublicUserProfile | null
   initialFollowCounts?: FollowCounts | null
   isPrivate?: boolean
 }
@@ -55,10 +51,9 @@ export default function UserProfileClient({
   const { user, signOut } = useAuth()
   // Router
   const router = useRouter()
-  // 顯示使用者資訊
-  const [displayUserInfo, setDisplayUserInfo] = useState<UserProfile | null>(
-    initialUserProfile ? deserializeUserProfile(initialUserProfile) : null,
-  )
+  // 顯示使用者資訊（本人時會換成 AuthContext 的完整資料，只用到公開名片欄位）
+  const [displayUserInfo, setDisplayUserInfo] =
+    useState<PublicUserProfile | null>(initialUserProfile)
   // 是否為登入者本人的資料
   const [isOwnProfile, setIsOwnProfile] = useState(false)
 
@@ -88,10 +83,7 @@ export default function UserProfileClient({
       setDisplayUserInfo(user)
       setIsOwnProfile(true)
     } else {
-      const deserializedProfile = initialUserProfile
-        ? deserializeUserProfile(initialUserProfile)
-        : null
-      setDisplayUserInfo(deserializedProfile)
+      setDisplayUserInfo(initialUserProfile)
       setIsOwnProfile(false)
     }
   }, [user, username, initialUserProfile])

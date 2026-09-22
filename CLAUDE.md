@@ -69,6 +69,7 @@ Schema changes are tracked as Supabase migrations (latest: `add_follows_feature`
 ### Authorization (read before touching admin/dashboard code)
 - Users hold an **array of roles** (`super_admin`, `admin`, per-module admins like `admin_course`/`admin_news`/`admin_accounts`/..., and `member`). The single source of truth for role logic is `app/utils/auth/roles.ts` — always go through `normalizeRoles`, `isAdminRole`, `getAssignableRoles`, `canManageTargetUser` rather than comparing role strings inline.
 - Client-side auth state: `app/contexts/AuthContext.tsx` (`useAuth()`).
+- **Never pass another user's full `UserProfile` to a client component** — anything in client props is visible in the page source, and `UserProfile` carries `email`, `studentId`, `roles`. Narrow it first with `toPublicUserProfile()` (`app/types/serialized.ts`, type `PublicUserProfile`); widen that whitelist only for fields the UI actually renders.
 - **Critical invariant:** `/api/dashboard/*` route handlers use the service-role admin client, which bypasses the DB's `prevent_role_escalation` trigger and RLS. Therefore every dashboard route MUST enforce authorization in code — call `requireDashboardAccess(module)` from `app/utils/dashboard/auth.ts` and validate role-assignment boundaries (`getAssignableRoles` / `canManageTargetUser`) before any write. Do not rely on the DB or frontend to gate these.
 
 ### API routes
