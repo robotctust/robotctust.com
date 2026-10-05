@@ -22,6 +22,7 @@ type FloatSpec = {
   size: string // styles.fS | fM | fL
   ratio: string // styles.arP | arL | arS
   rotate: number // deg
+  lift: number // 0–1，再往卡片外推的比例（× --spread）；相鄰重疊的圖要差多一點，才不會連成一條
   drift: [number, number] // ScrollParallax y 範圍 [進場, 離場] (px)
   src: string
 }
@@ -33,6 +34,7 @@ const floats: FloatSpec[] = [
     size: styles.fM,
     ratio: styles.arL,
     rotate: -6,
+    lift: 0.1,
     drift: [-28, 18],
     src: `${MEDIA}/01.webp`,
   },
@@ -42,6 +44,7 @@ const floats: FloatSpec[] = [
     size: styles.fS,
     ratio: styles.arS,
     rotate: 5,
+    lift: 0.9,
     drift: [-34, 12],
     src: `${MEDIA}/02.webp`,
   },
@@ -51,6 +54,7 @@ const floats: FloatSpec[] = [
     size: styles.fL,
     ratio: styles.arL,
     rotate: 7,
+    lift: 0,
     drift: [-20, 26],
     src: `${MEDIA}/03.webp`,
   },
@@ -60,6 +64,7 @@ const floats: FloatSpec[] = [
     size: styles.fS,
     ratio: styles.arL,
     rotate: -4,
+    lift: 0.75,
     drift: [-30, 16],
     src: `${MEDIA}/04.webp`,
   },
@@ -69,6 +74,7 @@ const floats: FloatSpec[] = [
     size: styles.fL,
     ratio: styles.arL,
     rotate: 6,
+    lift: 0.1,
     drift: [24, -28],
     src: `${MEDIA}/05.webp`,
   },
@@ -78,6 +84,7 @@ const floats: FloatSpec[] = [
     size: styles.fM,
     ratio: styles.arL,
     rotate: -7,
+    lift: 0.9,
     drift: [18, -32],
     src: `${MEDIA}/06.webp`,
   },
@@ -87,6 +94,7 @@ const floats: FloatSpec[] = [
     size: styles.fM,
     ratio: styles.arS,
     rotate: 4,
+    lift: 0.25,
     drift: [28, -18],
     src: `${MEDIA}/07.webp`,
   },
@@ -116,7 +124,7 @@ export default async function AboutHook() {
           <ScrollParallax
             key={i}
             className={`${styles.float} ${f.edge === 'top' ? styles.edgeTop : styles.edgeBottom}`}
-            style={{ left: f.left }}
+            style={{ left: f.left, '--lift': f.lift } as React.CSSProperties}
             y={f.drift}
           >
             <span

@@ -1,8 +1,15 @@
 @use '@/app/styles/_mixins.scss' as mixins;
 
 .hook {
+  // 懸浮圖上下錯開的最大距離（× 各圖的 --lift）；手機圖片彼此橫向重疊較多，要拉更開
+  --spread: 48px;
   width: 100%;
-  padding: var(--space-2x) 0 30vh;
+  // 上方多留 --spread，避免上排圖片推高後壓到上一個區塊
+  padding: calc(var(--space-2x) + var(--spread)) 0 30vh;
+
+  @include mixins.respond-to('phone') {
+    --spread: 110px;
+  }
 }
 
 // 卡片＝StaggerReveal 的根（整塊 blur/淡入套在此），同時作為懸浮圖的定位基準。
@@ -83,11 +90,11 @@
 // 上/下緣錨定：只微微探入卡片邊緣（-14px），不碰中間內容
 .edgeTop {
   bottom: 100%;
-  margin-bottom: -14px;
+  margin-bottom: calc(-14px + var(--lift, 0) * var(--spread));
 }
 .edgeBottom {
   top: 100%;
-  margin-top: -14px;
+  margin-top: calc(-14px + var(--lift, 0) * var(--spread));
 }
 
 // .floatTilt = 視覺方塊（圓角／陰影／旋轉）；transform 由 inline 設
