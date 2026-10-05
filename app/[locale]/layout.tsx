@@ -19,7 +19,7 @@ import { ToastProvider } from '../contexts/ToastContext'
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 // i18n
 import { NextIntlClientProvider } from 'next-intl'
-import { getMessages, getTranslations } from 'next-intl/server'
+import { getMessages, getTranslations, setRequestLocale } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { routing, ogLocaleMap } from '@/i18n/routing'
 // config
@@ -42,6 +42,8 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>
 }): Promise<Metadata> {
   const { locale } = await params
+  // 快取頁呼叫 notFound() 時這裡會另外跑，沒先設語系會去讀 headers 而 500
+  setRequestLocale(locale)
   const t = await getTranslations({ locale, namespace: 'Metadata' })
 
   const ogLocale = ogLocaleMap[locale] ?? locale.replace('-', '_')
@@ -156,6 +158,9 @@ export default async function RootLayout({
   if (!routing.locales.includes(locale as any)) {
     notFound()
   }
+
+  // 讓 next-intl 從這裡拿語系，不去讀 headers，頁面才能靜態產生並吃 CDN 快取
+  setRequestLocale(locale)
 
   // 取得翻譯訊息
   const messages = await getMessages()

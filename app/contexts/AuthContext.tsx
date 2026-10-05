@@ -7,6 +7,7 @@ import React, {
   useState,
   useMemo,
   useCallback,
+  useRef,
 } from 'react'
 import { User, Session, AuthChangeEvent } from '@supabase/supabase-js'
 import { createClient } from '../utils/supabase/client'
@@ -34,6 +35,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   const supabase = useMemo(() => createClient(), [])
   const [user, setUser] = useState<UserProfile | null>(null)
   const [supabaseUser, setSupabaseUser] = useState<User | null>(null)
+  // 存放目前已登入使用者的 id，供 onAuthStateChange callback 讀取最新值，避免 stale closure
+  const supabaseUserIdRef = useRef<string | null>(null)
   const [isAdmin, setIsAdmin] = useState<boolean>(false)
   const [isSuperAdmin, setIsSuperAdmin] = useState<boolean>(false)
   const [isSemesterMember, setIsSemesterMember] = useState<boolean>(false)
@@ -139,6 +142,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
           studentId: data.student_id || null,
           schoolIdentity: data.school_identity || null,
           clubIdentity: data.club_identity || null,
+          followersPublic: data.followers_public ?? true,
+          followingPublic: data.following_public ?? true,
           stats,
         } as UserProfile
       } catch (error) {
@@ -279,6 +284,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       if (error) throw error
       setUser(null)
       setSupabaseUser(null)
+      supabaseUserIdRef.current = null
       setIsAdmin(false)
       setIsSuperAdmin(false)
       setIsSemesterMember(false)
@@ -392,6 +398,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         const currentSupabaseUser = session?.user || null
         setSupabaseUser(currentSupabaseUser)
+        supabaseUserIdRef.current = currentSupabaseUser?.id ?? null
 
         if (currentSupabaseUser) {
           const userProfile = await resolveWithTimeout<UserProfile | null>(
@@ -424,6 +431,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
         if (!isMounted) return
         setUser(null)
         setSupabaseUser(null)
+        supabaseUserIdRef.current = null
         setIsAdmin(false)
         setIsSuperAdmin(false)
       } finally {
@@ -453,7 +461,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(
-      (_event: AuthChangeEvent, session: Session | null) => {
+      (event: AuthChangeEvent, session: Session | null) => {
+        // 焦點切換 / token 刷新時，Supabase 會重複觸發事件；若使用者未變則略過，
+        // 避免重抓 profile 並產生新的 user 物件參考造成下游元件閃爍
+        if (
+          (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') &&
+          session?.user?.id === supabaseUserIdRef.current
+        ) {
+          return
+        }
+
         void syncAuthState(session)
       },
     )

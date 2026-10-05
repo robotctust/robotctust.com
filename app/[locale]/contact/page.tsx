@@ -22,7 +22,7 @@ function Contact() {
       title: '使用 Email 聯絡我們',
       icon: faEnvelope,
       labelVisible: true,
-      href: 'mailto:robotctust@gmail.com',
+      href: 'mailto:contact@robotctust.com',
       target: '_blank',
     },
     {
@@ -56,8 +56,8 @@ function Contact() {
                 <FontAwesomeIcon icon={faEnvelope} />
                 Email
               </p>
-              <Link href="mailto:robotctust@gmail.com" className="link">
-                robotctust@gmail.com
+              <Link href="mailto:contact@robotctust.com" className="link">
+                contact@robotctust.com
               </Link>
             </div>
             <div className={styles.contactItem}>

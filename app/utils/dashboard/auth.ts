@@ -1,3 +1,4 @@
+import { cache } from 'react'
 import { createClient } from '@/app/utils/supabase/server'
 import {
   DashboardActor,
@@ -42,9 +43,11 @@ export function canAccessModule(role: Role, module: DashboardModule): boolean {
 
 /**
  * 獲取管理後台使用者
+ * 用 React cache 包起來：同一個請求裡 layout、aside、page 都會呼叫，
+ * 只打一次 Supabase（getUser + 查角色），不必各跑一遍。
  * @returns 管理後台使用者
  */
-export async function getDashboardActor(): Promise<DashboardActor> {
+export const getDashboardActor = cache(async (): Promise<DashboardActor> => {
   // 建立 Supabase Client
   const supabase = await createClient()
   // 獲取使用者
@@ -79,7 +82,7 @@ export async function getDashboardActor(): Promise<DashboardActor> {
     roles: roles as Role[],
     modules,
   }
-}
+})
 
 /**
  * 要求管理後台訪問

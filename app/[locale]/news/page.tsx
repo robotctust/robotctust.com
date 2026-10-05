@@ -1,5 +1,5 @@
 import { Suspense } from 'react'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import styles from './news.module.scss'
 
 // utils
@@ -13,12 +13,17 @@ import NewsPageClient from './NewsPageClient'
 import Loading from '@/app/components/Loading/Loading'
 
 // 重新整理時間
-export const revalidate = 60
+export const revalidate = 300
 
 /**
  * [Server Component] 新聞頁面
  */
-export default async function NewsPage() {
+export default async function NewsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  setRequestLocale((await params).locale)
   const t = await getTranslations('News')
   let initialPosts: SerializedPost[] = []
 

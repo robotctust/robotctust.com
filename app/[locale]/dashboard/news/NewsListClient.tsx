@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
+import { useState, useMemo } from 'react'
 import { Link } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -17,12 +17,16 @@ import {
 import { SerializedPost } from '@/app/types/serialized'
 import styles from './news.module.scss'
 
-export default function NewsListClient() {
+export default function NewsListClient({
+  initialPosts,
+}: {
+  initialPosts: SerializedPost[]
+}) {
   const { showToast } = useToast()
   const t = useTranslations('Dashboard.News')
   const tCategories = useTranslations('News.categories')
-  const [posts, setPosts] = useState<SerializedPost[]>([])
-  const [loading, setLoading] = useState(true)
+  const [posts, setPosts] = useState<SerializedPost[]>(initialPosts)
+  const [loading, setLoading] = useState(false)
   const [deleteTarget, setDeleteTarget] = useState<SerializedPost | null>(null)
   const [bulkTargets, setBulkTargets] = useState<SerializedPost[] | null>(null)
   const [deleting, setDeleting] = useState(false)
@@ -40,10 +44,6 @@ export default function NewsListClient() {
       setLoading(false)
     }
   }
-
-  useEffect(() => {
-    void loadPosts()
-  }, [])
 
   async function confirmDelete() {
     if (!deleteTarget) return

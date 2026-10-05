@@ -52,14 +52,16 @@ function rowToPost(row: SupabasePostRow): Post {
 }
 
 /**
- * 獲取所有文章
+ * 獲取所有文章（新到舊）
+ * @param limit 只取最新幾篇，不給就全部
  */
-export async function getAllPosts(): Promise<Post[]> {
+export async function getAllPosts(limit?: number): Promise<Post[]> {
   const admin = createAdminClient()
-  const { data, error } = await admin
+  const query = admin
     .from('posts')
     .select(POST_SELECT)
     .order('created_at', { ascending: false })
+  const { data, error } = await (limit ? query.limit(limit) : query)
 
   if (error) {
     console.error('Error fetching posts:', error)

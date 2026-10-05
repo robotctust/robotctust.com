@@ -1,0 +1,85 @@
+@use '@/app/styles/mixins' as mixins;
+
+.list {
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: 0.25rem;
+  width: 100%;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.message {
+  padding: 2rem 0;
+  text-align: center;
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+.locked {
+  @include mixins.flexbox(column, center, center);
+  gap: 0.75rem;
+  padding: 2.5rem 0;
+  color: var(--text-secondary);
+
+  svg {
+    font-size: 1.5rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+}
+
+.row {
+  @include mixins.flexbox(row, flex-start, center);
+  gap: 0.75rem;
+  padding: 0.5rem;
+  text-decoration: none;
+  color: inherit;
+  border: 1px solid transparent;
+  @include mixins.border-radius(9px);
+  @include mixins.transition(background var(--transition-duration) var(--transition-bezier));
+
+  &:hover {
+    background: var(--background-secondary);
+    border-color: var(--border);
+  }
+}
+
+.avatar {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+.info {
+  @include mixins.flexbox(column, center, flex-start);
+  min-width: 0;
+}
+
+.name {
+  max-width: 100%;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.username {
+  max-width: 100%;
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

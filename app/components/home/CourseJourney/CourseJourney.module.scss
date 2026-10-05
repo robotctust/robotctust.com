@@ -1,0 +1,95 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+.courseJourney {
+  width: 100%;
+  padding: var(--space-6x) 0;
+}
+
+.title {
+  margin: 0;
+  font-size: clamp(1.75rem, 4vw, 3rem);
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.1;
+  color: var(--foreground);
+}
+
+// ─── 課程項目：開放排版，無邊框 / 無背景 ────────────────────────────────────
+//
+// 四個項目寬度一致，僅用小幅 margin-top 製造垂直錯排（隨意感），
+// 不做大尺寸差異，避免照片一大一小失去一致性。
+// 偏移量範圍刻意控制在 ±24px 內。
+
+.item {
+  flex: 0 0 auto;
+  width: clamp(280px, 68vw, 620px);
+  scroll-snap-align: start;
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space);
+  // 頂部留白帶：讓 ConnectingPath 的曲線與節點落在內容上方、不壓到文字
+  padding-top: var(--space-3x);
+
+  &:nth-child(2) {
+    margin-top: 3vh;
+  }
+  &:nth-child(3) {
+    margin-top: 2vh;
+  }
+  &:nth-child(4) {
+    margin-top: 4vh;
+  }
+
+  > .media {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    @include mixins.border-radius(12px);
+    border: 1px solid var(--border);
+    background: var(--background-secondary);
+    flex-shrink: 0;
+
+    @include mixins.respond-to('phone') {
+      aspect-ratio: 4 / 3;
+    }
+
+    img {
+      object-fit: cover;
+    }
+
+    > .placeholder {
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  > .body {
+    @include mixins.flexbox(column, flex-start, flex-start);
+    gap: 4px;
+    padding: 0 2px;
+
+    > .step {
+      font-size: 1.25rem;
+      font-weight: 900;
+      letter-spacing: 0.12em;
+      color: var(--primary);
+      margin-bottom: 2px;
+    }
+
+    > h3 {
+      margin: 0;
+      margin-bottom: var(--space-0-5x);
+      font-size: 1.5rem;
+      font-weight: 700;
+      line-height: 1.3;
+      color: var(--foreground);
+    }
+
+    > p {
+      margin: 0;
+      font-size: 0.9rem;
+      line-height: 1.75;
+      color: var(--foreground-secondary);
+    }
+  }
+}

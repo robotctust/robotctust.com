@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useEffect, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef } from 'react'
 import { Link } from '@/i18n/navigation'
 import Image from 'next/image'
 import { useRouter } from '@/i18n/navigation'
@@ -23,53 +23,36 @@ import { SerializedPost } from '@/app/types/serialized'
 import styles from './editor.module.scss'
 
 interface NewsEditorClientProps {
-  postId?: string
+  /** 編輯既有文章時由伺服器帶入；新增時為空 */
+  post?: SerializedPost
 }
 
-export default function NewsEditorClient({ postId }: NewsEditorClientProps) {
+export default function NewsEditorClient({ post }: NewsEditorClientProps) {
+  const postId = post?.id
   const router = useRouter()
   const { showToast } = useToast()
   const isEditing = Boolean(postId)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // Form state
-  const [title, setTitle] = useState('')
-  const [category, setCategory] = useState<PostCategory>('社團活動')
-  const [content, setContent] = useState('')
+  const [title, setTitle] = useState(post?.title ?? '')
+  const [category, setCategory] = useState<PostCategory>(
+    (post?.category as PostCategory) ?? '社團活動',
+  )
+  const [content, setContent] = useState(post?.contentMarkdown ?? '')
   const [slug, setSlug] = useState('')
-  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(null)
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(
+    post?.coverImageUrl ?? null,
+  )
   const [coverImageFile, setCoverImageFile] = useState<File | null>(null)
-  const [coverPreview, setCoverPreview] = useState<string | null>(null)
+  const [coverPreview, setCoverPreview] = useState<string | null>(
+    post?.coverImageUrl ?? null,
+  )
   const [removeCoverImage, setRemoveCoverImage] = useState(false)
 
   // UI state
-  const [initialLoading, setInitialLoading] = useState(isEditing)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [dragOver, setDragOver] = useState(false)
-
-  // Load existing post when editing
-  useEffect(() => {
-    if (!isEditing || !postId) return
-
-    async function loadPost() {
-      try {
-        const res = await fetch(`/api/dashboard/news/${postId}`)
-        if (!res.ok) throw new Error('載入失敗')
-        const post: SerializedPost = await res.json()
-        setTitle(post.title)
-        setCategory(post.category as PostCategory)
-        setContent(post.contentMarkdown)
-        setCoverImageUrl(post.coverImageUrl)
-        setCoverPreview(post.coverImageUrl)
-      } catch {
-        showToast('載入文章失敗', 'error')
-      } finally {
-        setInitialLoading(false)
-      }
-    }
-
-    void loadPost()
-  }, [isEditing, postId, showToast])
 
   const handleContentChange = useCallback((newContent: string) => {
     setContent(newContent)
@@ -156,18 +139,6 @@ export default function NewsEditorClient({ postId }: NewsEditorClientProps) {
     } finally {
       setIsSubmitting(false)
     }
-  }
-
-  if (initialLoading) {
-    return (
-      <div className={styles.editorPage}>
-        <div className={styles.editorHeader}>
-          <div className={styles.headerLeft}>
-            <span>載入中...</span>
-          </div>
-        </div>
-      </div>
-    )
   }
 
   return (

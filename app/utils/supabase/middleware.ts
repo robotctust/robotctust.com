@@ -44,8 +44,11 @@ export async function updateSession(request: NextRequest, response?: NextRespons
     },
   )
 
-  // 取得使用者以重新整理 auth token
-  await supabase.auth.getUser()
+  // 重新整理 auth token。用 getClaims 而非 getUser：專案是非對稱 JWT（ES256），
+  // 在本地用快取的 JWKS 驗簽即可，不必每個請求都打一趟 Supabase Auth；
+  // token 過期時仍會自動換新並透過 setAll 寫回 cookie。
+  // 需要「確認帳號沒被停用」的地方（後台 API）自己會呼叫 getUser。
+  await supabase.auth.getClaims()
 
   return supabaseResponse
 }

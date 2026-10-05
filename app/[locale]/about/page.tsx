@@ -2,20 +2,24 @@ import styles from './about.module.scss'
 import Page from '@/app/components/page/Page'
 import Footer from '@/app/components/Footer/Footer'
 import { metadata } from '@/app/utils/metadata'
-import { getTranslations } from 'next-intl/server'
-
-// sections
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import AboutHeroSection from './ui/AboutHeroSection/AboutHeroSection'
+import ActivityShowcase from './ui/ActivityShowcase/ActivityShowcase'
 import OriginSection from './ui/OriginSection/OriginSection'
+import MilestoneTimeline from './ui/MilestoneTimeline/MilestoneTimeline'
 import CultureSection from './ui/CultureSection/CultureSection'
-import PhilosophySection from './ui/PhilosophySection/PhilosophySection'
+import JoinHook from './ui/JoinHook/JoinHook'
 import ClubOfficer from './ui/ClubOfficer/ClubOfficer'
-import OfficeLocationCard from '@/app/components/OfficeLocationCard/OfficeLocationCard'
 
-/**
- * 關於頁面
- */
-export default function About() {
+// 靜態快取，幹部頭像每 5 分鐘更新
+export const revalidate = 300
+
+export default async function About({
+  params,
+}: {
+  params: Promise<{ locale: string }>
+}) {
+  setRequestLocale((await params).locale)
   return (
     <Page
       style={styles.aboutContainer}
@@ -25,9 +29,11 @@ export default function About() {
       config={{ paddingBottom: false }}
     >
       <AboutHeroSection />
+      <ActivityShowcase />
       <OriginSection />
+      <MilestoneTimeline />
       <CultureSection />
-      <PhilosophySection />
+      <JoinHook />
       <ClubOfficer />
       <Footer />
     </Page>

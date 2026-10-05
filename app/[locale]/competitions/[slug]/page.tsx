@@ -17,6 +17,9 @@ interface CompetitionDetailProps {
   }>
 }
 
+// 靜態快取；後台同步競賽後會即時清（api/dashboard/competitions/sync）
+export const revalidate = 300
+
 /**
  * [Function] 競賽詳細頁面靜態參數
  * @returns

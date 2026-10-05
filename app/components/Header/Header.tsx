@@ -31,6 +31,7 @@ const HIDDEN_HEADER_PATHS = [
   '/register',
   '/auth/callback',
   '/onboarding',
+  '/dashboard', // 後台用自己的側欄導覽，回首頁連結在側欄頂部
 ]
 
 /**
@@ -56,7 +57,7 @@ const isActivePath = (pathname: string, path: string): boolean => {
  * @returns {boolean} 是否需要隱藏
  */
 const shouldHideHeader = (pathname: string): boolean => {
-  return HIDDEN_HEADER_PATHS.some((path) => pathname.includes(path))
+  return HIDDEN_HEADER_PATHS.some((path) => isActivePath(pathname, path))
 }
 
 /**
@@ -67,8 +68,8 @@ export default function Header() {
   const t = useTranslations('Header')
   // 獲取當前路徑
   const pathname = usePathname()
-  // 獲取登入資訊與管理權限
-  const { isAdmin, isSuperAdmin, supabaseUser } = useAuth()
+  // 獲取登入資訊
+  const { supabaseUser } = useAuth()
   const hasSettings = getVisibleSettingsSections(!!supabaseUser).length > 0
   // 選單狀態
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -207,33 +208,6 @@ export default function Header() {
             >
               {t('nav.about')}
             </Link>
-            {(isAdmin || isSuperAdmin) && (
-              <>
-                <div className={styles.separator} />
-                <Link
-                  href="/dashboard"
-                  onClick={handleNavLinkClick}
-                  className={
-                    isActivePath(pathname, '/dashboard') ? styles.active : ''
-                  }
-                >
-                  {t('nav.dashboard')}
-                </Link>
-              </>
-            )}
-            {isSuperAdmin && (
-              <>
-                <Link
-                  href="/admin"
-                  onClick={handleNavLinkClick}
-                  className={
-                    isActivePath(pathname, '/admin') ? styles.active : ''
-                  }
-                >
-                  {t('nav.admin')}
-                </Link>
-              </>
-            )}
           </div>
 
           <div className={styles.menu_button}>

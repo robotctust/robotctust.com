@@ -413,27 +413,29 @@
 }
 
 .oldRoboticsScene {
+  position: relative;
   width: 100%;
-  height: fit-content;
+  aspect-ratio: 4/3;
   background-color: var(--theme-gray-100);
   overflow: hidden;
   border-radius: 12px;
   border: 1px solid var(--border);
 
+  // 桌面版高度跟左側文字欄一致；影片絕對定位不參與高度計算，
+  // 否則 Safari 會以影片原始尺寸撐高整列（Chrome 不會）
   @include mixins.respond-by-min-width(860px) {
-    min-height: 100%;
+    aspect-ratio: auto;
+    height: 100%;
+    min-height: 280px;
     min-width: 420px;
   }
 
   video {
+    position: absolute;
+    inset: 0;
     width: 100%;
-    height: auto;
+    height: 100%;
     object-fit: cover;
-    aspect-ratio: 4/3;
-
-    @include mixins.respond-by-min-width(860px) {
-      min-height: 100%;
-    }
   }
 }
 

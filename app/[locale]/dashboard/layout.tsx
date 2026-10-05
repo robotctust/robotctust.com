@@ -34,9 +34,11 @@ export default async function DashboardLayout({
 
     // 返回管理後台布局
     return (
-      <Page style={styles.container} aside={aside}>
-        {children}
-      </Page>
+      <div className={styles.noHeader}>
+        <Page style={styles.container} aside={aside}>
+          {children}
+        </Page>
+      </div>
     )
   } catch (error) {
     if (isDashboardAccessError(error) && error.statusCode === 401) {

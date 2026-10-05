@@ -1,13 +1,14 @@
 'use client'
 
-import { useState, useEffect, useMemo } from 'react'
-import { Link } from '@/i18n/navigation'
+import { useState, useMemo, useEffect } from 'react'
+import { useSearchParams } from 'next/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faEdit, faTrash, faCalendar, faEye, faEyeSlash } from '@fortawesome/free-solid-svg-icons'
 import { useToast } from '@/app/contexts/ToastContext'
 import { Modal } from '@/app/[locale]/dashboard/components/Modal'
 import { Skeleton } from '@/app/components/Skeleton'
 import { ScheduleEvent } from '@/app/types/Schedule'
+import CalendarEventModal from './CalendarEventModal'
 import styles from './calendar.module.scss'
 
 const TYPE_LABELS: Record<ScheduleEvent['type'], string> = {
@@ -32,18 +33,39 @@ type SemesterFilter = string | 'all'
 
 interface SemesterOpt { id: string; name: string }
 
-export default function CalendarListClient() {
+export default function CalendarListClient({
+  initialEvents,
+  initialSemesters,
+}: {
+  initialEvents: ScheduleEvent[]
+  initialSemesters: SemesterOpt[]
+}) {
   const { showToast } = useToast()
-  const [events, setEvents] = useState<ScheduleEvent[]>([])
-  const [semesters, setSemesters] = useState<SemesterOpt[]>([])
-  const [loading, setLoading] = useState(true)
-  const [search, setSearch] = useState('')
-  const [typeFilter, setTypeFilter] = useState<TypeFilter>('all')
-  const [publishFilter, setPublishFilter] = useState<PublishFilter>('all')
-  const [semesterFilter, setSemesterFilter] = useState<SemesterFilter>('all')
+  const [events, setEvents] = useState<ScheduleEvent[]>(initialEvents)
+  const [semesters, setSemesters] = useState<SemesterOpt[]>(initialSemesters)
+  const [loading, setLoading] = useState(false)
+  // 篩選條件從網址參數還原，重新整理、上一頁或從其他頁回來都能保留
+  const searchParams = useSearchParams()
+  const [search, setSearch] = useState(searchParams.get('q') ?? '')
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>((searchParams.get('type') as TypeFilter) ?? 'all')
+  const [publishFilter, setPublishFilter] = useState<PublishFilter>((searchParams.get('status') as PublishFilter) ?? 'all')
+  const [semesterFilter, setSemesterFilter] = useState<SemesterFilter>(searchParams.get('semester') ?? 'all')
   const [deleteTarget, setDeleteTarget] = useState<ScheduleEvent | null>(null)
   const [deleting, setDeleting] = useState(false)
   const [togglingId, setTogglingId] = useState<string | null>(null)
+  // 'new' = 新增；ScheduleEvent = 編輯；null = 彈窗關閉
+  const [editing, setEditing] = useState<ScheduleEvent | 'new' | null>(null)
+
+  // 篩選變更時同步寫回網址（replaceState 不新增瀏覽紀錄）
+  useEffect(() => {
+    const params = new URLSearchParams()
+    if (search) params.set('q', search)
+    if (typeFilter !== 'all') params.set('type', typeFilter)
+    if (publishFilter !== 'all') params.set('status', publishFilter)
+    if (semesterFilter !== 'all') params.set('semester', semesterFilter)
+    const qs = params.toString()
+    window.history.replaceState(null, '', qs ? `?${qs}` : window.location.pathname)
+  }, [search, typeFilter, publishFilter, semesterFilter])
 
   async function loadEvents() {
     setLoading(true)
@@ -62,8 +84,6 @@ export default function CalendarListClient() {
     }
   }
 
-  useEffect(() => { void loadEvents() }, [])
-
   const filteredEvents = useMemo(() => {
     return events.filter((ev) => {
       const matchType = typeFilter === 'all' || ev.type === typeFilter
@@ -81,6 +101,15 @@ export default function CalendarListClient() {
       return matchType && matchPublish && matchSemester && matchSearch
     })
   }, [events, typeFilter, publishFilter, semesterFilter, search])
+
+  // 存檔後就地更新列表（依開始時間排序，與伺服器一致），不離開頁面所以篩選條件保留
+  function handleSaved(saved: ScheduleEvent) {
+    const key = (e: ScheduleEvent) => e.startDateTime.date + e.startDateTime.time
+    setEvents((prev) =>
+      [...prev.filter((e) => e.id !== saved.id), saved].sort((a, b) => key(a).localeCompare(key(b))),
+    )
+    setEditing(null)
+  }
 
   async function confirmDelete() {
     if (!deleteTarget) return
@@ -130,10 +159,10 @@ export default function CalendarListClient() {
     <div className={styles.container}>
       <header className={styles.header}>
         <h1 className={styles.title}>行事曆管理</h1>
-        <Link href="/dashboard/calendar/new" className="primary-button">
+        <button type="button" className="primary-button" onClick={() => setEditing('new')}>
           <FontAwesomeIcon icon={faPlus} />
           <span>新增事件</span>
-        </Link>
+        </button>
       </header>
 
       <div className={styles.filters}>
@@ -181,7 +210,7 @@ export default function CalendarListClient() {
       ) : filteredEvents.length === 0 ? (
         <div className={styles.emptyState}>
           <FontAwesomeIcon icon={faCalendar} size="2x" style={{ marginBottom: 12 }} />
-          <p>{search || typeFilter !== 'all' || publishFilter !== 'all' ? '找不到符合條件的事件' : '目前還沒有任何行事曆事件'}</p>
+          <p>{search || typeFilter !== 'all' || publishFilter !== 'all' || semesterFilter !== 'all' ? '找不到符合條件的事件' : '目前還沒有任何行事曆事件'}</p>
         </div>
       ) : (
         <div className={styles.tableWrap}>
@@ -204,9 +233,9 @@ export default function CalendarListClient() {
                 return (
                   <tr key={ev.id}>
                     <td className={styles.titleCell}>
-                      <Link href={`/dashboard/calendar/${ev.id}`} className={styles.titleLink}>
+                      <button type="button" className={styles.titleLink} onClick={() => setEditing(ev)}>
                         {ev.title}
-                      </Link>
+                      </button>
                     </td>
                     <td>
                       <span
@@ -241,13 +270,13 @@ export default function CalendarListClient() {
                         >
                           <FontAwesomeIcon icon={ev.published ? faEyeSlash : faEye} />
                         </button>
-                        <Link
-                          href={`/dashboard/calendar/${ev.id}`}
+                        <button
                           className="icon-button"
                           title="編輯事件"
+                          onClick={() => setEditing(ev)}
                         >
                           <FontAwesomeIcon icon={faEdit} />
-                        </Link>
+                        </button>
                         <button
                           className="icon-button-danger"
                           title="刪除事件"
@@ -265,6 +294,16 @@ export default function CalendarListClient() {
         </div>
       )}
 
+      {editing && (
+        <CalendarEventModal
+          event={editing === 'new' ? undefined : editing}
+          semesters={semesters}
+          defaultSemesterId={semesterFilter !== 'all' && semesterFilter !== 'none' ? semesterFilter : undefined}
+          onClose={() => setEditing(null)}
+          onSaved={handleSaved}
+        />
+      )}
+
       <Modal
         isOpen={deleteTarget !== null}
         onClose={() => setDeleteTarget(null)}
@@ -272,8 +311,8 @@ export default function CalendarListClient() {
         maxWidth="480px"
         footer={
           <>
-            <button onClick={() => setDeleteTarget(null)} disabled={deleting}>取消</button>
-            <button onClick={() => void confirmDelete()} disabled={deleting} data-danger="true">
+            <button className="secondary-button" onClick={() => setDeleteTarget(null)} disabled={deleting}>取消</button>
+            <button className="danger-button" onClick={() => void confirmDelete()} disabled={deleting}>
               {deleting ? '刪除中...' : '確認刪除'}
             </button>
           </>

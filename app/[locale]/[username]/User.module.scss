@@ -63,6 +63,7 @@
 // 帳號資訊頁面 User[slug] page
 .user_contents {
   @include mixins.flexbox(column, center, center);
+  margin-top: var(--space-2x);
 
   > .feature_coming_soon {
     font-size: 0.8rem;
@@ -75,7 +76,6 @@
   position: relative;
   @include mixins.flexbox(column, center, center);
   gap: 1rem;
-  margin-bottom: var(--space-2x);
   padding: 24px;
   width: 100%;
   max-width: 720px;
@@ -86,6 +86,7 @@
 
   @include mixins.respond-to('desktop') {
     margin: var(--space-2x) 0;
+    margin-bottom: 0;
   }
 
   &.has_background {
@@ -116,7 +117,7 @@
   > .user_info_container {
     z-index: 10;
     position: relative;
-    @include mixins.flexbox(column, space-between, flex-start);
+    @include mixins.flexbox(column, space-between, flex-end);
     gap: var(--space);
     width: 100%;
     height: 100%;
@@ -154,50 +155,152 @@
     }
 
     > .user_info_content {
-      @include mixins.flexbox(column, flex-start, flex-start);
+      @include mixins.flexbox(column, flex-end, flex-start);
       gap: var(--space);
+      width: 100%;
+      height: 100%;
 
       > .user_info_header {
-        @include mixins.flexbox(row, flex-start, center);
+        @include mixins.flexbox(row, space-between, flex-end);
+        flex-wrap: wrap;
         gap: var(--space);
+        width: 100%;
 
-        > .user_info_header_avatar {
-          @include mixins.flexbox(column, center, center);
-          height: 60px;
-          width: 60px;
-          @include mixins.border-radius(50%);
-          overflow: hidden;
+        > .user_info_user {
+          @include mixins.flexbox(row, flex-start, center);
+          gap: var(--space);
+          
+          > .user_info_header_avatar {
+            @include mixins.flexbox(column, center, center);
+            height: 60px;
+            width: 60px;
+            @include mixins.border-radius(50%);
+            overflow: hidden;
 
-          > img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
+            > img {
+              width: 100%;
+              height: 100%;
+              object-fit: cover;
+            }
+          }
+
+          > .user_info_content {
+            @include mixins.flexbox(column, center, flex-start);
+
+            > .user_info_name {
+              font-size: 1.25rem;
+              font-weight: bold;
+              color: var(--text-primary);
+            }
+
+            > .user_info_username {
+              font-size: 0.8rem;
+              color: var(--text-secondary);
+            }
           }
         }
 
-        > .user_info_content {
-          @include mixins.flexbox(column, center, flex-start);
+        // 追蹤數字 + 追蹤鈕（靠右）
+        > .follow_section {
+          @include mixins.flexbox(row, flex-end, center);
+          flex-wrap: wrap;
+          gap: var(--space);
+          margin-left: auto;
 
-          > .user_info_name {
-            font-size: 1.25rem;
-            font-weight: bold;
-            color: var(--text-primary);
+          > .follow_stats {
+            @include mixins.flexbox(row, center, center);
+            gap: 1.25rem;
+
+            > .follow_stat {
+              @include mixins.flexbox(column, center, center);
+              gap: 2px;
+              padding: 0;
+              background: none;
+              border: none;
+              cursor: pointer;
+
+              > strong {
+                font-size: 1.1rem;
+                font-weight: bold;
+                color: var(--text-primary);
+              }
+
+              > span {
+                font-size: 0.75rem;
+                color: var(--text-tertiary);
+              }
+
+              &:hover > strong {
+                color: var(--primary);
+              }
+            }
           }
 
-          > .user_info_username {
-            font-size: 0.8rem;
-            color: var(--text-secondary);
+          > .follow_button {
+            padding: 0.5rem 1.25rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--foreground-dark-200);
+            background: var(--primary);
+            border: 1px solid var(--border);
+            cursor: pointer;
+            @include mixins.border-radius(999px);
+            @include mixins.transition();
+
+            &:hover {
+              background: var(--primary-hover);
+              border-color: var(--border-hover);
+            }
+
+            &:disabled {
+              opacity: 0.6;
+              cursor: default;
+            }
+
+            // 已追蹤：改為描邊樣式
+            &.following {
+              color: var(--foreground-secondary);
+              background: transparent;
+              border-color: var(--border);
+            }
           }
         }
       }
+    }
+  }
+}
 
-      > .user_info_bio {
-        > p {
-          font-size: 0.8rem;
-          color: var(--text-secondary);
-          white-space: pre-wrap;
-        }
-      }
+.user_info_bio_container {
+  width: 100%;
+  margin-top: var(--space);
+  background-color: rgba(var(--background-secondary-rgb), 0.3);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(24px);
+
+  .user_info_bio_header {
+    padding: var(--space-2x);
+    // padding-bottom: var(--space);
+    // padding-top: var(--space);
+    // border-bottom: 1px solid var(--border);
+    padding-bottom: 0;
+
+    > h2 {
+      margin: 0;
+      font-size: 1rem;
+      font-weight: bold;
+      color: var(--foreground);
+    }
+  }
+
+  > .user_info_bio {
+    @include mixins.flexbox(column, flex-start, stretch);
+    gap: 0.3rem;
+    padding: var(--space-2x);
+
+    > p {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      white-space: pre-wrap;
     }
   }
 }

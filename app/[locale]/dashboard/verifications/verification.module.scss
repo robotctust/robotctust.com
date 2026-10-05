@@ -104,36 +104,6 @@
     }
   }
 
-  /* =========================================
-     Feedback States
-     ========================================= */
-  .message,
-  .errorMessage,
-  .emptyState {
-    padding: 14px 16px;
-    border: 1px solid var(--border);
-    @include mixins.border-radius(18px);
-  }
-
-  .message {
-    background: rgba(var(--theme-blue-500-rgb), 0.1);
-    color: var(--foreground);
-    border-color: rgba(var(--theme-blue-500-rgb), 0.2);
-  }
-
-  .errorMessage {
-    background: rgba(var(--theme-red-500-rgb), 0.1);
-    color: var(--theme-red-600);
-  }
-
-  .emptyState {
-    text-align: center;
-    color: var(--foreground-secondary);
-    background: rgba(var(--background-secondary-rgb), 0.28);
-    border-style: dashed;
-    margin-top: var(--space);
-  }
-
   .sectionTitle {
     margin: 0 0 16px 0;
     font-size: 1.25rem;
@@ -143,6 +113,8 @@
 
   .statusBadge {
     display: inline-flex;
+    align-items: center;
+    vertical-align: middle;
     padding: 4px 10px;
     border-radius: 6px;
     font-size: 0.8rem;
@@ -156,46 +128,6 @@
     &.rejected {
       background: rgba(var(--theme-red-500-rgb), 0.1);
       color: var(--theme-red-600);
-    }
-  }
-
-  /* =========================================
-     Table Styles
-     ========================================= */
-  .tableWrap {
-    border: 1px solid var(--border);
-    @include mixins.border-radius(16px);
-    overflow: auto;
-    background: rgba(var(--background-rgb), 0.4);
-  }
-
-  .table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-
-    th,
-    td {
-      padding: 16px 20px;
-      text-align: left;
-      border-bottom: 1px solid var(--border);
-    }
-
-    th {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--foreground-secondary);
-      background: rgba(var(--background-secondary-rgb), 0.5);
-      text-transform: uppercase;
-      letter-spacing: 0.05em;
-    }
-
-    tr:last-child td {
-      border-bottom: none;
-    }
-
-    tr:hover td {
-      background: rgba(var(--background-secondary-rgb), 0.3);
     }
   }
 
@@ -222,6 +154,11 @@
   .timestamp {
     font-size: 0.85rem;
     color: var(--foreground-secondary);
+  }
+
+  .statusCell,
+  .actionCell {
+    vertical-align: middle;
   }
 
   // 新請求出現時的 highlight 動畫
@@ -268,5 +205,23 @@
         cursor: not-allowed;
       }
     }
+  }
+}
+
+.modalCancelButton {
+  @include mixins.button('normal', 'normal');
+  @include mixins.border-radius(8px);
+}
+
+.modalDangerButton {
+  @include mixins.button('normal', 'normal');
+  @include mixins.border-radius(8px);
+  background: rgba(var(--theme-red-500-rgb), 0.1);
+  color: var(--theme-red-600);
+  border: 1px solid rgba(var(--theme-red-500-rgb), 0.2);
+
+  &:hover {
+    background: var(--theme-red-400);
+    color: var(--foreground);
   }
 }

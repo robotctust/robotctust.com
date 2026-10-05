@@ -23,6 +23,8 @@ export interface AsideNavItem {
   icon?: IconDefinition | null
   /** 精確匹配路徑，預設 false（使用 startsWith 匹配） */
   exact?: boolean
+  /** 分組標題；與上一個項目不同時會在此項目前顯示 */
+  group?: string
 }
 
 export interface AsideHeaderConfig {
@@ -119,18 +121,22 @@ export const Aside: React.FC<AsideProps> = ({
 
             {items.length > 0 && (
               <nav className={styles.nav}>
-                {items.map((item) => (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    className={`${styles.navLink} ${
-                      isLinkActive(item) ? styles.active : ''
-                    }`}
-                    onClick={() => setIsOpen(false)}
-                  >
-                    {item.icon && <FontAwesomeIcon icon={item.icon} />}
-                    <span>{item.label}</span>
-                  </Link>
+                {items.map((item, i) => (
+                  <React.Fragment key={item.href}>
+                    {item.group && item.group !== items[i - 1]?.group && (
+                      <p className={styles.groupLabel}>{item.group}</p>
+                    )}
+                    <Link
+                      href={item.href}
+                      className={`${styles.navLink} ${
+                        isLinkActive(item) ? styles.active : ''
+                      }`}
+                      onClick={() => setIsOpen(false)}
+                    >
+                      {item.icon && <FontAwesomeIcon icon={item.icon} />}
+                      <span>{item.label}</span>
+                    </Link>
+                  </React.Fragment>
                 ))}
               </nav>
             )}

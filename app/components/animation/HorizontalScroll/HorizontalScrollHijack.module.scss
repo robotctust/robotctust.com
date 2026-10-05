@@ -1,0 +1,95 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+// 共用的左側內縮量（與頁面內容測量線對齊）
+$indent: max(var(--space-3x), calc((100vw - 1200px) / 2 + var(--space-2x)));
+
+// 預設（無 JS / reduced-motion）：原生橫向 swipe
+.outer {
+  width: 100%;
+}
+
+.sticky {
+  width: 100%;
+}
+
+// 主標題：在退化模式下作為 block，在劫持模式下固定於 sticky 區頂部
+.heading {
+  width: calc(100% - var(--space-4x));
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 var(--space-2x) var(--space-2x);
+}
+
+.label {
+  display: block;
+  max-width: 1200px;
+  width: calc(100% - var(--space-4x));
+  margin: 0 auto;
+  padding: 0 var(--space-2x) var(--space);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--foreground-tertiary);
+}
+
+.track {
+  position: relative; // 作為 ConnectingPath 等裝飾層的定位基準
+  display: flex;
+  align-items: flex-start; // 允許子項目用 margin-top 做垂直錯排
+  gap: var(--space-4x);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding: 4px var(--space-2x) var(--space);
+  @include mixins.hide-scrollbar;
+
+  // 焦點高亮的 opacity 過渡：JS 直接設 style.opacity，CSS 只負責動畫曲線
+  > * {
+    transition: opacity 0.45s ease;
+    will-change: opacity;
+  }
+}
+
+// 劫持版面（由 JS 加上 .hijack）
+// sticky 定住、track 交給 GSAP 橫移；外層高度由 JS setHeight 保留捲動空間
+.outer.hijack {
+  > .sticky {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    overflow: hidden;
+    @include mixins.flexbox(column, flex-start, flex-start);
+    justify-content: center; // 垂直置中整組（heading + label + track）
+    gap: 0;
+    padding: var(--space-8x) 0 var(--space-4x);
+
+    // 劫持模式下 heading 對齊 track 左側起點，不再用 max-width 置中
+    > .heading {
+      width: 100%;
+      max-width: unset;
+      margin: 0;
+      padding-left: $indent;
+      padding-right: var(--space-2x);
+      padding-bottom: var(--space-2x);
+    }
+
+    > .label {
+      width: 100%;
+      max-width: unset;
+      margin: 0;
+      padding-left: $indent;
+      padding-bottom: var(--space);
+    }
+
+    > .track {
+      overflow: visible;
+      width: max-content;
+      scroll-snap-type: none;
+      padding: 0;
+      padding-left: $indent;
+      padding-right: 20vw;
+      will-change: transform;
+    }
+  }
+}

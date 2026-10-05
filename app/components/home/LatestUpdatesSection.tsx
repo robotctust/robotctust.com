@@ -18,8 +18,7 @@ const LatestUpdatesSection = async () => {
 
   // 獲取最新資訊
   try {
-    const allPosts = await getAllPosts()
-    posts = allPosts.slice(0, 3)
+    posts = await getAllPosts(3)
   } catch (error) {
     console.error('Failed to fetch posts:', error)
   }

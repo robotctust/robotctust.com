@@ -1,7 +1,7 @@
 'use client'
 
 import { Link } from '@/i18n/navigation'
-import { useEffect, useMemo, useState } from 'react'
+import { useMemo, useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faBookOpen,
@@ -53,15 +53,24 @@ type DeleteState = null | {
   detail: string
 }
 
-export default function CoursesOverviewClient() {
+export default function CoursesOverviewClient({
+  initialOverview,
+}: {
+  initialOverview: CurriculumOverviewPayload
+}) {
   const { showToast } = useToast()
-  const [overview, setOverview] = useState<CurriculumOverviewPayload>({
-    semesters: [],
-  })
-  const [loading, setLoading] = useState(true)
+  const [overview, setOverview] =
+    useState<CurriculumOverviewPayload>(initialOverview)
+  const [loading, setLoading] = useState(false)
   const [modal, setModal] = useState<ModalState>(null)
   const [deleteTarget, setDeleteTarget] = useState<DeleteState>(null)
-  const [expandedChapterIds, setExpandedChapterIds] = useState<string[]>([])
+  // 預設展開目前學期的所有章節
+  const [expandedChapterIds, setExpandedChapterIds] = useState<string[]>(
+    () =>
+      initialOverview.semesters
+        .find((semester) => semester.is_active)
+        ?.chapters.map((chapter) => chapter.id) || [],
+  )
 
   const [semesterName, setSemesterName] = useState('')
   const [semesterIsActive, setSemesterIsActive] = useState(false)
@@ -97,10 +106,6 @@ export default function CoursesOverviewClient() {
       setLoading(false)
     }
   }
-
-  useEffect(() => {
-    void loadOverview()
-  }, [])
 
   const totals = useMemo(() => {
     return overview.semesters.reduce(

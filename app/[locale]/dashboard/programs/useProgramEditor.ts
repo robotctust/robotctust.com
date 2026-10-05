@@ -1,39 +1,22 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { Program } from '@/app/types/course-admin'
 import { requestJson } from '../members/client-utils'
 import { useToast } from '@/app/contexts/ToastContext'
 
-export function useProgramEditor(programId: string) {
+/**
+ * @param programId 'new' 表示新增
+ * @param initialProgram 編輯既有程式時由伺服器帶入
+ */
+export function useProgramEditor(programId: string, initialProgram?: Program) {
   const router = useRouter()
   const { showToast } = useToast()
   const isNew = programId === 'new'
   
-  const [name, setName] = useState('')
-  const [language, setLanguage] = useState('cpp')
-  const [codeContent, setCodeContent] = useState('')
-  const [loading, setLoading] = useState(!isNew)
+  const [name, setName] = useState(initialProgram?.name ?? '')
+  const [language, setLanguage] = useState(initialProgram?.language || 'cpp')
+  const [codeContent, setCodeContent] = useState(initialProgram?.code_content ?? '')
   const [isSaving, setIsSaving] = useState(false)
-
-  useEffect(() => {
-    if (!isNew) {
-      void loadProgram()
-    }
-  }, [programId])
-
-  async function loadProgram() {
-    setLoading(true)
-    try {
-      const data = await requestJson<Program>(`/api/dashboard/programs/${programId}`)
-      setName(data.name)
-      setLanguage(data.language || 'cpp')
-      setCodeContent(data.code_content)
-    } catch (err) {
-      showToast('載入程式檔案失敗', 'error')
-    } finally {
-      setLoading(false)
-    }
-  }
 
   async function handleSave() {
     if (!name.trim() || !codeContent.trim()) {
@@ -73,7 +56,6 @@ export function useProgramEditor(programId: string) {
       name,
       language,
       codeContent,
-      loading,
       isSaving,
       isNew
     },

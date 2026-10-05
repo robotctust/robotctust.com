@@ -3,30 +3,8 @@
  * 用於處理 Next.js App Router 中的資料傳遞
  */
 
-import { UserProfile } from './user'
+import { PublicUserProfile, UserProfile } from './user'
 import { Post, PostCategory } from './post'
-
-//* 序列化後的使用者資料（所有 Date 轉為 string）
-export interface SerializedUserProfile {
-  uid: string
-  email: string
-  username: string
-  displayName: string
-  photoURL: string
-  provider: 'email' | 'google'
-  createdAt: string // Date -> string
-  updatedAt: string // Date -> string
-  roles: UserProfile['roles']
-  // 新增社群功能相關欄位
-  bio?: string
-  backgroundURL?: string
-  // 統計資料
-  stats: {
-    exp: number
-    level: number
-    isPublic: boolean
-  }
-}
 
 //* 序列化後的文章資料（所有 Date 轉為 string）
 export interface SerializedPost {
@@ -42,27 +20,17 @@ export interface SerializedPost {
   updatedAt: string // Timestamp -> string
 }
 
-//* 將 UserProfile 序列化為可傳遞給客戶端的格式
-export const serializeUserProfile = (
-  user: UserProfile
-): SerializedUserProfile => {
-  return {
-    ...user,
-    createdAt: user.createdAt.toISOString(),
-    updatedAt: user.updatedAt.toISOString(),
-  }
-}
-
-//* 將序列化的使用者資料還原為 UserProfile
-export const deserializeUserProfile = (
-  serializedUser: SerializedUserProfile
-): UserProfile => {
-  return {
-    ...serializedUser,
-    createdAt: new Date(serializedUser.createdAt),
-    updatedAt: new Date(serializedUser.updatedAt),
-  }
-}
+//* 將 UserProfile 收窄為可以給任何訪客看的公開名片
+//  白名單：只挑個人頁畫面用到的欄位。千萬不要改回 { ...user }——
+//  整份資料會含 email、學號、roles，傳給 Client 就會出現在網頁原始碼裡。
+export const toPublicUserProfile = (user: UserProfile): PublicUserProfile => ({
+  uid: user.uid,
+  username: user.username,
+  displayName: user.displayName,
+  photoURL: user.photoURL,
+  bio: user.bio,
+  backgroundURL: user.backgroundURL,
+})
 
 //* 將 Post 序列化為可傳遞給客戶端的格式（timestamps 已是 ISO string，直接傳遞）
 export const serializePost = (post: Post): SerializedPost => post

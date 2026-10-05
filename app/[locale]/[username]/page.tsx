@@ -4,7 +4,8 @@ import styles from './User.module.scss'
 
 // utils
 import { getUserProfileStatusByUsername } from '@/app/utils/userServiceServer'
-import { serializeUserProfile } from '@/app/types/serialized'
+import { getFollowCounts } from '@/app/utils/followService'
+import { toPublicUserProfile } from '@/app/types/serialized'
 import { metadata } from '@/app/utils/metadata'
 
 // components
@@ -37,16 +38,23 @@ export default async function UserPage({
     notFound()
   }
 
-  //* 序列化使用者資料以安全傳遞給 Client 端
-  const serializedUserProfile =
-    result.status === 'found' ? serializeUserProfile(result.profile) : null
+  //* 只把公開名片欄位傳給 Client 端（不含 email、學號等個資）
+  const publicProfile =
+    result.status === 'found' ? toPublicUserProfile(result.profile) : null
+
+  //* 取得追蹤數字（永遠公開）
+  const initialFollowCounts =
+    result.status === 'found'
+      ? await getFollowCounts(result.profile.uid)
+      : null
 
   return (
     <div className={`page ${styles.user_page}`}>
       <div className={styles.user_page_container}>
         <UserProfileClient
           username={username}
-          initialUserProfile={serializedUserProfile}
+          initialUserProfile={publicProfile}
+          initialFollowCounts={initialFollowCounts}
           isPrivate={result.status === 'private'}
         />
         <div className={`page-container ${styles.user_contents}`}>

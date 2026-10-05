@@ -1,0 +1,25 @@
+// 覆蓋父容器、不攔截互動的裝飾層
+.svg {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1;
+  pointer-events: none;
+  overflow: visible;
+}
+
+// 虛線「路線」：圓點狀，營造旅程地圖的路徑感
+.path {
+  fill: none;
+  stroke: var(--primary);
+  stroke-width: 5;
+  stroke-linecap: round;
+  stroke-dasharray: 0.1 18;
+  opacity: 0.5;
+}
+
+// 每一站的節點
+.node {
+  width: 12px;
+  fill: var(--primary);
+}

@@ -11,9 +11,10 @@ import {
   SettingsItem,
   Button,
   Input,
+  Toggle,
   ConfirmModal,
 } from '@/app/components/Settings'
-import { exportMyData, deleteAccount } from './actions'
+import { exportMyData, deleteAccount, updateFollowPrivacy } from './actions'
 import styles from './account.module.scss'
 
 interface AccountSettingsClientProps {
@@ -54,6 +55,10 @@ export default function AccountSettingsClient({
   const [emailUpdateError, setEmailUpdateError] = useState('')
   const [showEmailConfirm, setShowEmailConfirm] = useState(false)
 
+  //* 追蹤清單可見性
+  const [followersPublic, setFollowersPublic] = useState(true)
+  const [followingPublic, setFollowingPublic] = useState(true)
+
   //* 匯出資料
   const [exporting, setExporting] = useState(false)
 
@@ -71,10 +76,42 @@ export default function AccountSettingsClient({
         data: { user },
       } = await supabase.auth.getUser()
       setAuthUser(user)
+
+      // 載入追蹤清單可見性設定
+      if (user) {
+        const { data: profile } = await supabase
+          .from('users')
+          .select('followers_public, following_public')
+          .eq('id', user.id)
+          .maybeSingle()
+        if (profile) {
+          setFollowersPublic(profile.followers_public ?? true)
+          setFollowingPublic(profile.following_public ?? true)
+        }
+      }
+
       setLoadingUser(false)
     }
     load()
   }, [])
+
+  /**
+   * [Function] 切換追蹤清單可見性（optimistic 更新，失敗回滾 + toast）
+   */
+  const handleTogglePrivacy = async (
+    field: 'followersPublic' | 'followingPublic',
+    next: boolean,
+  ) => {
+    const setter =
+      field === 'followersPublic' ? setFollowersPublic : setFollowingPublic
+    setter(next)
+
+    const result = await updateFollowPrivacy({ [field]: next })
+    if (!result.success) {
+      setter(!next)
+      showToast(t('privacy.toastFailed'), 'error')
+    }
+  }
 
   /**
    * [Function] 寄送密碼重設郵件
@@ -215,7 +252,44 @@ export default function AccountSettingsClient({
         <div className={styles.loading}>{t('loading')}</div>
       ) : (
         <>
-          {/* ── 帳號安全 ── */}
+          {/* ── 隱私設定 ── */}
+          <SettingsSection title={t('privacy.sectionTitle')}>
+            <SettingsItem
+              label={t('privacy.followersPublic.label')}
+              hint={t('privacy.followersPublic.hint')}
+            >
+              <Toggle
+                checked={followersPublic}
+                ariaLabel={t('privacy.followersPublic.label')}
+                onChange={(next) =>
+                  handleTogglePrivacy('followersPublic', next)
+                }
+              />
+            </SettingsItem>
+            <SettingsItem
+              label={t('privacy.followingPublic.label')}
+              hint={t('privacy.followingPublic.hint')}
+            >
+              <Toggle
+                checked={followingPublic}
+                ariaLabel={t('privacy.followingPublic.label')}
+                onChange={(next) =>
+                  handleTogglePrivacy('followingPublic', next)
+                }
+              />
+            </SettingsItem>
+          </SettingsSection>
+
+          {/* ── 匯出我的資料 ── */}
+          <SettingsSection title={t('export.sectionTitle')}>
+            <SettingsItem label={t('export.label')} hint={t('export.hint')}>
+              <Button onClick={handleExport} disabled={exporting}>
+                {exporting ? t('export.exporting') : t('export.action')}
+              </Button>
+            </SettingsItem>
+          </SettingsSection>
+
+          {/* ── 帳號安全（移至頁面最底） ── */}
           <SettingsSection title={t('security.sectionTitle')}>
             {hasEmailIdentity ? (
               <>
@@ -310,15 +384,6 @@ export default function AccountSettingsClient({
                 </a>
               </div>
             )}
-          </SettingsSection>
-
-          {/* ── 匯出我的資料 ── */}
-          <SettingsSection title={t('export.sectionTitle')}>
-            <SettingsItem label={t('export.label')} hint={t('export.hint')}>
-              <Button onClick={handleExport} disabled={exporting}>
-                {exporting ? t('export.exporting') : t('export.action')}
-              </Button>
-            </SettingsItem>
           </SettingsSection>
 
           {/* ── 危險區域 ── */}
