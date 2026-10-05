@@ -109,8 +109,7 @@
         "newArticle": "新建文章",
         "verificationList": "審核列表",
         "pendingVerifications": "待審核清單",
-        "eventList": "事件列表",
-        "newEvent": "新增事件"
+        "eventList": "事件列表"
       }
     },
     "WebsiteMap": {

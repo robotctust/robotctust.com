@@ -1,6 +1,6 @@
 import { getTranslations } from 'next-intl/server'
 import { Aside } from '@/app/components/Aside'
-import { faList, faPlus } from '@fortawesome/free-solid-svg-icons'
+import { faList } from '@fortawesome/free-solid-svg-icons'
 
 /**
  * [Component] 行事曆管理側邊欄 (Server Component @aside slot)
@@ -14,11 +14,6 @@ export default async function CalendarAdminAsideSlot() {
       label: t('items.eventList'),
       icon: faList,
       exact: true,
-    },
-    {
-      href: '/dashboard/calendar/new',
-      label: t('items.newEvent'),
-      icon: faPlus,
     },
   ]
 

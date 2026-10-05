@@ -89,6 +89,13 @@
   max-width: 280px;
 
   .titleLink {
+    // 按鈕重置：點標題開啟編輯彈窗
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
     font-weight: 600;
     color: var(--foreground);
     text-decoration: none;
@@ -177,62 +184,12 @@
 }
 
 // =========================================
-// Editor View
+// Event Modal Form
 // =========================================
-.editorContainer {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2x);
-  padding: var(--space-2x);
-  max-width: 760px;
-}
-
-.editorHeader {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-
-  .backLink {
-    display: inline-flex;
-    align-items: center;
-    gap: 8px;
-    color: var(--foreground-secondary);
-    text-decoration: none;
-    font-size: 0.88rem;
-
-    &:hover { color: var(--foreground); }
-  }
-
-  .editorTitle {
-    margin: 0;
-    font-size: 1.5rem;
-    font-weight: 700;
-  }
-}
-
 .editorForm {
   display: flex;
   flex-direction: column;
   gap: var(--space-2x);
-}
-
-.formSection {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space);
-  padding: var(--space-2x);
-  border: 1px solid var(--border);
-  @include mixins.border-radius(12px);
-  background: rgba(var(--background-secondary-rgb), 0.3);
-
-  .sectionTitle {
-    margin: 0 0 4px;
-    font-size: 0.95rem;
-    font-weight: 600;
-    color: var(--foreground-secondary);
-    text-transform: uppercase;
-    letter-spacing: 0.05em;
-  }
 }
 
 .fieldGroup {
@@ -302,11 +259,4 @@
   font-size: 0.95rem;
 
   .checkbox { width: 16px; height: 16px; cursor: pointer; }
-}
-
-.formActions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  padding-top: 4px;
 }

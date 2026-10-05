@@ -115,6 +115,57 @@ span.nowrap {
   color: var(--danger-hover);
 }
 
+/* 一般文字按鈕（同 _mixins.scss 的 button mixin，normal 尺寸） */
+.primary-button,
+.secondary-button,
+.danger-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-width: max-content;
+  padding: 8px 12px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  font-size: 0.9rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all var(--transition-duration) var(--transition-bezier-fast);
+}
+.primary-button {
+  background: var(--primary);
+  color: var(--color-white);
+}
+.primary-button:hover {
+  background: var(--primary-hover);
+}
+.secondary-button {
+  background: var(--background-secondary);
+  color: var(--foreground);
+}
+.secondary-button:hover {
+  background: var(--background-tertiary);
+}
+.danger-button {
+  background: var(--danger);
+  color: var(--color-white);
+}
+.danger-button:hover {
+  background: var(--danger-hover);
+}
+.primary-button:not(:disabled):hover,
+.secondary-button:not(:disabled):hover,
+.danger-button:not(:disabled):hover {
+  border-color: var(--border-hover);
+  transform: scale(1.05);
+}
+.primary-button:disabled,
+.secondary-button:disabled,
+.danger-button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .page {
   height: 100%;
   width: 100%;
