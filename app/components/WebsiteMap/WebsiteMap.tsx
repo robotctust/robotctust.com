@@ -5,6 +5,7 @@ import styles from './WebsiteMap.module.scss'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons'
 import { useTranslations } from 'next-intl'
+import { useAuth } from '@/app/contexts/AuthContext'
 
 const LinkWithIcon = ({
   href,
@@ -36,11 +37,27 @@ const LinkWithIcon = ({
  */
 export default function WebsiteMap({ onClose }: { onClose?: () => void }) {
   const t = useTranslations('Components.WebsiteMap')
+  const { isAdmin, isSuperAdmin } = useAuth()
   const handleLinkClick = () => {
     onClose?.()
   }
   return (
     <div className={styles.websiteMap}>
+      {(isAdmin || isSuperAdmin) && (
+        <div className={styles.websiteMap_group}>
+          <p>{t('admin.title')}</p>
+          <div className={styles.websiteMap_group_items}>
+            <LinkWithIcon href="/dashboard" onClick={handleLinkClick}>
+              {t('admin.items.dashboard')}
+            </LinkWithIcon>
+            {isSuperAdmin && (
+              <LinkWithIcon href="/admin" onClick={handleLinkClick}>
+                {t('admin.items.admin')}
+              </LinkWithIcon>
+            )}
+          </div>
+        </div>
+      )}
       <div className={styles.websiteMap_group}>
         <p>{t('info.title')}</p>
         <div className={styles.websiteMap_group_items}>

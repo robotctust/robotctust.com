@@ -1,10 +1,21 @@
 @use '@/app/styles/_mixins.scss' as mixins;
 
+// 後台不顯示主站 Header，覆寫 Header 高度讓 Page 與 Aside 貼齊頂部
+.noHeader {
+  --header-height: var(--space);
+  --header-height-compact: var(--space);
+}
+
 .container {
   width: 100%;
   max-width: 1200px !important;
   margin: 0 auto;
   min-height: 100vh;
+
+  // 手機版側欄開關按鈕（44px）固定在左上角，內容往下讓出空間
+  @include mixins.respond-by-max-width(859px) {
+    padding-top: 44px;
+  }
 }
 
 .content {

@@ -26,9 +26,7 @@
       "competitions": "Competitions",
       "calendar": "Calendar",
       "docs": "Docs",
-      "about": "About",
-      "dashboard": "Dashboard",
-      "admin": "Admin"
+      "about": "About"
     },
     "settings": "Settings"
   },
@@ -87,6 +85,7 @@
       "emptyState": "No courses available, or you are not a member of any semester yet."
     },
     "DashboardAside": {
+      "backToHome": "Back to Home",
       "groups": {
         "content": "Content",
         "club": "Club Management"
@@ -108,6 +107,13 @@
       }
     },
     "WebsiteMap": {
+      "admin": {
+        "title": "Admin",
+        "items": {
+          "dashboard": "Dashboard",
+          "admin": "Admin Console"
+        }
+      },
       "course": {
         "title": "Course",
         "items": {

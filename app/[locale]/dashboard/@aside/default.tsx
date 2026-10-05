@@ -42,6 +42,7 @@ export default async function GlobalAsideSlot() {
   return (
     <Aside
       header={{
+        backLink: { href: '/', label: t('backToHome') },
         title: t('header.title'),
         subtitle: t('header.subtitle', { role: tRoles(actor.role as any) }),
       }}
