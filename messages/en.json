@@ -87,12 +87,15 @@
       "emptyState": "No courses available, or you are not a member of any semester yet."
     },
     "DashboardAside": {
+      "groups": {
+        "content": "Content",
+        "club": "Club Management"
+      },
       "header": {
         "title": "Admin Dashboard",
         "subtitle": "Role: {role}"
       },
       "overview": "Overview",
-      "backToModules": "Back to Modules",
       "modules": {
         "courses": "Courses",
         "news": "News",
@@ -102,14 +105,6 @@
         "achievements": "Achievements",
         "accounts": "Accounts",
         "calendar": "Calendar"
-      },
-      "items": {
-        "courseOverview": "Course Overview",
-        "articleList": "Article List",
-        "newArticle": "New Article",
-        "verificationList": "Verification List",
-        "pendingVerifications": "Pending Verifications",
-        "eventList": "Event List"
       }
     },
     "WebsiteMap": {

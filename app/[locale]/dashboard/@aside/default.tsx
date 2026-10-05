@@ -1,12 +1,17 @@
 // util
 import { requireDashboardAccess } from '@/app/utils/dashboard/auth'
-import { DASHBOARD_MODULES } from '@/app/types/dashboard'
-import { getUserRoleName } from '@/app/types/user'
+import { DASHBOARD_MODULES, DashboardModule } from '@/app/types/dashboard'
 import { getTranslations } from 'next-intl/server'
 
 // components
 import { Aside } from '@/app/components/Aside'
 import { faHouse } from '@fortawesome/free-solid-svg-icons'
+
+// 側欄分組與順序（總覽固定在最上方、不分組）
+const MODULE_GROUPS: { key: 'content' | 'club'; modules: DashboardModule[] }[] = [
+  { key: 'content', modules: ['news', 'courses', 'programs'] },
+  { key: 'club', modules: ['calendar', 'verifications', 'achievements', 'members', 'accounts'] },
+]
 
 /**
  * [Component] 管理後台全域側邊欄 (Server Component @aside slot)
@@ -15,19 +20,23 @@ import { faHouse } from '@fortawesome/free-solid-svg-icons'
 export default async function GlobalAsideSlot() {
   const actor = await requireDashboardAccess()
   const t = await getTranslations('Components.DashboardAside')
-  const tRoles = await getTranslations('Roles')
-
-  const visibleModules = DASHBOARD_MODULES.filter((module) =>
-    actor.modules.includes(module.key),
-  )
+  const tRoles = await getTranslations('Components.Roles')
 
   const items = [
     { label: t('overview'), href: '/dashboard', icon: faHouse, exact: true },
-    ...visibleModules.map((module) => ({
-      label: t(`modules.${module.key}` as any),
-      href: module.href,
-      icon: module.icon ? module.icon : null,
-    })),
+    ...MODULE_GROUPS.flatMap((group) =>
+      group.modules
+        .filter((key) => actor.modules.includes(key))
+        .map((key) => {
+          const module = DASHBOARD_MODULES.find((m) => m.key === key)!
+          return {
+            label: t(`modules.${key}` as any),
+            href: module.href,
+            icon: module.icon ?? null,
+            group: t(`groups.${group.key}`),
+          }
+        }),
+    ),
   ]
 
   return (

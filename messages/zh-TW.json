@@ -87,12 +87,15 @@
       "emptyState": "暫無可用的課程，或您尚未成為任何學期的成員。"
     },
     "DashboardAside": {
+      "groups": {
+        "content": "內容",
+        "club": "社團管理"
+      },
       "header": {
         "title": "管理後台",
         "subtitle": "權限：{role}"
       },
       "overview": "總覽",
-      "backToModules": "返回模組總覽",
       "modules": {
         "courses": "課程管理",
         "news": "新聞管理",
@@ -102,14 +105,6 @@
         "achievements": "成就管理",
         "accounts": "帳號管理",
         "calendar": "行事曆管理"
-      },
-      "items": {
-        "courseOverview": "課程總覽",
-        "articleList": "文章列表",
-        "newArticle": "新建文章",
-        "verificationList": "審核列表",
-        "pendingVerifications": "待審核清單",
-        "eventList": "事件列表"
       }
     },
     "WebsiteMap": {
