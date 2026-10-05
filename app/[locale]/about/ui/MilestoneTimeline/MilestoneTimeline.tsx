@@ -100,6 +100,7 @@ export default function MilestoneTimeline() {
                     src={milestoneImages[i]}
                     alt=""
                     fill
+                    unoptimized // R2 圖已是壓縮過的 WebP 並有 CDN，不走 Vercel 圖片最佳化（額度有限）
                     sizes="(max-width: 600px) 80vw, 380px"
                     style={{ objectFit: 'cover' }}
                   />

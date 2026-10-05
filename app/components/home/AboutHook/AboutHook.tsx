@@ -136,6 +136,7 @@ export default async function AboutHook() {
                   src={f.src}
                   alt=""
                   fill
+                  unoptimized // R2 圖已是壓縮過的 WebP 並有 CDN，不走 Vercel 圖片最佳化（額度有限）
                   sizes="200px"
                   style={{ objectFit: 'cover' }}
                 />
