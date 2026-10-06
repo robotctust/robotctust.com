@@ -1,5 +1,5 @@
 import React from 'react'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { Link } from '@/i18n/navigation'
 import styles from './UpcomingCompetitionsSection.module.scss'
 import {
@@ -89,7 +89,7 @@ const UpcomingCompetitionsSection = async () => {
                       <div className={styles.competitionCard}>
                         {competition.image && (
                           <div className={styles.coverImageContainer}>
-                            <Image
+                            <Img
                               src={competition.image}
                               alt={competition.title}
                               width={400}

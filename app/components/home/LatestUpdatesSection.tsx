@@ -5,7 +5,7 @@ import { getLocale, getTranslations } from 'next-intl/server'
 import { getAllPosts, getPostExcerpt } from '@/app/utils/postService'
 import { formatPostDate } from '@/app/utils/postService'
 // components
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import ScrollAnimation from '../animation/ScrollAnimation/ScrollAnimation'
 // types
 import { Post } from '@/app/types/post'
@@ -47,7 +47,7 @@ const LatestUpdatesSection = async () => {
                 <div className={styles.cardContent}>
                   {post.coverImageUrl && (
                     <div className={styles.coverImageContainer}>
-                      <Image
+                      <Img
                         src={post.coverImageUrl}
                         alt={post.title}
                         width={240}

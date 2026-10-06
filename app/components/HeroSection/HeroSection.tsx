@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { getTranslations } from 'next-intl/server'
 import styles from './HeroSection.module.scss'
 import ScrollAnimation from '@/app/components/animation/ScrollAnimation/ScrollAnimation'
@@ -14,8 +14,8 @@ export default async function HeroSection() {
     <section className={styles.heroSection}>
       <div className={styles.firstRow}>
         <ScrollAnimation animation="fadeInUp" once={false}>
-          <Image
-            src="/assets/image/home/robotctust-home-image.png"
+          <Img
+            src="/assets/image/home/robotctust-home-image.webp"
             alt={tIndex('title')}
             width={96}
             height={96}

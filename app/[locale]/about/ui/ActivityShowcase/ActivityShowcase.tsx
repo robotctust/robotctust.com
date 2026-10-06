@@ -1,7 +1,7 @@
 'use client'
 
 import { useRef, useEffect } from 'react'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -106,11 +106,10 @@ export default function ActivityShowcase() {
               style={{ aspectRatio: String(tile.ratio) }}
             >
               {tile.src ? (
-                <Image
+                <Img
                   src={tile.src}
                   alt=""
                   fill
-                  unoptimized // R2 圖已是壓縮過的 WebP 並有 CDN，不走 Vercel 圖片最佳化（額度有限）
                   sizes="(max-width: 600px) 50vw, 30vw"
                   style={{ objectFit: 'cover' }}
                 />

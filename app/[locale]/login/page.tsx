@@ -1,6 +1,6 @@
 import { Suspense } from 'react'
 import { Metadata } from 'next'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { redirect } from 'next/navigation'
 import { Link, getPathname } from '@/i18n/navigation'
 import { getTranslations, getLocale } from 'next-intl/server'
@@ -90,8 +90,8 @@ async function LoginPage({
       maxWidth="1000px"
     >
       <Link href="/" passHref className={styles.back_to_home}>
-        <Image
-          src="/assets/image/home/robotctust-home-image.png"
+        <Img
+          src="/assets/image/home/robotctust-home-image.webp"
           alt="中臺機器人研究社"
           width={96}
           height={96}

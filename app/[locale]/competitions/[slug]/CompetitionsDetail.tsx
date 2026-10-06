@@ -1,5 +1,5 @@
 import React from 'react'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import styles from './CompetitionsDetail.module.scss'
 // component
 import MarkdownRenderer from '@/app/components/Markdown/MarkdownRenderer'
@@ -227,7 +227,7 @@ export default function CompetitionDetail({
         {/* 競賽圖片 */}
         {competition.image && (
           <div className={styles.imageContainer}>
-            <Image
+            <Img
               src={competition.image}
               alt={competition.title}
               className={styles.competitionImage}
@@ -408,7 +408,7 @@ export default function CompetitionDetail({
             {competition.image && (
               <>
                 <div className={`${styles.imageContainer} ${!isRegistrationOpen ? styles.registrationClosed : ''}`}>
-                  <Image className={styles.competitionImage} width={1280} height={720} src={competition.image} alt={competition.title} />
+                  <Img className={styles.competitionImage} width={1280} height={720} src={competition.image} alt={competition.title} />
                 </div>
                 <div className={styles.overlay} />
                 <div className={styles.gradient_blur}>

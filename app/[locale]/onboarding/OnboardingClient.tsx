@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useMemo, useRef, useState } from 'react'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { useRouter } from '@/i18n/navigation'
 import { useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -315,7 +315,7 @@ export default function OnboardingClient({
                   +
                 </button>
                 <div className={styles.avatar_preview}>
-                  <Image
+                  <Img
                     src={previewImage || '/assets/image/userEmptyAvatar.png'}
                     alt="頭像預覽"
                     className={styles.avatar_image}

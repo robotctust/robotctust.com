@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import styles from './news.module.scss'
 // components
 import Loading from '@/app/components/Loading/Loading'
@@ -45,7 +45,7 @@ function PostCard({ post, categoryLabel }: PostCardProps) {
       <div className={styles.postCardContent}>
         <div className={styles.postCoverContainer}>
           {post.coverImageUrl && (
-            <Image
+            <Img
               src={post.coverImageUrl}
               alt={post.title}
               className={styles.postCover}
@@ -97,7 +97,7 @@ function PostCard({ post, categoryLabel }: PostCardProps) {
           </div>
           <div className={styles.postContentContainer}>
             {post.coverImageUrl && (
-              <Image
+              <Img
                 src={post.coverImageUrl}
                 alt={post.title}
                 className={styles.postCover}

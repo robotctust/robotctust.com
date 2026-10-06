@@ -1,5 +1,5 @@
 import React from 'react'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import type { Components } from 'react-markdown'
 import styles from './MarkdownRenderer.module.scss'
 import ImageCarousel from './ImageCarousel'
@@ -170,17 +170,16 @@ export const markdownComponents: Components = {
     // 如果沒有 src，返回空
     if (!src) return null
 
-    // 使用 Next.js Image 元件優化圖片載入
+    // 以統一的 Img 元件渲染（不走 Vercel 圖片最佳化）
     return (
       <span className={styles.imageWrapper}>
-        <Image
+        <Img
           src={typeof src === 'string' ? src : ''}
           alt={alt || ''}
           className={styles.markdownImage}
           width={1200}
           height={800}
           loading="lazy"
-          quality={85}
         />
       </span>
     )

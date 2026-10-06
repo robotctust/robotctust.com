@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { useRouter } from '@/i18n/navigation'
 import styles from './User.module.scss'
 
@@ -207,7 +207,7 @@ export default function UserProfileClient({
       >
         {displayUserInfo.backgroundURL && (
           <div className={styles.background}>
-            <Image
+            <Img
               src={displayUserInfo.backgroundURL}
               alt={displayUserInfo.displayName}
               fill
@@ -238,7 +238,7 @@ export default function UserProfileClient({
             <div className={styles.user_info_header}>
               <div className={styles.user_info_user}>
                 <div className={styles.user_info_header_avatar}>
-                  <Image
+                  <Img
                     src={displayUserInfo.photoURL}
                     alt={displayUserInfo.displayName}
                     width={60}

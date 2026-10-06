@@ -1,6 +1,6 @@
 import { Link } from '@/i18n/navigation'
 import styles from './Footer.module.scss'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 // components
 import ContactUs from '../ContactUs/ContactUs'
 // icons
@@ -41,8 +41,8 @@ export default async function Footer({
         <div className={styles.footerContent}>
           <div className={styles.header}>
             <div className={styles.headerLeft}>
-              <Image
-                src="/assets/image/home/robotctust-home-image.png"
+              <Img
+                src="/assets/image/home/robotctust-home-image.webp"
                 alt="中臺機器人研究社"
                 width={100}
                 height={100}

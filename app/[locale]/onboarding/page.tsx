@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation'
 import { Link, getPathname } from '@/i18n/navigation'
 import { getLocale } from 'next-intl/server'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { Metadata } from 'next'
 import Page from '@/app/components/page/Page'
 import { createClient } from '@/app/utils/supabase/server'
@@ -80,8 +80,8 @@ export default async function OnboardingPage({
       maxWidth="1080px"
     >
       <Link href="/" passHref className={styles.back_to_home}>
-        <Image
-          src="/assets/image/home/robotctust-home-image.png"
+        <Img
+          src="/assets/image/home/robotctust-home-image.webp"
           alt="中臺機器人研究社"
           width={96}
           height={96}

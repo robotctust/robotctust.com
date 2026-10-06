@@ -14,7 +14,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import { getUserProfileByUidServer } from '@/app/utils/userServiceServer'
 import { createAdminClient } from '@/app/utils/supabase/admin'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 
 /**
  * [Component] 管理後台首頁
@@ -75,7 +75,7 @@ export default async function DashboardHomePage() {
           </div>
           <div className={styles.userInfoContent}>
             <div className={styles.userInfoAvatar}>
-              <Image
+              <Img
                 src={userProfile?.photoURL || '/assets/image/userEmptyAvatar.png'}
                 alt={userProfile?.displayName || ''}
                 width={40}

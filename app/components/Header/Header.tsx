@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react'
 import { useTranslations } from 'next-intl'
 import { Link } from '@/i18n/navigation'
 import { usePathname } from 'next/navigation'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import styles from './Header.module.scss'
 
 // component
@@ -139,8 +139,8 @@ export default function Header() {
               }`}
               onClick={handleLogoClick}
             >
-              <Image
-                src="/assets/image/home/robotctust-home-image.png"
+              <Img
+                src="/assets/image/home/robotctust-home-image.webp"
                 alt="中臺機器人研究社"
                 width={96}
                 height={96}

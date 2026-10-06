@@ -1,5 +1,5 @@
 import styles from './OfficeLocationCard.module.scss'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 
 function OfficeLocationCard() {
   return (
@@ -8,7 +8,7 @@ function OfficeLocationCard() {
         <h2>社團辦公室</h2>
         <p>中臺科技大學 天機教學大樓 2323</p>
       </div>
-      <Image
+      <Img
         src="/assets/image/maps/office-map.webp"
         alt="社團辦公室位置圖片"
         className={styles.office_image}

@@ -1,5 +1,5 @@
 import React from 'react'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { Link } from '@/i18n/navigation'
 import styles from './CompetitionCard.module.scss'
 // type
@@ -85,7 +85,7 @@ export default function CompetitionCard({
       {/* 競賽圖片 */}
       {competition.image && (
         <div className={styles.imageContainer}>
-          <Image
+          <Img
             src={competition.image}
             alt={competition.title}
             width={400}

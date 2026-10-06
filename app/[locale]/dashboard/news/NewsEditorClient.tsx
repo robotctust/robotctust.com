@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useRef } from 'react'
 import { Link } from '@/i18n/navigation'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { useRouter } from '@/i18n/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
@@ -227,7 +227,7 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
             <label>封面圖片</label>
             {coverPreview ? (
               <div className={styles.coverPreview}>
-                <Image
+                <Img
                   src={coverPreview}
                   alt="封面預覽"
                   fill

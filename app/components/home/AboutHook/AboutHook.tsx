@@ -1,5 +1,5 @@
 import { Link } from '@/i18n/navigation'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { getTranslations } from 'next-intl/server'
 import styles from './AboutHook.module.scss'
 import StaggerReveal from './StaggerReveal'
@@ -132,11 +132,10 @@ export default async function AboutHook() {
               style={{ transform: `translateX(-50%) rotate(${f.rotate}deg)` }}
             >
               {f.src ? (
-                <Image
+                <Img
                   src={f.src}
                   alt=""
                   fill
-                  unoptimized // R2 圖已是壓縮過的 WebP 並有 CDN，不走 Vercel 圖片最佳化（額度有限）
                   sizes="200px"
                   style={{ objectFit: 'cover' }}
                 />

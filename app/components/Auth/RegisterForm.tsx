@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useMemo, useState, useRef, useEffect } from 'react'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { Link } from '@/i18n/navigation'
 import { useForm } from 'react-hook-form'
 import { useTranslations } from 'next-intl'
@@ -558,7 +558,7 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
                   +
                 </button>
                 <div className={styles.avatar_preview}>
-                  <Image
+                  <Img
                     src={previewImage || '/assets/image/userEmptyAvatar.png'}
                     alt={t('form.register.step3.uploadAvatar')}
                     className={styles.avatar_image}

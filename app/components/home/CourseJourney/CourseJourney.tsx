@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { getTranslations } from 'next-intl/server'
 import styles from './CourseJourney.module.scss'
 import HorizontalScrollHijack from '@/app/components/animation/HorizontalScroll/HorizontalScrollHijack'
@@ -41,7 +41,7 @@ export default async function CourseJourney() {
             </div>
             <div className={styles.media}>
               {COURSE_IMAGES[i] ? (
-                <Image
+                <Img
                   src={COURSE_IMAGES[i]}
                   alt={lesson.title}
                   fill

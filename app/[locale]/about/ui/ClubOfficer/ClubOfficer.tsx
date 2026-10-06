@@ -1,5 +1,5 @@
 import { Link } from '@/i18n/navigation'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import styles from './ClubOfficer.module.scss'
 import { CLUB_OFFICERS, type ClubOfficer as ClubOfficerType } from './club-officers'
 import { createPublicClient } from '@/app/utils/supabase/public'
@@ -45,7 +45,7 @@ async function ClubOfficerItem({ clubOfficer }: { clubOfficer: ClubOfficerType }
       {/* hover 時斜掃過卡面的反光線條 */}
       <span className={styles.clubOfficerSheen} aria-hidden="true" />
       <div className={styles.clubOfficerItemImage}>
-        <Image
+        <Img
           src={avatarUrl}
           alt={`${clubOfficer.name} 的頭像`}
           height={240}

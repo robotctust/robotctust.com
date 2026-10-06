@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { Link } from '@/i18n/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faLock } from '@fortawesome/free-solid-svg-icons'
@@ -83,7 +83,7 @@ export default function FollowListModal({
               onClick={onClose}
             >
               <div className={styles.avatar}>
-                <Image
+                <Img
                   src={item.photoURL}
                   alt={item.displayName}
                   width={44}

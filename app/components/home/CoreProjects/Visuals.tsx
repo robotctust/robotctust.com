@@ -1,6 +1,6 @@
 'use client'
 
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import styles from './CoreProjects.module.scss'
 
 // components
@@ -52,8 +52,8 @@ export const WebVisual = () => {
         <div className={styles.windowContent}>
           <div className={styles.header}>
             <Link href="/">
-              <Image
-                src="/assets/image/home/robotctust-home-image.png"
+              <Img
+                src="/assets/image/home/robotctust-home-image.webp"
                 alt="logo"
                 className={styles.logo}
                 width={100}
@@ -68,8 +68,8 @@ export const WebVisual = () => {
             <FontAwesomeIcon icon={faBars} />
           </div>
           <div className={styles.heroArea}>
-            <Image
-              src="/assets/image/home/robotctust-home-image.png"
+            <Img
+              src="/assets/image/home/robotctust-home-image.webp"
               alt="logo"
               width={100}
               height={100}

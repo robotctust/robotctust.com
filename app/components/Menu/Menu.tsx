@@ -1,7 +1,7 @@
 'use client'
 
 import { Link } from '@/i18n/navigation'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { usePathname } from '@/i18n/navigation'
 import styles from './Menu.module.scss'
 
@@ -80,7 +80,7 @@ const AuthSection = ({ onClose }: AuthSectionProps) => {
             onClick={handleUserClick}
           >
             <div className={styles.user_info}>
-              <Image
+              <Img
                 src={user.photoURL || '/assets/image/userEmptyAvatar.webp'}
                 alt={user.displayName}
                 title={user.displayName}

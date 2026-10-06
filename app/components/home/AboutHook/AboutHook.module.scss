@@ -101,7 +101,7 @@
 // （translateX(-50%) 以 left% 為中心錨定 + rotate）。
 .floatTilt {
   display: block;
-  position: relative; // next/image fill 基準
+  position: relative; // Img fill 基準
   overflow: hidden;
   border: 1px solid var(--border);
   box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);

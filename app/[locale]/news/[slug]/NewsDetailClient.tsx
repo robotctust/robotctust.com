@@ -1,7 +1,7 @@
 'use client'
 
 import React from 'react'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { Link } from '@/i18n/navigation'
 import { useRouter } from '@/i18n/navigation'
 import { useLocale, useTranslations } from 'next-intl'
@@ -213,13 +213,12 @@ export default function NewsDetailClient({
 
         {post.coverImageUrl && (
           <div className={styles.coverImageContainer}>
-            <Image
+            <Img
               src={post.coverImageUrl}
               alt={post.title}
               className={styles.coverImage}
               width={1200}
               height={800}
-              quality={85}
               priority
             />
           </div>
@@ -237,12 +236,11 @@ export default function NewsDetailClient({
             >
               {olderPost.coverImageUrl && (
                 <div className={styles.adjacentThumb}>
-                  <Image
+                  <Img
                     src={olderPost.coverImageUrl}
                     alt={olderPost.title}
                     width={96}
                     height={96}
-                    quality={60}
                   />
                 </div>
               )}
@@ -272,12 +270,11 @@ export default function NewsDetailClient({
               </div>
               {newerPost.coverImageUrl && (
                 <div className={styles.adjacentThumb}>
-                  <Image
+                  <Img
                     src={newerPost.coverImageUrl}
                     alt={newerPost.title}
                     width={96}
                     height={96}
-                    quality={60}
                   />
                 </div>
               )}
@@ -305,12 +302,11 @@ export default function NewsDetailClient({
               >
                 <div className={styles.relatedThumb}>
                   {related.coverImageUrl ? (
-                    <Image
+                    <Img
                       src={related.coverImageUrl}
                       alt={related.title}
                       width={320}
                       height={180}
-                      quality={60}
                     />
                   ) : (
                     <div className={styles.relatedThumbPlaceholder}>

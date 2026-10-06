@@ -1,7 +1,7 @@
 'use client'
 
 import React, { useState, useEffect, useRef } from 'react'
-import Image from 'next/image'
+import Img from '@/app/components/Img/Img'
 import { useLocale } from 'next-intl'
 import { useRouter, getPathname } from '@/i18n/navigation'
 import styles from './EditProfile.module.scss'
@@ -751,7 +751,7 @@ export default function EditProfileClient({
                       <span>拖動以調整裁剪位置</span>
                     </div>
                   ) : (
-                    <Image
+                    <Img
                       src={backgroundPreview}
                       alt="背景預覽"
                       fill
@@ -801,7 +801,7 @@ export default function EditProfileClient({
             <label>個人頭像</label>
             <div className={styles.avatar_upload}>
               <div className={styles.avatar_preview}>
-                <Image
+                <Img
                   src={avatarPreview || '/assets/image/userEmptyAvatar.png'}
                   alt="頭像預覽"
                   width={80}
