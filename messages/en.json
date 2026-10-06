@@ -298,7 +298,8 @@
           "emailSent": "Verification email sent! Please check your inbox.",
           "success": "Registration successful. Welcome aboard!",
           "googleSuccess": "Signed in with Google. Welcome to the club!",
-          "agreeTermsRequired": "Please read and agree to the Terms of Service and Privacy Policy first."
+          "agreeTermsRequired": "Please read and agree to the Terms of Service and Privacy Policy first.",
+          "avatarFailed": "Your account was created, but the avatar upload failed. Please set it again from your profile after signing in."
         },
         "errors": {
           "usernameTaken": "This username is already taken",

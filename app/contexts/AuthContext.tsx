@@ -18,6 +18,7 @@ import {
   DEFAULT_USER_STATS,
 } from '../types/user'
 import { isAdminRole, isSuperAdminRole } from '../utils/auth/roles'
+import { uploadRegisterAvatar } from '../utils/media/client'
 
 export const AuthContext = createContext<AuthContextType | undefined>(undefined)
 
@@ -224,7 +225,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
   //* 註冊新使用者
   const register = async (
     data: RegisterFormData,
-  ): Promise<{ requiresEmailConfirmation: boolean }> => {
+  ): Promise<{ requiresEmailConfirmation: boolean; avatarUploadFailed: boolean }> => {
     try {
       setLoading(true)
 
@@ -263,12 +264,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
       // session 為 null 表示 Supabase 要求信箱驗證，尚未建立 session
       const requiresEmailConfirmation = !signUpData.session
 
+      // 帳號建立後才上傳頭像（不需 session，由伺服器寫入 users.avatar_url）
+      // 頭像失敗不影響註冊結果，只回報給表單提示使用者稍後再設定
+      let avatarUploadFailed = false
+      if (data.avatarFile && signUpData.user) {
+        await uploadRegisterAvatar(data.avatarFile, signUpData.user.id).catch((err) => {
+          console.error('註冊頭像上傳失敗:', err)
+          avatarUploadFailed = true
+        })
+      }
+
       if (signUpData.user && !requiresEmailConfirmation) {
         const userProfile = await getUserProfile(signUpData.user.id)
         setUser(userProfile)
       }
 
-      return { requiresEmailConfirmation }
+      return { requiresEmailConfirmation, avatarUploadFailed }
     } catch (error) {
       console.error('註冊失敗:', error)
       throw error

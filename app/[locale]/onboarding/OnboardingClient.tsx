@@ -15,7 +15,7 @@ import {
 import styles from './onboarding.module.scss'
 import { useAuth } from '@/app/contexts/AuthContext'
 import { useToast } from '@/app/contexts/ToastContext'
-import { uploadUserAvatarToFirebaseStorage } from '@/app/utils/firebaseService'
+import { deleteImage, uploadImage } from '@/app/utils/media/client'
 import { ClubIdentity, SchoolIdentity, UserProfile } from '@/app/types/user'
 
 interface OnboardingClientProps {
@@ -230,16 +230,16 @@ export default function OnboardingClient({
   }
 
   const onSubmit = async (data: OnboardingFormData) => {
+    // 已上傳但資料尚未存成功的新頭像，失敗時要清掉
+    let pendingAvatarUrl: string | null = null
     try {
       setIsLoading(true)
       setError('')
 
       let avatarUrl = initialData.photoURL
       if (avatarFile) {
-        avatarUrl = await uploadUserAvatarToFirebaseStorage(
-          avatarFile,
-          initialData.uid,
-        )
+        avatarUrl = await uploadImage(avatarFile, 'avatar')
+        pendingAvatarUrl = avatarUrl
       }
 
       const payload: Partial<UserProfile> = {
@@ -255,10 +255,16 @@ export default function OnboardingClient({
       }
 
       await updateUserProfile(initialData.uid, payload)
+      pendingAvatarUrl = null
+      // 換了頭像才清除舊圖（非 R2 網址由伺服器略過），失敗不影響流程
+      if (avatarUrl !== initialData.photoURL) {
+        deleteImage(initialData.photoURL).catch(console.error)
+      }
       showToast('資料已完成，歡迎加入！', 'success')
       router.replace(next || '/profile')
       router.refresh()
     } catch (err) {
+      if (pendingAvatarUrl) deleteImage(pendingAvatarUrl).catch(console.error)
       console.error('完成 onboarding 失敗:', err)
       setError(
         getErrorMessage((err as { message?: string })?.message || '未知錯誤'),

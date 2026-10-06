@@ -104,6 +104,7 @@ export interface RegisterFormData {
   username?: string // 修改為選填
   displayName?: string // 使其選填以免報錯
   photoURL?: string
+  avatarFile?: File | null // 註冊頭像：帳號建立後才上傳（見 /api/media/register-avatar）
   studentId?: string
   schoolIdentity?: SchoolIdentity
   clubIdentity?: ClubIdentity
@@ -124,7 +125,7 @@ export interface AuthContextType {
   signOut: () => Promise<void>
   register: (
     data: RegisterFormData,
-  ) => Promise<{ requiresEmailConfirmation: boolean }>
+  ) => Promise<{ requiresEmailConfirmation: boolean; avatarUploadFailed: boolean }>
   updateUserProfile: (
     uid: string,
     updateData: Partial<UserProfile>,

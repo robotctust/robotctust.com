@@ -43,3 +43,21 @@ export async function deleteImage(url: string): Promise<void> {
     throw new Error(data.error || '圖片刪除失敗')
   }
 }
+
+/**
+ * 註冊頭像：帳號剛建立、可能還沒有 session（需信箱驗證）時使用
+ * 伺服器會直接把頭像寫入 users.avatar_url
+ * @param file - 原始圖片檔案
+ * @param userId - signUp 回傳的使用者 ID
+ */
+export async function uploadRegisterAvatar(file: File, userId: string): Promise<string> {
+  const body = new FormData()
+  body.append('file', file)
+  const res = await fetch(`/api/media/register-avatar?userId=${encodeURIComponent(userId)}`, {
+    method: 'POST',
+    body,
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) throw new Error(data.error || '頭像上傳失敗')
+  return data.url as string
+}
