@@ -220,6 +220,7 @@ export default function NewsDetailClient({
               width={1200}
               height={800}
               priority
+              progressive
             />
           </div>
         )}
