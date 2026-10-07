@@ -238,12 +238,12 @@ export default function EditProfileClient({
 
     setUsernameStatus('checking')
     const timer = setTimeout(async () => {
-      const isAvailable = await checkUsernameAvailable(watchedUsername, uid)
+      const isAvailable = await checkUsernameAvailable(watchedUsername)
       setUsernameStatus(isAvailable ? 'available' : 'taken')
     }, 1500) // 600ms 延遲
 
     return () => clearTimeout(timer)
-  }, [watchedUsername, initialData.username, uid])
+  }, [watchedUsername, initialData.username])
 
   /**
    * [Effect] 監聽學號變化進行可用性檢查 (帶有 Debounce)
@@ -267,12 +267,12 @@ export default function EditProfileClient({
 
     setStudentIdStatus('checking')
     const timer = setTimeout(async () => {
-      const isAvailable = await checkStudentIdAvailable(trimmedId, uid)
+      const isAvailable = await checkStudentIdAvailable(trimmedId)
       setStudentIdStatus(isAvailable ? 'available' : 'taken')
     }, 1000) // 600ms 延遲
 
     return () => clearTimeout(timer)
-  }, [watchedStudentId, watchedSchoolIdentity, initialData.studentId, uid])
+  }, [watchedStudentId, watchedSchoolIdentity, initialData.studentId])
 
   /**
    * [Function] 提交表單

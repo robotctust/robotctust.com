@@ -155,25 +155,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     [supabase],
   )
 
-  //* 從 username 獲取使用者資料
-  const getUserProfileByUsername = async (
-    username: string,
-  ): Promise<UserProfile | null> => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('id')
-        .eq('username', username)
-        .single()
-
-      if (error || !data) return null
-      return getUserProfile(data.id)
-    } catch (error) {
-      console.error('從 username 獲取使用者資料時發生錯誤:', error)
-      return null
-    }
-  }
-
   //* 電子郵件登入
   const signInWithEmail = async (email: string, password: string) => {
     try {
@@ -348,37 +329,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     }
   }
 
-  //* 搜尋使用者
-  const searchUsers = async (searchTerm: string, limit: number = 10) => {
-    try {
-      const { data, error } = await supabase
-        .from('users')
-        .select('id, username, display_name, avatar_url')
-        // Supabase 提供 ilike，不分大小寫的模糊搜索
-        .ilike('username', `%${searchTerm}%`)
-        .limit(limit)
-
-      if (error) throw error
-
-      return (data || []).map(
-        (doc: {
-          id: string
-          username: string
-          display_name: string | null
-          avatar_url: string | null
-        }) => ({
-          uid: doc.id,
-          username: doc.username,
-          displayName: doc.display_name || doc.username,
-          photoURL: doc.avatar_url || '/assets/image/userEmptyAvatar.png',
-        }),
-      )
-    } catch (error) {
-      console.error('搜尋使用者時發生錯誤:', error)
-      return []
-    }
-  }
-
   //* 檢查 Email 是否已註冊
   const checkEmailExists = async (email: string): Promise<boolean> => {
     try {
@@ -497,13 +447,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
     supabaseUser,
     loading,
     getUserProfile,
-    getUserProfileByUsername,
     signInWithEmail,
     signInWithGoogle,
     signOut,
     register,
     updateUserProfile,
-    searchUsers,
     isAdmin,
     isSuperAdmin,
     isSemesterMember,
