@@ -23,6 +23,7 @@ export interface Post {
   // 時間戳記（ISO 8601 字串）
   createdAt: string
   updatedAt: string
+  publishedAt: string | null // 草稿為 null
 }
 
 // 建立文章資料

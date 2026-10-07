@@ -1,6 +1,7 @@
 import type { MetadataRoute } from 'next'
 import { SITE_CONFIG } from '@/app/utils/siteConfigs'
 import { createAdminClient } from '@/app/utils/supabase/admin'
+import { createPublicClient } from '@/app/utils/supabase/public'
 import { adminDb } from '@/app/utils/firebaseAdmin'
 import { mainDocs } from '@/app/[locale]/docs/docs'
 
@@ -65,7 +66,8 @@ function buildEntry(path: string, lastModified?: string | Date): SitemapEntry {
 
 async function getNewsEntries(): Promise<SitemapEntry[]> {
   try {
-    const supabase = createAdminClient()
+    // 訪客身分讀取，RLS 只放行已發布文章
+    const supabase = createPublicClient()
     const { data, error } = await supabase
       .from('posts')
       .select('id, updated_at')

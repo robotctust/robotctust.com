@@ -62,7 +62,7 @@ export default async function NewsDetailPage({
     if (post) {
       initialPost = serializePost(post)
       contentNode = <MarkdownContent content={post.contentMarkdown} />
-      const adjacent = await getAdjacentPosts(post.createdAt)
+      const adjacent = await getAdjacentPosts(post.publishedAt)
       olderPost = adjacent.older
       newerPost = adjacent.newer
       const excludeIds = [olderPost?.id, newerPost?.id].filter(

@@ -4,7 +4,7 @@ import {
   toRouteErrorResponse,
 } from '@/app/utils/dashboard/auth'
 import { createAdminClient } from '@/app/utils/supabase/admin'
-import { getAllPosts } from '@/app/utils/postService'
+import { getDashboardPosts } from '@/app/utils/postService'
 import { serializePost } from '@/app/types/serialized'
 import { revalidateUpdatePage } from '@/app/action/revalidate'
 import { PostCategory } from '@/app/types/post'
@@ -33,7 +33,7 @@ async function generateUniqueSlug(admin: ReturnType<typeof createAdminClient>): 
 export async function GET() {
   try {
     await requireDashboardAccess('news')
-    const posts = await getAllPosts()
+    const posts = await getDashboardPosts()
     return Response.json(posts.map(serializePost))
   } catch (error) {
     return toRouteErrorResponse(error)
@@ -96,8 +96,10 @@ export async function POST(request: NextRequest) {
       cover_image_url: coverImageUrl ?? null,
       author_id: actor.userId,
       author_display_name: authorDisplayName,
+      status: 'published',
       created_at: now,
       updated_at: now,
+      published_at: now,
     })
 
     if (error) {

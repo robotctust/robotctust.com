@@ -1,5 +1,6 @@
 import { UserProfile } from '../types/user'
 import { createAdminClient } from './supabase/admin'
+import { createPublicClient } from './supabase/public'
 import {
   Post,
   PostCategory,
@@ -17,13 +18,14 @@ export function checkUserPermission(user: UserProfile): boolean {
 type SupabasePostRow = {
   id: string
   title: string
-  content_markdown: string
+  content_markdown: string | null
   category: string
   cover_image_url: string | null
   author_id: string
   author_display_name: string
   created_at: string
   updated_at: string
+  published_at: string | null
   author: { display_name: string; username: string } | null
 }
 
@@ -33,7 +35,8 @@ function rowToPost(row: SupabasePostRow): Post {
   return {
     id: row.id,
     title: row.title,
-    contentMarkdown: row.content_markdown,
+    // v2.7 新編輯器的文章只有 JSON 內文，這裡沒有 markdown
+    contentMarkdown: row.content_markdown ?? '',
     category: row.category as PostCategory,
     coverImageUrl: row.cover_image_url,
     authorId: row.author_id,
@@ -41,19 +44,24 @@ function rowToPost(row: SupabasePostRow): Post {
     authorUsername: row.author?.username ?? null,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
+    publishedAt: row.published_at,
   }
 }
 
+/*
+ * 公開頁的讀取一律用 createPublicClient()（訪客身分），由 RLS 只放行已發布的文章；
+ * 草稿只有後台的 getDashboard* 函式（admin client）讀得到。
+ */
+
 /**
- * 獲取所有文章（新到舊）
+ * 獲取所有已發布文章（依發布時間新到舊）
  * @param limit 只取最新幾篇，不給就全部
  */
 export async function getAllPosts(limit?: number): Promise<Post[]> {
-  const admin = createAdminClient()
-  const query = admin
+  const query = createPublicClient()
     .from('posts')
     .select(POST_SELECT)
-    .order('created_at', { ascending: false })
+    .order('published_at', { ascending: false })
   const { data, error } = await (limit ? query.limit(limit) : query)
 
   if (error) {
@@ -71,25 +79,26 @@ export type AdjacentPost = {
 }
 
 /**
- * 依時間線取得相鄰文章（older = 較早一篇，newer = 較新一篇）
+ * 依發布時間線取得相鄰文章（older = 較早一篇，newer = 較新一篇）
  */
 export async function getAdjacentPosts(
-  createdAt: string,
+  publishedAt: string | null,
 ): Promise<{ older: AdjacentPost | null; newer: AdjacentPost | null }> {
-  const admin = createAdminClient()
+  if (!publishedAt) return { older: null, newer: null }
+  const supabase = createPublicClient()
   const [olderRes, newerRes] = await Promise.all([
-    admin
+    supabase
       .from('posts')
       .select('id, title, cover_image_url')
-      .lt('created_at', createdAt)
-      .order('created_at', { ascending: false })
+      .lt('published_at', publishedAt)
+      .order('published_at', { ascending: false })
       .limit(1)
       .maybeSingle(),
-    admin
+    supabase
       .from('posts')
       .select('id, title, cover_image_url')
-      .gt('created_at', createdAt)
-      .order('created_at', { ascending: true })
+      .gt('published_at', publishedAt)
+      .order('published_at', { ascending: true })
       .limit(1)
       .maybeSingle(),
   ])
@@ -121,14 +130,13 @@ export async function getRelatedPosts(
   excludeIds: string[] = [],
   limit = 3,
 ): Promise<AdjacentPost[]> {
-  const admin = createAdminClient()
   const exclude = new Set([currentId, ...excludeIds])
-  const { data, error } = await admin
+  const { data, error } = await createPublicClient()
     .from('posts')
     .select('id, title, cover_image_url')
     .eq('category', category)
     .neq('id', currentId)
-    .order('created_at', { ascending: false })
+    .order('published_at', { ascending: false })
     .limit(limit + excludeIds.length)
 
   if (error) {
@@ -147,17 +155,16 @@ export async function getRelatedPosts(
 }
 
 /**
- * 根據分類獲取文章
+ * 根據分類獲取已發布文章
  */
 export async function getPostsByCategory(
   category: PostCategory,
 ): Promise<Post[]> {
-  const admin = createAdminClient()
-  const { data, error } = await admin
+  const { data, error } = await createPublicClient()
     .from('posts')
     .select(POST_SELECT)
     .eq('category', category)
-    .order('created_at', { ascending: false })
+    .order('published_at', { ascending: false })
 
   if (error) {
     console.error('Error fetching posts by category:', error)
@@ -195,11 +202,41 @@ export function getPostExcerpt(
 }
 
 /**
- * 獲取單篇文章
+ * 獲取單篇已發布文章
  */
 export async function getPostById(postId: string): Promise<Post | null> {
-  const admin = createAdminClient()
-  const { data, error } = await admin
+  return findPost(createPublicClient(), postId)
+}
+
+/**
+ * 後台用：獲取所有文章，含草稿（admin client，呼叫前須先 requireDashboardAccess('news')）
+ */
+export async function getDashboardPosts(): Promise<Post[]> {
+  const { data, error } = await createAdminClient()
+    .from('posts')
+    .select(POST_SELECT)
+    .order('created_at', { ascending: false })
+
+  if (error) {
+    console.error('Error fetching dashboard posts:', error)
+    throw new Error('無法獲取文章列表')
+  }
+
+  return (data as SupabasePostRow[]).map(rowToPost)
+}
+
+/**
+ * 後台用：獲取單篇文章，含草稿（admin client，呼叫前須先 requireDashboardAccess('news')）
+ */
+export async function getDashboardPostById(postId: string): Promise<Post | null> {
+  return findPost(createAdminClient(), postId)
+}
+
+async function findPost(
+  supabase: ReturnType<typeof createPublicClient>,
+  postId: string,
+): Promise<Post | null> {
+  const { data, error } = await supabase
     .from('posts')
     .select(POST_SELECT)
     .eq('id', postId)

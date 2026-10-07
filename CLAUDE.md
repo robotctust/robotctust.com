@@ -55,17 +55,17 @@ All public pages (home, about, news, calendar, competitions, docs, contact, priv
 - `app/utils/supabase/middleware.ts` — `updateSession()` session-cookie refresh used by `middleware.ts`. Uses `getClaims()` (JWT is asymmetric ES256, verified locally against cached JWKS), not `getUser()`, so middleware makes no network call per request; server code that must confirm the account is still valid calls `getUser()` itself.
 
 ### Supabase database (schema & change policy)
-Project **Robot CTUST** (ref `fdejhtwkvqrccnnpivwa`, ap-south-1, Postgres 17). **Every `public` table has RLS enabled.** Inspect the live schema with the Supabase MCP tools (`list_tables`, `list_migrations`, etc.) before relying on this summary — it can drift.
+Project **Robot CTUST** (ref `fdejhtwkvqrccnnpivwa`, ap-south-1, Postgres 17). **Every `public` table has RLS enabled.** Inspect the live schema with the Supabase MCP tools (`list_tables`, `list_migrations`, etc.) before relying on this summary — it can drift. **There is no separate dev database:** the local dev server talks to this same production project, so anything written from dev (dashboard edits, test posts) is live data.
 
 **Mandatory workflow for any DB-touching work:**
 1. **Before** writing or changing any feature that reads/writes the database, confirm the current Supabase schema (tables, columns, RLS policies, triggers) via the Supabase MCP — do not code against assumptions.
 2. **Any change to database structure or settings** — creating/altering/dropping tables, columns, indexes, RLS policies, triggers, functions, extensions, or project config — **requires the user's explicit approval before execution.** Propose the change and wait for a clear yes; never run `apply_migration` / DDL on your own initiative.
 
-Schema changes are tracked as Supabase migrations (latest: `restrict_users_public_columns`). Tables by domain:
+Schema changes are tracked as Supabase migrations (latest: `posts_status_public_read`). Tables by domain:
 - **Identity & social:** `users` (PK = `auth.users.id`; `roles text[]`, `club_identity`, `school_identity`; `username`/`student_id` unique), `user_stats` (`exp`, `level` — gamification), `follows` (composite PK `follower_id`+`following_id`).
 - **Courses/learning (normalized hierarchy):** `semesters` → `chapters` → `courses` → `course_contents` (a content block; `type` + `content`, optional `program_id`); `programs` (reusable code snippets: `language` + `code_content`); `course_verifications` (`status`, `approved_at`, `verified_by`); `semester_members` (per-semester student-id roster).
 - **Achievements:** `achievements` (`required_exp`), `user_achievements`.
-- **Content & calendar:** `posts` (markdown, `category`, `author_id`), `schedule_events` (`type` ∈ class/competition/activity/event/school-event, `semester_id`, `published`).
+- **Content & calendar:** `posts` (markdown, `category`, `author_id`, `status` draft/published, `published_at`; visitors can read only `published` rows — public pages read through `postService`'s `createPublicClient()` functions, the dashboard through `getDashboardPosts` / `getDashboardPostById` (admin client, includes drafts)), `schedule_events` (`type` ∈ class/competition/activity/event/school-event, `semester_id`, `published`).
 
 ### Authorization (read before touching admin/dashboard code)
 - Users hold an **array of roles** (`super_admin`, `admin`, per-module admins like `admin_course`/`admin_news`/`admin_accounts`/..., and `member`). The single source of truth for role logic is `app/utils/auth/roles.ts` — always go through `normalizeRoles`, `isAdminRole`, `getAssignableRoles`, `canManageTargetUser` rather than comparing role strings inline.
