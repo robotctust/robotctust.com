@@ -214,7 +214,7 @@ export const OldRoboticsVisual = () => {
     <animated.div className={styles.visualContainer} style={springZoomIn}>
       <div className={styles.oldRoboticsScene}>
         <video
-          src="https://img.robotctust.com/home/core-projects/robot-animation.mp4"
+          src="https://media.robotctust.com/home/core-projects/robot-animation.mp4"
           autoPlay
           loop
           muted
