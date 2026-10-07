@@ -18,6 +18,7 @@ export interface SerializedPost {
   authorUsername: string | null
   createdAt: string // Timestamp -> string
   updatedAt: string // Timestamp -> string
+  publishedAt: string | null
 }
 
 //* 將 UserProfile 收窄為可以給任何訪客看的公開名片

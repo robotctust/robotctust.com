@@ -4,7 +4,7 @@ import {
   toRouteErrorResponse,
 } from '@/app/utils/dashboard/auth'
 import { createAdminClient } from '@/app/utils/supabase/admin'
-import { getPostById } from '@/app/utils/postService'
+import { getDashboardPostById } from '@/app/utils/postService'
 import { deleteMediaByUrl } from '@/app/utils/media/r2'
 import { SITE_CONFIG } from '@/app/utils/siteConfigs'
 import { serializePost } from '@/app/types/serialized'
@@ -28,7 +28,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
   try {
     await requireDashboardAccess('news')
     const { postId } = await context.params
-    const post = await getPostById(postId)
+    const post = await getDashboardPostById(postId)
     if (!post) {
       return Response.json({ error: '文章不存在' }, { status: 404 })
     }
@@ -58,7 +58,7 @@ export async function PATCH(request: NextRequest, context: RouteContext) {
       removeCoverImage?: boolean
     }
 
-    const currentPost = await getPostById(postId)
+    const currentPost = await getDashboardPostById(postId)
     if (!currentPost) {
       return Response.json({ error: '文章不存在' }, { status: 404 })
     }
@@ -108,7 +108,7 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
     await requireDashboardAccess('news')
     const { postId } = await context.params
 
-    const post = await getPostById(postId)
+    const post = await getDashboardPostById(postId)
     if (!post) {
       return Response.json({ error: '文章不存在' }, { status: 404 })
     }
