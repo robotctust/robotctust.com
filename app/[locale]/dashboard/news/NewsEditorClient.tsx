@@ -13,7 +13,8 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import MarkdownEditor from '@/app/components/Markdown/MarkdownEditor'
 import { useToast } from '@/app/contexts/ToastContext'
-import { uploadPostImage } from '@/app/utils/postService'
+import { deleteImage, uploadImage } from '@/app/utils/media/client'
+import type { ContentImageUploader } from '@/app/types/media'
 import {
   POST_CATEGORIES,
   POST_CATEGORY_LABELS,
@@ -58,9 +59,20 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
     setContent(newContent)
   }, [])
 
+  // 內文插圖：上傳到 R2，失敗時提示（編輯器會自行移除佔位文字）
+  // ponytail: 插入後又刪掉、或最後沒儲存的內文圖會留在 R2，需要時再做定期清理
+  const handleUploadContentImage = useCallback<ContentImageUploader>(
+    (file) =>
+      uploadImage(file, 'post').catch((err: Error) => {
+        showToast(`「${file.name}」上傳失敗：${err.message}`, 'error')
+        throw err
+      }),
+    [showToast],
+  )
+
   function handleFileSelect(file: File) {
-    if (file.size > 5 * 1024 * 1024) {
-      showToast('圖片大小不能超過 5MB', 'error')
+    if (file.size > 20 * 1024 * 1024) {
+      showToast('圖片大小不能超過 20MB', 'error')
       return
     }
     setCoverImageFile(file)
@@ -98,13 +110,15 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
     }
 
     setIsSubmitting(true)
+    // 已上傳但文章尚未存成功的新封面，失敗時要清掉
+    let pendingCoverUrl: string | null = null
     try {
       let finalCoverImageUrl: string | null = coverImageUrl
 
-      // Upload new cover image if selected
+      // 上傳新封面（R2，sm / lg 雙版本）
       if (coverImageFile) {
-        const tempId = postId ?? `temp_${Date.now()}_${Math.random().toString(36).slice(2, 9)}`
-        finalCoverImageUrl = await uploadPostImage(tempId, coverImageFile)
+        finalCoverImageUrl = (await uploadImage(coverImageFile, 'post')).url
+        pendingCoverUrl = finalCoverImageUrl
       } else if (removeCoverImage) {
         finalCoverImageUrl = null
       }
@@ -132,9 +146,11 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
         throw new Error(data.error || '操作失敗')
       }
 
+      pendingCoverUrl = null
       showToast(isEditing ? '文章已更新' : '文章已發布', 'success')
       router.push('/dashboard/news')
     } catch (err) {
+      if (pendingCoverUrl) deleteImage(pendingCoverUrl).catch(console.error)
       showToast(err instanceof Error ? err.message : '操作失敗，請稍後再試', 'error')
     } finally {
       setIsSubmitting(false)
@@ -269,7 +285,7 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
               >
                 <FontAwesomeIcon icon={faUpload} style={{ marginBottom: 8, fontSize: '1.5rem', color: 'var(--foreground-secondary)' }} />
                 <p>點擊或拖拽圖片到此處上傳</p>
-                <p style={{ marginTop: 4, fontSize: '0.78rem' }}>最大 5MB，支援 JPG / PNG / WebP</p>
+                <p style={{ marginTop: 4, fontSize: '0.78rem' }}>最大 20MB，支援 JPG / PNG / WebP</p>
                 <input
                   ref={fileInputRef}
                   type="file"
@@ -287,6 +303,7 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
           <MarkdownEditor
             initialContent={content}
             onChange={handleContentChange}
+            onUploadImage={handleUploadContentImage}
             placeholder="在此輸入文章內容（支援 Markdown 語法）..."
           />
         </div>

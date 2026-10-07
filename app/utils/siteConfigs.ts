@@ -1,9 +1,9 @@
 export const SITE_CONFIG = {
-  version: '2.5.2',
+  version: '2.6.0',
   name: '中臺機器人研究社',
   shortName: '中臺機器人研究社',
   url: process.env.NEXT_PUBLIC_SITE_URL || 'https://robotctust.com',
-  mediaBase: 'https://img.robotctust.com', // Cloudflare R2 公開網域
+  mediaBase: 'https://media.robotctust.com', // Cloudflare R2 公開網域
   locale: 'zh-TW',
   creator: '中臺機器人研究社',
   publisher: '中臺機器人研究社',

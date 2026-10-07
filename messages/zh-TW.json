@@ -298,7 +298,8 @@
           "emailSent": "驗證信已寄出，請前往信箱完成驗證！",
           "success": "註冊成功，歡迎加入！",
           "googleSuccess": "Google 登入成功，歡迎加入！",
-          "agreeTermsRequired": "請先閱讀並勾選同意 服務條款 及 隱私權政策。"
+          "agreeTermsRequired": "請先閱讀並勾選同意 服務條款 及 隱私權政策。",
+          "avatarFailed": "帳號已建立，但頭像上傳失敗，請登入後到個人頁面重新設定。"
         },
         "errors": {
           "usernameTaken": "此帳號名稱已被使用",

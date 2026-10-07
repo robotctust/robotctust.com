@@ -1,11 +1,4 @@
-import {
-  ref,
-  uploadBytes,
-  getDownloadURL,
-  deleteObject,
-} from 'firebase/storage'
 import { UserProfile } from '../types/user'
-import { storage } from './firebase'
 import { createAdminClient } from './supabase/admin'
 import {
   Post,
@@ -218,56 +211,6 @@ export async function getPostById(postId: string): Promise<Post | null> {
   }
 
   return data ? rowToPost(data as SupabasePostRow) : null
-}
-
-/**
- * 上傳圖片到 Firebase Storage
- * @param postId 文章 ID，如果是新文章可以使用臨時 ID
- * @param file 要上傳的圖片檔案
- */
-export async function uploadPostImage(
-  postId: string,
-  file: File,
-): Promise<string> {
-  try {
-    const fileExtension = file.name.split('.').pop()
-    const fileName = `${Date.now()}.${fileExtension}`
-    const imagePath = `posts/${postId}/${fileName}`
-    const imageRef = ref(storage, imagePath)
-
-    console.log('Uploading image to:', imagePath)
-    const snapshot = await uploadBytes(imageRef, file)
-    const downloadURL = await getDownloadURL(snapshot.ref)
-    console.log('Image uploaded successfully, URL:', downloadURL)
-
-    return downloadURL
-  } catch (error) {
-    console.error('Error uploading image:', error)
-    throw new Error(
-      '圖片上傳失敗：' + (error instanceof Error ? error.message : '未知錯誤'),
-    )
-  }
-}
-
-/**
- * 刪除圖片從 Firebase Storage
- */
-export async function deletePostImage(imageUrl: string): Promise<void> {
-  try {
-    // 從 URL 中提取檔案路徑
-    const url = new URL(imageUrl)
-    const pathStart = url.pathname.indexOf('/o/') + 3
-    const pathEnd = url.pathname.indexOf('?')
-    const filePath = decodeURIComponent(
-      url.pathname.substring(pathStart, pathEnd),
-    )
-
-    const imageRef = ref(storage, filePath)
-    await deleteObject(imageRef)
-  } catch (error) {
-    console.error('Error deleting image:', error)
-    // 不拋出錯誤，因為圖片刪除失敗不應該阻止文章操作
-  }
 }
 
 /**

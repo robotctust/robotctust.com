@@ -19,7 +19,6 @@ import { useAuth } from '../../contexts/AuthContext'
 import { useToast } from '../../contexts/ToastContext'
 
 // utils
-import { uploadUserAvatarToFirebaseStorage } from '../../utils/firebaseService'
 
 // types
 import {
@@ -287,23 +286,22 @@ export const RegisterForm: React.FC<RegisterFormProps> = ({
       setIsLoading(true)
       setError('')
 
-      let avatarURL = '/assets/image/userEmptyAvatar.png'
-      if (avatarFile) {
-        avatarURL = await uploadUserAvatarToFirebaseStorage(avatarFile, data.email)
-      }
-
       const registerData: RegisterFormData = {
         email: data.email!,
         password: data.password!,
         username: data.username?.trim(),
         displayName: data.displayName?.trim(),
-        photoURL: avatarURL,
+        avatarFile, // 帳號建立後才上傳
         schoolIdentity: data.schoolIdentity,
         clubIdentity: data.clubIdentity,
         studentId: data.studentId?.trim(),
       }
 
-      const { requiresEmailConfirmation } = await registerUser(registerData)
+      const { requiresEmailConfirmation, avatarUploadFailed } =
+        await registerUser(registerData)
+      if (avatarUploadFailed) {
+        showToast(t('form.register.toast.avatarFailed'), 'error')
+      }
       if (requiresEmailConfirmation) {
         setEmailSent(true)
         showToast(t('form.register.toast.emailSent'), 'success')

@@ -15,6 +15,7 @@ import {
   faCheck,
 } from '@fortawesome/free-solid-svg-icons'
 import styles from './CourseContentRenderer.module.scss'
+import Img from '@/app/components/Img/Img'
 import { CourseContent, Program } from '@/app/types/course-admin'
 import { useCourseMobileFab } from '../../contexts/CourseMobileFabContext'
 import { useHeaderState } from '@/app/contexts/HeaderContext'
@@ -328,7 +329,13 @@ export const CourseContentRenderer: React.FC<CourseContentRendererProps> = ({
       case 'image':
         return (
           <div className={styles.imageBlock}>
-            <img src={block.content} alt="" className={styles.courseImage} />
+            <Img
+              src={block.content}
+              alt=""
+              className={styles.courseImage}
+              sizes="(max-width: 900px) 100vw, 900px"
+              progressive
+            />
           </div>
         )
       default:

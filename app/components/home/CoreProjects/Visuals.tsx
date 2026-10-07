@@ -214,7 +214,7 @@ export const OldRoboticsVisual = () => {
     <animated.div className={styles.visualContainer} style={springZoomIn}>
       <div className={styles.oldRoboticsScene}>
         <video
-          src="https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/assets%2F%E7%A4%BE%E5%9C%98%E6%A9%9F%E5%99%A8%E4%BA%BA%E5%8B%95%E7%95%AB-%E7%84%A1%E7%B8%AB.mov?alt=media&token=e2116074-b88c-4f27-a7eb-357f9316a616"
+          src="https://media.robotctust.com/home/core-projects/robot-animation.mp4"
           autoPlay
           loop
           muted

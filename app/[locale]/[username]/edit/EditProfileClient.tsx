@@ -13,11 +13,7 @@ import * as yup from 'yup'
 
 // utils
 import { createClient } from '@/app/utils/supabase/client'
-import {
-  uploadUserAvatarToFirebaseStorage,
-  uploadUserBackgroundToFirebaseStorage,
-  deleteImageFromFirebaseStorage,
-} from '@/app/utils/firebaseService'
+import { deleteImage, uploadImage } from '@/app/utils/media/client'
 import {
   checkStudentIdAvailable,
   checkUsernameAvailable,
@@ -108,103 +104,6 @@ const clubIdentityOptions: Array<{
   { value: 'member', label: '我是社團成員' },
   { value: 'non_member', label: '我不是社團成員' },
 ]
-
-/**
- * 壓縮並裁剪背景圖片至最大 2160x1080（強制 2:1 比例）
- * @param file - 原始圖片檔案
- * @param imgSize - 原始圖片尺寸
- * @param cropOffset - 裁剪偏移（0~1，0.5 = 置中）
- */
-async function compressAndCropBackground(
-  file: File,
-  imgSize: { w: number; h: number },
-  cropOffset: { x: number; y: number },
-): Promise<File> {
-  const MAX_W = 2160
-  const MAX_H = 1080
-  const TARGET_ASPECT = MAX_W / MAX_H
-  const { w: iW, h: iH } = imgSize
-  const imgAspect = iW / iH
-
-  // 設定裁剪偏移
-  let srcX = 0,
-    srcY = 0,
-    srcW = iW,
-    srcH = iH
-
-  if (imgAspect > TARGET_ASPECT) {
-    // 圖片比 2:1 更寬 → 水平裁剪
-    srcH = iH
-    srcW = Math.round(iH * TARGET_ASPECT)
-    srcX = Math.round(cropOffset.x * (iW - srcW))
-    srcY = 0
-  } else if (imgAspect < TARGET_ASPECT) {
-    // 圖片比 2:1 更高 → 垂直裁剪
-    srcW = iW
-    srcH = Math.round(iW / TARGET_ASPECT)
-    srcX = 0
-    srcY = Math.round(cropOffset.y * (iH - srcH))
-  }
-
-  let outW = srcW
-  let outH = srcH
-  if (outW > MAX_W || outH > MAX_H) {
-    const scale = Math.min(MAX_W / outW, MAX_H / outH)
-    outW = Math.round(outW * scale)
-    outH = Math.round(outH * scale)
-  }
-
-  return new Promise((resolve, reject) => {
-    const url = URL.createObjectURL(file)
-    const img = new window.Image()
-    img.onload = () => {
-      try {
-        // 創建畫布
-        const canvas = document.createElement('canvas')
-        canvas.width = outW
-        canvas.height = outH
-        // 獲取畫布上下文
-        const ctx = canvas.getContext('2d')
-        // 如果畫布上下文不存在，則拋出錯誤
-        if (!ctx) throw new Error('Canvas context unavailable')
-        // 繪製圖片
-        ctx.drawImage(img, srcX, srcY, srcW, srcH, 0, 0, outW, outH)
-        // 將畫布轉換為 Blob
-        canvas.toBlob(
-          (blob) => {
-            // 釋放圖片物件 URL
-            URL.revokeObjectURL(url)
-            // 如果 Blob 不存在，則拋出錯誤
-            if (!blob) {
-              reject(new Error('圖片壓縮失敗'))
-              return
-            }
-            // 生成新的 File 物件
-            const baseName = file.name.replace(/\.[^.]+$/, '')
-            // 解析為 File 物件
-            resolve(new File([blob], `${baseName}.jpg`, { type: 'image/jpeg' }))
-          },
-          'image/jpeg',
-          0.92, // 壓縮品質
-        )
-      } catch (err) {
-        // 釋放圖片物件 URL
-        URL.revokeObjectURL(url)
-        // 拋出錯誤
-        reject(err)
-      }
-    }
-    // 如果圖片讀取失敗，則釋放圖片物件 URL，並拋出錯誤
-    img.onerror = () => {
-      // 釋放圖片物件 URL
-      URL.revokeObjectURL(url)
-      // 拋出錯誤
-      reject(new Error('圖片讀取失敗'))
-    }
-    // 設定圖片源
-    img.src = url
-  })
-}
 
 /**
  * [Component] 編輯個人資料 Client 端
@@ -391,6 +290,8 @@ export default function EditProfileClient({
       return
     }
 
+    // 已上傳但資料尚未存成功的新圖，失敗時要清掉
+    let pendingUrls: string[] = []
     // 嘗試提交表單
     try {
       // 設定為提交中
@@ -398,26 +299,18 @@ export default function EditProfileClient({
       // 清空錯誤訊息
       setSubmitError('')
 
-      // 並行準備背景（壓縮）與上傳頭像，節省等待時間
-      const backgroundProcessPromise =
-        backgroundFile && backgroundImgSize
-          ? compressAndCropBackground(
-              backgroundFile,
-              backgroundImgSize,
-              backgroundCropOffset,
-            ).then((processed) =>
-              uploadUserBackgroundToFirebaseStorage(processed, uid),
-            )
-          : Promise.resolve(null)
-
-      const avatarUploadPromise = avatarFile
-        ? uploadUserAvatarToFirebaseStorage(avatarFile, uid)
-        : Promise.resolve(null)
-
+      // 並行上傳頭像與背景（背景由伺服器依裁切偏移裁成 2:1 並壓縮），節省等待時間
       const [uploadedAvatarUrl, uploadedBackgroundUrl] = await Promise.all([
-        avatarUploadPromise,
-        backgroundProcessPromise,
+        avatarFile ? uploadImage(avatarFile, 'avatar').then((img) => img.url) : null,
+        backgroundFile
+          ? uploadImage(backgroundFile, 'background', { crop: backgroundCropOffset }).then(
+              (img) => img.url,
+            )
+          : null,
       ])
+      pendingUrls = [uploadedAvatarUrl, uploadedBackgroundUrl].filter(
+        (url): url is string => !!url,
+      )
 
       // 構建更新資料
       const payload: Record<string, unknown> = {
@@ -456,6 +349,7 @@ export default function EditProfileClient({
 
       // 如果更新失敗，則拋出錯誤
       if (error) throw error
+      pendingUrls = []
 
       // 重新獲取使用者資料
       await getUserProfile(uid)
@@ -466,18 +360,14 @@ export default function EditProfileClient({
         initialData.photoURL &&
         initialData.photoURL !== uploadedAvatarUrl
       ) {
-        deleteImageFromFirebaseStorage(initialData.photoURL).catch(
-          console.error,
-        )
+        deleteImage(initialData.photoURL).catch(console.error)
       }
       if (
         initialData.backgroundURL &&
         (uploadedBackgroundUrl || isBackgroundRemoved) &&
         initialData.backgroundURL !== uploadedBackgroundUrl
       ) {
-        deleteImageFromFirebaseStorage(initialData.backgroundURL).catch(
-          console.error,
-        )
+        deleteImage(initialData.backgroundURL).catch(console.error)
       }
 
       // 設定為提交成功
@@ -488,6 +378,7 @@ export default function EditProfileClient({
         window.location.href = getPathname({ href: '/profile', locale })
       }, 500)
     } catch (err) {
+      pendingUrls.forEach((url) => deleteImage(url).catch(console.error))
       console.error('更新個人資料失敗:', err)
       const errorMsg = (err as { message?: string })?.message || ''
       if (errorMsg.includes('users_username_key')) {

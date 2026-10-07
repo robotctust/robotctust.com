@@ -22,7 +22,8 @@ import { isSortableOperation, useSortable } from '@dnd-kit/react/sortable'
 import Markdown from 'react-markdown'
 import remarkGfm from 'remark-gfm'
 
-import { uploadCourseImageToFirebaseStorage } from '@/app/utils/firebaseService'
+import { deleteImage, uploadImage } from '@/app/utils/media/client'
+import Img from '@/app/components/Img/Img'
 import { Modal } from '@/app/[locale]/dashboard/components/Modal'
 import {
   Course,
@@ -92,7 +93,7 @@ function SortableBlock({ content, index, onEdit, onDelete }: SortableBlockProps)
       case 'image':
         return (
           <div className={styles.previewImageContainer}>
-            <img src={content.content} alt="Course Content" />
+            <Img src={content.content} alt="Course Content" sizes="600px" />
           </div>
         )
       case 'code':
@@ -177,6 +178,8 @@ export default function CourseWorkspaceClient({
   const [deleteBlockId, setDeleteBlockId] = useState<string | null>(null)
   const [isUploadingImage, setIsUploadingImage] = useState(false)
   const imageFileInputRef = useRef<HTMLInputElement>(null)
+  // 已上傳到 R2、但區塊還沒儲存的圖片：換圖、取消或儲存成別的內容時要清掉
+  const pendingImageUrlRef = useRef<string | null>(null)
 
   const isSettingsModified = useMemo(() => {
     if (!workspace) return false
@@ -322,7 +325,15 @@ export default function CourseWorkspaceClient({
     setEditingBlockId(content.id)
   }
 
+  /** 清除尚未儲存的上傳圖片（keepUrl 為實際存進資料庫的內容時保留） */
+  function discardPendingImage(keepUrl?: string) {
+    const pending = pendingImageUrlRef.current
+    pendingImageUrlRef.current = null
+    if (pending && pending !== keepUrl) deleteImage(pending).catch(console.error)
+  }
+
   function closeEditor() {
+    discardPendingImage()
     setEditingBlockId(null)
     setInsertAtIndex(null)
     resetEditorFields()
@@ -330,15 +341,21 @@ export default function CourseWorkspaceClient({
 
   async function handleImageFileSelect(event: React.ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0]
+    event.target.value = ''
     if (!file) return
+    setIsUploadingImage(true)
     markSyncStatus('saving')
     try {
-      const url = await uploadCourseImageToFirebaseStorage(file, courseId)
+      const { url } = await uploadImage(file, 'course', { courseId })
+      discardPendingImage() // 同一次編輯中換圖，前一張未儲存的圖不再需要
+      pendingImageUrlRef.current = url
       setEditContent(url)
       markSyncStatus('unsynced')
     } catch (uploadError) {
-      setError('圖片上傳失敗')
+      setError(uploadError instanceof Error ? `圖片上傳失敗：${uploadError.message}` : '圖片上傳失敗')
       markSyncStatus('error')
+    } finally {
+      setIsUploadingImage(false)
     }
   }
 
@@ -396,6 +413,7 @@ export default function CourseWorkspaceClient({
         resolveSyncStatus(revision, 'synced')
       }
 
+      discardPendingImage(content.content) // 儲存的就是新上傳的圖 → 保留；否則清掉
       closeEditor()
     } catch (saveError) {
       resolveSyncStatus(revision, 'error')
@@ -648,11 +666,11 @@ export default function CourseWorkspaceClient({
               {editType === 'image' ? (
                 <div className={styles.imageInputGroup}>
                   <input className={styles.textInput} value={editContent} onChange={(e) => setEditContent(e.target.value)} placeholder="圖片連結..." />
-                  <input type="file" ref={imageFileInputRef} className={styles.hiddenFileInput} onChange={handleImageFileSelect} />
+                  <input type="file" accept="image/*" ref={imageFileInputRef} hidden onChange={handleImageFileSelect} />
                   <button className={styles.subtleButton} onClick={() => imageFileInputRef.current?.click()} disabled={isUploadingImage}>
                     <FontAwesomeIcon icon={faUpload} /> {isUploadingImage ? '上傳中...' : '選擇圖片'}
                   </button>
-                  {editContent && <img src={editContent} className={styles.imagePreviewThumb} alt="Preview" />}
+                  {editContent && <Img src={editContent} className={styles.imagePreviewThumb} alt="Preview" sizes="160px" />}
                 </div>
               ) : (
                 <textarea className={styles.editorTextarea} value={editContent} onChange={(e) => setEditContent(e.target.value)} placeholder="在此輸入內容..." />

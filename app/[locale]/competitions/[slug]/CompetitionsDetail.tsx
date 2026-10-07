@@ -234,6 +234,7 @@ export default function CompetitionDetail({
               width={800}
               height={300}
               priority
+              progressive
             />
           </div>
         )}
@@ -408,7 +409,7 @@ export default function CompetitionDetail({
             {competition.image && (
               <>
                 <div className={`${styles.imageContainer} ${!isRegistrationOpen ? styles.registrationClosed : ''}`}>
-                  <Img className={styles.competitionImage} width={1280} height={720} src={competition.image} alt={competition.title} />
+                  <Img className={styles.competitionImage} width={1280} height={720} src={competition.image} alt={competition.title} progressive />
                 </div>
                 <div className={styles.overlay} />
                 <div className={styles.gradient_blur}>

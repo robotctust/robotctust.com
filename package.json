@@ -1,6 +1,6 @@
 {
   "name": "nextjs",
-  "version": "2.5.2",
+  "version": "2.6.0",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -34,6 +34,7 @@
     "@vercel/analytics": "^1.5.0",
     "@vercel/blob": "^2.0.0",
     "@vercel/speed-insights": "^1.2.0",
+    "aws4fetch": "^1.0.20",
     "firebase": "^11.8.1",
     "firebase-admin": "^13.7.0",
     "gsap": "^3.15.0",
@@ -53,6 +54,7 @@
     "rehype-highlight": "^7.0.2",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1",
+    "sharp": "0.34.5",
     "supabase": "^2.88.1",
     "three": "^0.180.0",
     "yup": "^1.6.1"
@@ -66,6 +68,7 @@
     "eslint": "9.28.0",
     "eslint-config-next": "^16.0.7",
     "sass": "^1.89.0",
+    "server-only": "^0.0.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }

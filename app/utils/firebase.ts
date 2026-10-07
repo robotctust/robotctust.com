@@ -1,6 +1,5 @@
 import { initializeApp } from 'firebase/app'
 import { getFirestore } from 'firebase/firestore'
-import { getStorage } from 'firebase/storage'
 
 //* Firebase 配置
 const firebaseConfig = {
@@ -17,6 +16,5 @@ const app = initializeApp(firebaseConfig)
 
 //* 初始化服務
 export const db = getFirestore(app)
-export const storage = getStorage(app)
 
 export default app

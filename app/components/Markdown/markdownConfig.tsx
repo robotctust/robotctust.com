@@ -179,7 +179,7 @@ export const markdownComponents: Components = {
           className={styles.markdownImage}
           width={1200}
           height={800}
-          loading="lazy"
+          progressive
         />
       </span>
     )
