@@ -12,7 +12,7 @@ import {
   parseMediaUrl,
   putMedia,
 } from '@/app/utils/media/r2'
-import type { MediaKind } from '@/app/types/media'
+import type { MediaKind, UploadedImage } from '@/app/types/media'
 
 const KINDS: MediaKind[] = ['avatar', 'background', 'post', 'course']
 
@@ -57,7 +57,7 @@ function toErrorResponse(error: unknown): Response {
  * query：kind、courseId（course 用）、cropX / cropY（background 用，0~1）
  * body：multipart，欄位 file
  * 權限與大小檢查放在讀取 body 之前，未授權的請求不會讓伺服器讀入整個檔案
- * @returns { url } lg 版網址
+ * @returns UploadedImage：lg 版網址與實際寬高
  */
 export async function POST(request: NextRequest) {
   try {
@@ -77,12 +77,16 @@ export async function POST(request: NextRequest) {
 
     const cropX = Number(params.get('cropX') ?? 0.5)
     const cropY = Number(params.get('cropY') ?? 0.5)
-    const files = await processImage(Buffer.from(await file.arrayBuffer()), kind, {
-      x: Number.isFinite(cropX) ? cropX : 0.5,
-      y: Number.isFinite(cropY) ? cropY : 0.5,
-    })
+    const { files, width, height } = await processImage(
+      Buffer.from(await file.arrayBuffer()),
+      kind,
+      {
+        x: Number.isFinite(cropX) ? cropX : 0.5,
+        y: Number.isFinite(cropY) ? cropY : 0.5,
+      },
+    )
     const url = await putMedia(newMediaFolder(kind, ownerId), files)
-    return Response.json({ url })
+    return Response.json({ url, width, height } satisfies UploadedImage)
   } catch (error) {
     return toErrorResponse(error)
   }

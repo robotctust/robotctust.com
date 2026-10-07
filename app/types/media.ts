@@ -14,3 +14,17 @@ export interface MediaCrop {
   x: number
   y: number
 }
+
+/** 上傳完成的圖片：網址為 lg 版，寬高為 lg 版實際像素（給編輯器寫入 width / height，避免版面跳動） */
+export interface UploadedImage {
+  url: string
+  width: number
+  height: number
+}
+
+/**
+ * 內文插圖的上傳函式（與編輯器無關的接口）
+ * Markdown 編輯器與日後的 TipTap（貼上、拖曳、插圖按鈕）都只依賴這個型別；
+ * 錯誤提示由提供者負責，失敗時拋出錯誤讓編輯器移除佔位
+ */
+export type ContentImageUploader = (file: File) => Promise<UploadedImage>

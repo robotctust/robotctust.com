@@ -238,7 +238,7 @@ export default function OnboardingClient({
 
       let avatarUrl = initialData.photoURL
       if (avatarFile) {
-        avatarUrl = await uploadImage(avatarFile, 'avatar')
+        avatarUrl = (await uploadImage(avatarFile, 'avatar')).url
         pendingAvatarUrl = avatarUrl
       }
 

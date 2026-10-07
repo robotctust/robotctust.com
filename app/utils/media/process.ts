@@ -70,12 +70,13 @@ function backgroundRegion(w: number, h: number, crop: MediaCrop) {
  * @param input - 原始檔案內容
  * @param kind - 圖片種類
  * @param crop - 背景裁切偏移（僅 background 使用，預設置中）
+ * @returns 兩個版本的檔案內容，以及 lg 版的實際寬高
  */
 export async function processImage(
   input: Buffer,
   kind: MediaKind,
   crop: MediaCrop = { x: 0.5, y: 0.5 },
-): Promise<Record<MediaVariant, Buffer>> {
+): Promise<{ files: Record<MediaVariant, Buffer>; width: number; height: number }> {
   const image = sharp(input)
   const meta = await image.metadata().catch(() => null)
   if (!meta?.format || !ALLOWED_FORMATS.has(meta.format)) {
@@ -98,8 +99,12 @@ export async function processImage(
         withoutEnlargement: spec.fit === 'inside', // 一般圖不放大；頭像、背景需補滿固定尺寸
       })
       .webp({ quality: spec.quality })
-      .toBuffer()
+      .toBuffer({ resolveWithObject: true })
 
   const [lg, sm] = await Promise.all([encode(SPECS[kind].lg), encode(SPECS[kind].sm)])
-  return { lg, sm }
+  return {
+    files: { lg: lg.data, sm: sm.data },
+    width: lg.info.width,
+    height: lg.info.height,
+  }
 }

@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect, useRef, useCallback } from 'react'
 import styles from './MarkdownEditor.module.scss'
+import type { ContentImageUploader } from '@/app/types/media'
 // component
 import MarkdownRenderer from './MarkdownRenderer'
 // icons
@@ -11,6 +12,8 @@ import {
   faEyeSlash,
   faExpand,
   faCompress,
+  faImage,
+  faSpinner,
 } from '@fortawesome/free-solid-svg-icons'
 
 export interface MarkdownEditorProps {
@@ -20,6 +23,8 @@ export interface MarkdownEditorProps {
   readOnly?: boolean
   hideToolbar?: boolean
   placeholder?: string
+  /** 提供時啟用插圖（工具列按鈕、拖曳、貼上）；失敗時須拋出錯誤，編輯器會移除佔位 */
+  onUploadImage?: ContentImageUploader
 }
 
 /**
@@ -31,6 +36,7 @@ export interface MarkdownEditorProps {
  * @param readOnly 是否為只讀模式
  * @param hideToolbar 是否隱藏工具列
  * @param placeholder 輸入框佔位符
+ * @param onUploadImage 圖片上傳函式（提供時才啟用插圖）
  * @returns Markdown 編輯器
  */
 const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
@@ -40,6 +46,7 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
   readOnly = false,
   hideToolbar = false,
   placeholder = '在此輸入 Markdown 內容...',
+  onUploadImage,
 }) => {
   //* 核心狀態 - 只保留必要的狀態
   const [content, setContent] = useState<string>(initialContent)
@@ -49,6 +56,11 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
 
   // textarea ref
   const textareaRef = useRef<HTMLTextAreaElement>(null)
+  // 插圖用：上傳完成時以最新內容替換佔位文字
+  const contentRef = useRef(content)
+  contentRef.current = content
+  const imageInputRef = useRef<HTMLInputElement>(null)
+  const [uploadingCount, setUploadingCount] = useState(0)
 
   //* 僅在 initialContent 確實變化且與當前內容不同時才更新
   useEffect(() => {
@@ -103,6 +115,44 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
       }
     },
     [content, handleContentChange]
+  )
+
+  /**
+   * 插入圖片：先在游標處放佔位文字，上傳完成後換成真正網址（失敗則移除佔位）
+   * 佔位的好處是上傳期間繼續編輯，圖片也會落在原本的位置
+   * 每張圖獨立一段，相鄰多張會由 remarkImageGallery 組成輪播
+   */
+  const insertImages = useCallback(
+    (files: File[]) => {
+      if (!onUploadImage) return
+      const images = files.filter((f) => f.type.startsWith('image/'))
+      if (images.length === 0) return
+
+      const jobs = images.map((file) => ({
+        file,
+        token: `![上傳中…](uploading:${crypto.randomUUID()})`,
+        alt: file.name.replace(/\.[^.]+$/, '').replace(/[[\]]/g, ''),
+      }))
+      const textarea = textareaRef.current
+      const current = contentRef.current
+      const pos = textarea ? textarea.selectionEnd : current.length
+      const before = current.slice(0, pos)
+      const insert =
+        (before && !before.endsWith('\n\n') ? (before.endsWith('\n') ? '\n' : '\n\n') : '') +
+        jobs.map((j) => j.token).join('\n\n') +
+        '\n\n'
+      handleContentChange(before + insert + current.slice(pos))
+
+      setUploadingCount((n) => n + jobs.length)
+      jobs.forEach(({ file, token, alt }) => {
+        onUploadImage(file)
+          // Markdown 圖片語法沒有尺寸欄位，只用網址；TipTap 可把 width / height 寫進圖片節點
+          .then(({ url }) => handleContentChange(contentRef.current.replace(token, `![${alt}](${url})`)))
+          .catch(() => handleContentChange(contentRef.current.replace(`${token}\n\n`, '').replace(token, '')))
+          .finally(() => setUploadingCount((n) => n - 1))
+      })
+    },
+    [onUploadImage, handleContentChange]
   )
 
   /**
@@ -181,6 +231,33 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
           </div>
 
           <div className={styles.toolbarRight}>
+            {onUploadImage && !readOnly && (
+              <>
+                <button
+                  onClick={(e) => {
+                    e.preventDefault()
+                    imageInputRef.current?.click()
+                  }}
+                  className={styles.previewButton}
+                  type="button"
+                  title="也可以直接拖曳或貼上圖片"
+                >
+                  <FontAwesomeIcon icon={uploadingCount > 0 ? faSpinner : faImage} spin={uploadingCount > 0} />
+                  <span>{uploadingCount > 0 ? `上傳中（${uploadingCount}）` : '插入圖片'}</span>
+                </button>
+                <input
+                  ref={imageInputRef}
+                  type="file"
+                  accept="image/*"
+                  multiple
+                  hidden
+                  onChange={(e) => {
+                    insertImages(Array.from(e.target.files ?? []))
+                    e.target.value = ''
+                  }}
+                />
+              </>
+            )}
             <button
               onClick={toggleFullscreen}
               className={styles.iconButton}
@@ -202,6 +279,21 @@ const MarkdownEditor: React.FC<MarkdownEditorProps> = ({
               value={content}
               onChange={(e) => handleContentChange(e.target.value)}
               onKeyDown={handleKeyDown}
+              onPaste={(e) => {
+                const files = Array.from(e.clipboardData.files)
+                if (onUploadImage && files.some((f) => f.type.startsWith('image/'))) {
+                  e.preventDefault()
+                  insertImages(files)
+                }
+              }}
+              onDragOver={(e) => onUploadImage && e.preventDefault()}
+              onDrop={(e) => {
+                const files = Array.from(e.dataTransfer.files)
+                if (onUploadImage && files.length > 0) {
+                  e.preventDefault()
+                  insertImages(files)
+                }
+              }}
               placeholder={placeholder}
               className={styles.textarea}
               readOnly={readOnly}

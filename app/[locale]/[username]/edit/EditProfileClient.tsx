@@ -301,9 +301,11 @@ export default function EditProfileClient({
 
       // 並行上傳頭像與背景（背景由伺服器依裁切偏移裁成 2:1 並壓縮），節省等待時間
       const [uploadedAvatarUrl, uploadedBackgroundUrl] = await Promise.all([
-        avatarFile ? uploadImage(avatarFile, 'avatar') : null,
+        avatarFile ? uploadImage(avatarFile, 'avatar').then((img) => img.url) : null,
         backgroundFile
-          ? uploadImage(backgroundFile, 'background', { crop: backgroundCropOffset })
+          ? uploadImage(backgroundFile, 'background', { crop: backgroundCropOffset }).then(
+              (img) => img.url,
+            )
           : null,
       ])
       pendingUrls = [uploadedAvatarUrl, uploadedBackgroundUrl].filter(

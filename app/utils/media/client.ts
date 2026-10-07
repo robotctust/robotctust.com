@@ -1,4 +1,4 @@
-import type { MediaCrop, MediaKind } from '@/app/types/media'
+import type { MediaCrop, MediaKind, UploadedImage } from '@/app/types/media'
 
 /**
  * 上傳圖片到 R2（經 /api/media 處理成 sm / lg 兩個 WebP 版本）
@@ -6,13 +6,13 @@ import type { MediaCrop, MediaKind } from '@/app/types/media'
  * @param kind - 圖片種類
  * @param options.courseId - course 必填
  * @param options.crop - background 的裁切偏移（0~1）
- * @returns lg 版網址（存入資料庫的值）
+ * @returns lg 版網址（存入資料庫的值）與實際寬高
  */
 export async function uploadImage(
   file: File,
   kind: MediaKind,
   options: { courseId?: string; crop?: MediaCrop } = {},
-): Promise<string> {
+): Promise<UploadedImage> {
   const params = new URLSearchParams({ kind })
   if (options.courseId) params.set('courseId', options.courseId)
   if (options.crop) {
@@ -25,7 +25,7 @@ export async function uploadImage(
   const res = await fetch(`/api/media?${params}`, { method: 'POST', body })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(data.error || '圖片上傳失敗')
-  return data.url as string
+  return data as UploadedImage
 }
 
 /**

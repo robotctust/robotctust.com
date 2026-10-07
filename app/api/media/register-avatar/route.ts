@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
     if (!(file instanceof File) || file.size === 0) throw new MediaError('缺少圖片檔案', 400)
     if (file.size > MAX_UPLOAD_BYTES) throw new MediaError('圖片不能超過 20MB', 413)
 
-    const files = await processImage(Buffer.from(await file.arrayBuffer()), 'avatar')
+    const { files } = await processImage(Buffer.from(await file.arrayBuffer()), 'avatar')
     const url = await putMedia(newMediaFolder('avatar', userId), files)
 
     const { error } = await admin.from('users').update({ avatar_url: url }).eq('id', userId)
