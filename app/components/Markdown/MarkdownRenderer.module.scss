@@ -72,6 +72,14 @@
   }
 
   // 有序列表樣式
+  // TipTap 的清單項目與儲存格內容一律包在 <p> 裡（舊 Markdown 則是直接放文字），
+  // 讓這層 <p> 沿用外層的字級與行高、不加段落間距，兩種文章看起來一致
+  :is(li, td, th) > p {
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
   ol {
     list-style-type: decimal;
     list-style-position: outside;
@@ -301,6 +309,16 @@
     }
   }
 
+  // 圖片說明文字（TipTap 文章的 image.caption）
+  .imageCaption {
+    align-self: stretch;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--foreground-secondary);
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
   .markdownImage {
     border-radius: 0.5rem;
     object-fit: contain;
@@ -334,6 +352,7 @@
 
     .imageWrapper {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       width: 100%;
@@ -343,7 +362,10 @@
       border-radius: 0;
       background: var(--background);
 
+      // 有說明文字時圖片讓出底部空間
       img {
+        flex: 1 1 0;
+        min-height: 0;
         width: 100%;
         height: 100%;
         object-fit: contain;

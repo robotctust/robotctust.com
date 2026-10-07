@@ -1,3 +1,5 @@
+import type { JSONContent } from '@tiptap/core'
+
 // 文章分類
 export type PostCategory =
   | '社團活動'
@@ -11,7 +13,9 @@ export type PostCategory =
 export interface Post {
   id: string // Document ID or slug
   title: string
-  contentMarkdown: string
+  contentMarkdown: string // 舊 Markdown 內文，v2.7 起只是備份（舊編輯器在 Beta 3 換掉前仍讀寫它）
+  content: JSONContent | null // TipTap JSON 內文（伺服器渲染用，不傳給 client）
+  contentText: string // 內文純文字：摘要、搜尋、meta description
   category: PostCategory
   coverImageUrl: string | null
 

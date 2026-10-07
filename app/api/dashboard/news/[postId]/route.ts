@@ -122,10 +122,9 @@ export async function DELETE(_request: NextRequest, context: RouteContext) {
     }
 
     // 文章刪除後清除封面與內文的 R2 圖片（Firebase 舊圖由 deleteMediaByUrl 略過）
-    await deleteImages([
-      post.coverImageUrl,
-      ...(post.contentMarkdown.match(CONTENT_IMAGE_RE) ?? []),
-    ])
+    // 內文同時比對 JSON 與 Markdown 備份（兩者可能有不同的圖）
+    const contentImages = `${JSON.stringify(post.content)}\n${post.contentMarkdown}`.match(CONTENT_IMAGE_RE) ?? []
+    await deleteImages([post.coverImageUrl, ...new Set(contentImages)])
 
     await revalidateUpdatePage()
 

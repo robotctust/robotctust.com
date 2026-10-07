@@ -4,22 +4,10 @@
  */
 
 import { PublicUserProfile, UserProfile } from './user'
-import { Post, PostCategory } from './post'
+import { Post } from './post'
 
-//* 序列化後的文章資料（所有 Date 轉為 string）
-export interface SerializedPost {
-  id: string
-  title: string
-  contentMarkdown: string
-  category: PostCategory
-  coverImageUrl: string | null
-  authorId: string
-  authorDisplayName: string
-  authorUsername: string | null
-  createdAt: string // Timestamp -> string
-  updatedAt: string // Timestamp -> string
-  publishedAt: string | null
-}
+//* 傳給 client 的文章資料：不含 TipTap JSON 內文（只在伺服器渲染，client 用 contentText）
+export type SerializedPost = Omit<Post, 'content'>
 
 //* 將 UserProfile 收窄為可以給任何訪客看的公開名片
 //  白名單：只挑個人頁畫面用到的欄位。千萬不要改回 { ...user }——
@@ -33,11 +21,9 @@ export const toPublicUserProfile = (user: UserProfile): PublicUserProfile => ({
   backgroundURL: user.backgroundURL,
 })
 
-//* 將 Post 序列化為可傳遞給客戶端的格式（timestamps 已是 ISO string，直接傳遞）
-export const serializePost = (post: Post): SerializedPost => post
-
-//* 將序列化的文章資料還原為 Post（timestamps 已是 ISO string，直接傳遞）
-export const deserializePost = (serializedPost: SerializedPost): Post => serializedPost
+//* 將 Post 轉為可傳遞給客戶端的格式（timestamps 已是 ISO string；拿掉 JSON 內文）
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export const serializePost = ({ content, ...post }: Post): SerializedPost => post
 
 //* 安全地序列化任何包含 Date 的物件
 export const serializeDates = <T extends Record<string, unknown>>(

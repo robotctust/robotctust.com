@@ -17,7 +17,6 @@ import { useQueryState, parseAsString } from 'nuqs'
 import { getPostExcerpt, formatPostDate } from '@/app/utils/postService'
 // types
 import {
-  Post,
   PostCategory,
   POST_CATEGORIES,
   POST_CATEGORY_COLORS,
@@ -25,7 +24,7 @@ import {
   CATEGORY_TO_SLUG,
   SLUG_TO_CATEGORY,
 } from '@/app/types/post'
-import { deserializePost, SerializedPost } from '@/app/types/serialized'
+import { SerializedPost } from '@/app/types/serialized'
 import { Locale } from '@/app/types/i18n'
 
 type FilterType = PostCategory | 'all'
@@ -33,7 +32,7 @@ type FilterType = PostCategory | 'all'
 // ─── PostCard ────────────────────────────────────────────────────────────────
 
 interface PostCardProps {
-  post: Post
+  post: SerializedPost
   categoryLabel: string
 }
 
@@ -90,7 +89,7 @@ function PostCard({ post, categoryLabel }: PostCardProps) {
                   </span>
                 )}
                 <span className={styles.postDate}>
-                  {formatPostDate(post.createdAt, locale as Locale)}
+                  {formatPostDate(post.publishedAt ?? post.createdAt, locale as Locale)}
                 </span>
               </div>
               <h3 className={styles.postTitle}>
@@ -111,9 +110,9 @@ function PostCard({ post, categoryLabel }: PostCardProps) {
                 priority
               />
             )}
-            {post.contentMarkdown && (
+            {post.contentText && (
               <div className={styles.postContent}>
-                {getPostExcerpt(post.contentMarkdown)}
+                {getPostExcerpt(post.contentText)}
               </div>
             )}
           </div>
@@ -183,8 +182,8 @@ export default function NewsPageClient({ initialPosts }: NewsPageClientProps) {
   const tNews = useTranslations('News')
   const { isCompactHeader } = useHeaderState()
 
-  const [posts, setPosts] = useState<Post[]>(
-    () => initialPosts.map(deserializePost) as Post[],
+  const [posts, setPosts] = useState<SerializedPost[]>(
+    () => initialPosts,
   )
   const [loading] = useState(false)
   const [error] = useState<string | null>(null)
@@ -222,14 +221,14 @@ export default function NewsPageClient({ initialPosts }: NewsPageClientProps) {
       result = result.filter(
         (post) =>
           post.title.toLowerCase().includes(q) ||
-          post.contentMarkdown?.toLowerCase().includes(q),
+          post.contentText.toLowerCase().includes(q),
       )
     }
     return result
   }, [posts, currentFilter, searchQuery])
 
   useEffect(() => {
-    setPosts(initialPosts.map(deserializePost) as Post[])
+    setPosts(initialPosts)
   }, [initialPosts])
 
   const handleFilterChange = (filter: FilterType) => {

@@ -24,7 +24,7 @@ import useWebSupport from '@/app/hooks/useWebSupport'
 
 // types
 import { POST_CATEGORY_COLORS, CATEGORY_TO_SLUG } from '@/app/types/post'
-import { SerializedPost, deserializePost } from '@/app/types/serialized'
+import { SerializedPost } from '@/app/types/serialized'
 import { Locale } from '@/app/types/i18n'
 
 // icons
@@ -67,7 +67,7 @@ export default function NewsDetailClient({
 
   const supportsShare = useWebSupport('share')
 
-  const post = initialPost ? deserializePost(initialPost) : null
+  const post = initialPost
   const postUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/news/${post?.id}`
 
   // 分類的本地化標籤，從翻譯文件取得
@@ -87,7 +87,7 @@ export default function NewsDetailClient({
     if (!post) return
     await navigator.share({
       title: post.title,
-      text: getPostExcerpt(post.contentMarkdown, 100),
+      text: getPostExcerpt(post.contentText, 100),
       url: postUrl,
     }).catch((err) => {
       console.warn('Share failed:', err)
@@ -196,10 +196,11 @@ export default function NewsDetailClient({
             </div>
             <div className={styles.metaItem}>
               <FontAwesomeIcon icon={faCalendar} />
-              <span>{formatPostDate(post.createdAt, locale as Locale)}</span>
+              <span>{formatPostDate(post.publishedAt ?? post.createdAt, locale as Locale)}</span>
             </div>
-            {post.updatedAt &&
-              post.updatedAt !== post.createdAt && (
+            {/* 發布時 updated_at 與 published_at 寫同一個值，之後有更新才會不同 */}
+            {post.publishedAt &&
+              post.updatedAt > post.publishedAt && (
                 <div className={styles.metaItem}>
                   <span className={styles.updated}>
                     {tNews('detail.updatedAt', {
