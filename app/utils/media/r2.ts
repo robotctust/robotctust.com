@@ -133,3 +133,28 @@ export async function deleteMediaByUrl(url: string | null | undefined): Promise<
     ),
   )
 }
+
+/**
+ * 刪除某個前綴底下的所有物件（刪除課程、刪除帳號時整批清除）
+ * 不做權限檢查：呼叫端須自行確認；前綴必須以 / 結尾，避免誤刪同名開頭的其他資料夾
+ * @param prefix - 例如 `courses/{courseId}/`、`users/avatars/{uid}/`
+ */
+export async function deleteMediaPrefix(prefix: string): Promise<void> {
+  if (!prefix.endsWith('/') || prefix.split('/').filter(Boolean).length < 2) {
+    throw new Error(`拒絕刪除過於寬鬆的前綴：${prefix}`)
+  }
+  const { client, endpoint } = getR2()
+  let token: string | undefined
+  do {
+    const params = new URLSearchParams({ 'list-type': '2', prefix })
+    if (token) params.set('continuation-token', token)
+    const res = await client.fetch(`${endpoint}?${params}`)
+    const xml = await res.text()
+    if (!res.ok) throw new Error(`R2 列出 ${prefix} 失敗：${res.status} ${xml}`)
+
+    const keys = [...xml.matchAll(/<Key>([^<]+)<\/Key>/g)].map((m) => m[1])
+    await Promise.all(keys.map((key) => r2Request(key, { method: 'DELETE' })))
+
+    token = xml.match(/<NextContinuationToken>([^<]+)<\/NextContinuationToken>/)?.[1]
+  } while (token)
+}

@@ -5,6 +5,7 @@
  */
 
 import { createAdminClient } from '@/app/utils/supabase/admin'
+import { deleteMediaByUrl, deleteMediaPrefix } from '@/app/utils/media/r2'
 import {
   Chapter,
   ChapterTreeNode,
@@ -88,6 +89,16 @@ const semesterColumns = 'id, name, is_active, created_at'
 const chapterColumns = 'id, semester_id, title, order_index, created_at'
 const courseColumns =
   'id, chapter_id, name, description, order_index, is_published, reward_exp, created_at'
+/**
+ * 清除課程的 R2 圖片（課程圖片都在 courses/{courseId}/ 底下）
+ * 在資料庫刪除成功後呼叫；圖片清除失敗只記錄，不影響刪除結果
+ */
+async function deleteCourseImages(courseIds: string[]): Promise<void> {
+  await Promise.all(
+    courseIds.map((id) => deleteMediaPrefix(`courses/${id}/`).catch(console.error)),
+  )
+}
+
 const courseContentColumns =
   'id, course_id, type, content, program_id, order_index, created_at, programs(id, name, language, code_content, created_at)'
 
@@ -432,6 +443,8 @@ export async function deleteSemester(id: string): Promise<void> {
 
   const { error } = await admin.from('semesters').delete().eq('id', id)
   if (error) throw new Error(error.message)
+
+  await deleteCourseImages(courseIds)
 }
 
 export async function createChapter(
@@ -514,6 +527,8 @@ export async function deleteChapter(id: string): Promise<void> {
 
   const { error } = await admin.from('chapters').delete().eq('id', id)
   if (error) throw new Error(error.message)
+
+  await deleteCourseImages(courseIds)
 }
 
 export async function createCourse(input: CreateCourseInput): Promise<Course> {
@@ -602,6 +617,8 @@ export async function deleteCourse(id: string): Promise<void> {
 
   const { error } = await admin.from('courses').delete().eq('id', id)
   if (error) throw new Error(error.message)
+
+  await deleteCourseImages([id])
 }
 
 export async function createCourseContent(
@@ -644,6 +661,13 @@ export async function updateCourseContent(
     nextValues.program_id = input.program_id || null
   }
 
+  // 先取舊內容：換圖後要清除舊的 R2 圖片
+  const { data: previous } = await admin
+    .from('course_contents')
+    .select('content')
+    .eq('id', input.id)
+    .maybeSingle()
+
   const { data, error } = await admin
     .from('course_contents')
     .update(nextValues)
@@ -653,13 +677,26 @@ export async function updateCourseContent(
 
   if (error) throw new Error(error.message)
 
+  // 內容改變時清除舊圖（deleteMediaByUrl 只認完整的 R2 圖片網址，其他內容會略過）
+  if (previous && previous.content !== data.content) {
+    await deleteMediaByUrl(previous.content).catch(console.error)
+  }
+
   return data as CourseContent
 }
 
 export async function deleteCourseContent(id: string): Promise<void> {
   const admin = createAdminClient()
-  const { error } = await admin.from('course_contents').delete().eq('id', id)
+  const { data: deleted, error } = await admin
+    .from('course_contents')
+    .delete()
+    .eq('id', id)
+    .select('content')
+    .maybeSingle()
   if (error) throw new Error(error.message)
+
+  // 圖片區塊刪除後清除 R2 圖片（非 R2 網址或非圖片內容會略過）
+  await deleteMediaByUrl(deleted?.content).catch(console.error)
 }
 
 export async function reorderItems(

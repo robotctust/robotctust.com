@@ -2,6 +2,7 @@
 
 import { createClient } from '@/app/utils/supabase/server'
 import { createAdminClient } from '@/app/utils/supabase/admin'
+import { deleteMediaPrefix } from '@/app/utils/media/r2'
 
 /**
  * [Action] 匯出目前登入者的所有資料（唯讀）
@@ -109,8 +110,10 @@ export async function exportMyData(): Promise<ExportDataResult> {
  * 2. 把本人已發表文章的作者名快照匿名化（author_id 由 FK ON DELETE SET NULL 處理）
  * 3. admin.deleteUser → CASCADE 清除 public.users 及 user_stats / user_achievements
  *    / course_verifications(user_id)；verified_by 與 schedule_events.created_by 則 SET NULL
+ * 4. 清除 R2 上的頭像與個人背景（users/avatars/{uid}/、users/backgrounds/{uid}/）
  *
- * 注意：Firebase Storage 上的頭像 / 背景圖檔不在此清除（待 storage 遷移後處理）。
+ * 注意：CDN 已快取的圖片網址在快取過期前仍可能讀得到（網址含隨機 uuid，無法被猜到）；
+ * 尚未遷移的 Firebase Storage 舊圖不在此清除。
  */
 export interface DeleteAccountResult {
   success: boolean
@@ -155,6 +158,13 @@ export async function deleteAccount(
   // 刪除 auth 使用者，後續清理由 FK CASCADE / SET NULL 自動完成
   const { error: deleteError } = await admin.auth.admin.deleteUser(uid)
   if (deleteError) return { success: false, error: deleteError.message }
+
+  // 帳號已刪除，圖片清除失敗只記錄，不影響結果
+  await Promise.all(
+    [`users/avatars/${uid}/`, `users/backgrounds/${uid}/`].map((prefix) =>
+      deleteMediaPrefix(prefix).catch(console.error),
+    ),
+  )
 
   return { success: true }
 }
