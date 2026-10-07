@@ -44,7 +44,7 @@ export interface UserProfile extends Record<string, unknown> {
 
 /**
  * 公開名片：個人頁傳給 Client 的資料，任何訪客都看得到。
- * 不含 email、學號、roles 等個資；由 toPublicUserProfile() 產生。
+ * 不含 email、學號、roles 等個資；由 toPublicUserProfile() 或個人頁的公開欄位查詢產生。
  */
 export type PublicUserProfile = Pick<
   UserProfile,
@@ -119,7 +119,6 @@ export interface AuthContextType {
   user: UserProfile | null
   loading: boolean
   getUserProfile: (uid: string) => Promise<UserProfile | null>
-  getUserProfileByUsername: (username: string) => Promise<UserProfile | null>
   signInWithEmail: (email: string, password: string) => Promise<void>
   signInWithGoogle: (next?: string) => Promise<void>
   signOut: () => Promise<void>
@@ -130,10 +129,6 @@ export interface AuthContextType {
     uid: string,
     updateData: Partial<UserProfile>,
   ) => Promise<void>
-  searchUsers: (
-    searchTerm: string,
-    limit?: number,
-  ) => Promise<UserSearchResult[]>
   isAdmin: boolean
   isSuperAdmin: boolean
   isSemesterMember: boolean
@@ -149,15 +144,6 @@ export interface UpdateUserRolesData {
 //* 更新使用者個人資料的資料結構
 export interface UpdateUserProfileData {
   displayName?: string
-  bio?: string
-}
-
-//* 使用者搜尋結果
-export interface UserSearchResult {
-  uid: string
-  username: string
-  displayName: string
-  photoURL: string
   bio?: string
 }
 
