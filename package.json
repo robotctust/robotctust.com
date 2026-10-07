@@ -1,6 +1,6 @@
 {
   "name": "nextjs",
-  "version": "2.6-beta.4",
+  "version": "2.6-beta.5",
   "private": true,
   "scripts": {
     "dev": "next dev",
@@ -68,6 +68,7 @@
     "eslint": "9.28.0",
     "eslint-config-next": "^16.0.7",
     "sass": "^1.89.0",
+    "server-only": "^0.0.1",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
