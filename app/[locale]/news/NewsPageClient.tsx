@@ -40,8 +40,10 @@ interface PostCardProps {
 function PostCard({ post, categoryLabel }: PostCardProps) {
   const locale = useLocale()
 
+  // 卡片本身不是 <a>：標題 Link 以 ::after 撐滿整張卡片（stretched link），
+  // 作者 Link 疊在其上，避免 <a> 巢狀造成 hydration 錯誤
   return (
-    <Link href={`/news/${post.id}`} className={styles.postCard}>
+    <article className={styles.postCard}>
       <div className={styles.postCardContent}>
         <div className={styles.postCoverContainer}>
           {post.coverImageUrl && (
@@ -79,7 +81,6 @@ function PostCard({ post, categoryLabel }: PostCardProps) {
                   <Link
                     href={`/@${post.authorUsername}`}
                     className={styles.postAuthor}
-                    onClick={(e) => e.stopPropagation()}
                   >
                     {post.authorDisplayName}
                   </Link>
@@ -92,7 +93,11 @@ function PostCard({ post, categoryLabel }: PostCardProps) {
                   {formatPostDate(post.createdAt, locale as Locale)}
                 </span>
               </div>
-              <h3 className={styles.postTitle}>{post.title}</h3>
+              <h3 className={styles.postTitle}>
+                <Link href={`/news/${post.id}`} className={styles.postLink}>
+                  {post.title}
+                </Link>
+              </h3>
             </div>
           </div>
           <div className={styles.postContentContainer}>
@@ -114,7 +119,7 @@ function PostCard({ post, categoryLabel }: PostCardProps) {
           </div>
         </div>
       </div>
-    </Link>
+    </article>
   )
 }
 
