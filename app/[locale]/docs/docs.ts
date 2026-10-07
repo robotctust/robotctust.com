@@ -156,7 +156,7 @@ export const subDocs: SubDocs[] = [
             title: '循線基礎程式',
             type: '.zip',
             filePath:
-              'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/assets%2Frobot_basic_followline.zip?alt=media&token=168482ae-dcd7-4133-9073-6f7d040b619b',
+              'https://img.robotctust.com/files/assets/robot_basic_followline.zip',
             icon: faFileZipper,
           },
           {
@@ -164,7 +164,7 @@ export const subDocs: SubDocs[] = [
             title: '循線進階程式',
             type: '.zip',
             filePath:
-              'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/assets%2Frobot-followline-pro.zip?alt=media&token=d014b873-a4ec-40f8-91f6-d775f2cc7233',
+              'https://img.robotctust.com/files/assets/robot-followline-pro.zip',
             icon: faFileZipper,
           },
         ],
@@ -179,7 +179,7 @@ export const subDocs: SubDocs[] = [
             title: '自走車基本動作測試',
             type: '.zip',
             filePath:
-              'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/docs%2F114-2-activaty-1%2Fmotor_basics_test.zip?alt=media&token=e5a3fbc3-dc40-438c-9465-ba2fe9e4cfe6',
+              'https://img.robotctust.com/files/docs/114-2-activaty-1/motor_basics_test.zip',
             icon: faFileZipper,
           },
         ],
@@ -194,7 +194,7 @@ export const subDocs: SubDocs[] = [
             title: '循線字走車程式',
             type: '.ino',
             filePath:
-              'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/docs%2Fcourse-3%2Ffollowline.zip?alt=media&token=fe9c7b40-cfbc-4ef1-95f1-300b486b20c4',
+              'https://img.robotctust.com/files/docs/course-3/followline.zip',
             icon: faFileZipper,
           },
         ],
@@ -217,7 +217,7 @@ export const subDocs: SubDocs[] = [
             title: '課程檔案 - 備用',
             type: 'zip',
             filePath:
-              'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/docs%2Fcourse-2%2F%E4%B8%AD%E8%87%BA%E7%A7%91%E6%8A%80%E5%A4%A7%E5%AD%B8%E6%A9%9F%E5%99%A8%E4%BA%BA%E7%A0%94%E7%A9%B6%E7%A4%BE.zip?alt=media&token=3a485f28-4c74-4c3d-bc44-04d45d4d220b',
+              'https://img.robotctust.com/files/docs/course-2/%E4%B8%AD%E8%87%BA%E7%A7%91%E6%8A%80%E5%A4%A7%E5%AD%B8%E6%A9%9F%E5%99%A8%E4%BA%BA%E7%A0%94%E7%A9%B6%E7%A4%BE.zip',
             icon: faFileZipper,
           },
           {
@@ -263,7 +263,7 @@ export const subDocs: SubDocs[] = [
             type: 'PDF',
             icon: faFilePdf,
             filePath:
-              'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/docs%2Frobot-assembly-circuit-diagram%2F%E6%A9%9F%E5%99%A8%E4%BA%BA%E6%8E%A5%E7%B7%9A%E5%9C%96.pdf?alt=media&token=cf1bace6-5ed8-4e51-8f38-91d2dfefe49d',
+              'https://img.robotctust.com/files/docs/robot-assembly-circuit-diagram/%E6%A9%9F%E5%99%A8%E4%BA%BA%E6%8E%A5%E7%B7%9A%E5%9C%96.pdf',
           },
           {
             id: 'robot-assembly-kit-list',

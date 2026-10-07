@@ -46,7 +46,7 @@ export const competitions: Competition[] = [
 4. 底圖上將標示距離終點線的段數，每段的距離大約相等，約 100 公分。
 5. 本規則對場地所描述或註記的尺寸均為概略值，實際尺寸以比賽現場的配置為準。
 
-![比賽場地](https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Fobstacle-avoidance-2025-11-12%2FSCR-20250916-tjqm.png?alt=media&token=cec28647-6068-4477-b4fa-be5124243473)
+![比賽場地](https://img.robotctust.com/competitions/obstacle-avoidance-2025-11-12/field/lg.webp)
     `,
     status: 'completed',
     position: 'club',
@@ -124,7 +124,7 @@ export const competitions: Competition[] = [
     ],
     link: '',
     image:
-      'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Fobstacle-avoidance-2025-11-12%2FSCR-20250916-tjqm.png?alt=media&token=cec28647-6068-4477-b4fa-be5124243473',
+      'https://img.robotctust.com/competitions/obstacle-avoidance-2025-11-12/field/lg.webp',
     tags: ['競賽', '機器人', '避障', '障礙挑戰'],
     priority: 2,
     createdAt: {
@@ -376,7 +376,7 @@ export const competitions: Competition[] = [
     ],
     link: 'https://www.aerc1988.com.tw/index.html',
     image:
-      'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Faerc-a01-line-following-2025-11-22%2FAERC2025-37.jpg?alt=media&token=85ab7299-a44d-4295-8ad7-88f69081c703',
+      'https://img.robotctust.com/competitions/aerc-a01-line-following-2025-11-22/cover/lg.webp',
     tags: ['競賽', '機器人', '循跡', '感測器', 'AERC'],
     priority: 10,
     createdAt: {
@@ -428,7 +428,7 @@ export const competitions: Competition[] = [
 - **比賽終止條件**：撞倒寶特瓶/圍牆/障礙物、出界、超時或觸碰機器人。  
 
 ### 延伸閱讀
-👉 詳細規則請參考：[官方競賽規則 PDF](https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Faerc-a02-obstacle-avoidance-2025-11-22%2FA02%20%E6%A9%9F%E5%99%A8%E4%BA%BA%E7%A8%8B%E6%8E%A7%E9%9A%9C%E7%A4%99%E6%8C%91%E6%88%B0-%E6%AF%94%E8%B3%BD%E8%A6%8F%E5%89%87(250911).pdf?alt=media&token=46c980c9-405b-48f7-b52c-125cf97729d9)  
+👉 詳細規則請參考：[官方競賽規則 PDF](https://img.robotctust.com/files/competitions/aerc-a02-obstacle-avoidance-2025-11-22/A02%20%E6%A9%9F%E5%99%A8%E4%BA%BA%E7%A8%8B%E6%8E%A7%E9%9A%9C%E7%A4%99%E6%8C%91%E6%88%B0-%E6%AF%94%E8%B3%BD%E8%A6%8F%E5%89%87%28250911%29.pdf)  
 
 ---
 
@@ -510,7 +510,7 @@ export const competitions: Competition[] = [
     ],
     link: 'https://www.aerc1988.com.tw/index.html',
     image:
-      'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Faerc-a01-line-following-2025-11-22%2FAERC2025-37.jpg?alt=media&token=85ab7299-a44d-4295-8ad7-88f69081c703',
+      'https://img.robotctust.com/competitions/aerc-a01-line-following-2025-11-22/cover/lg.webp',
     tags: ['競賽', '機器人', '程式控制', '障礙挑戰', 'AERC'],
     priority: 10,
     createdAt: {
@@ -568,10 +568,10 @@ export const competitions: Competition[] = [
 ### 二、比賽場地
 
 1. 比賽場地-基礎組
-  ![圖一](https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Fline-following-2026-04-15-school-inside%2F%E8%B3%BD%E9%81%93%E5%9C%962_%E5%B0%BA%E5%AF%B8.jpg?alt=media&token=ba3725cf-9476-4381-9d3e-5aa4058fcbc9)
+  ![圖一](https://img.robotctust.com/competitions/line-following-2026-04-15-school-inside/track-2/lg.webp)
 
 2. 比賽場地-進階組
-  ![圖二](https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Fline-following-2026-04-15-school-inside%2F%E8%B3%BD%E9%81%93%E5%9C%961_%E5%B0%BA%E5%AF%B8.jpg?alt=media&token=dbbd13a1-963f-4444-a52e-b22ebc80eb6f)
+  ![圖二](https://img.robotctust.com/competitions/line-following-2026-04-15-school-inside/track-1/lg.webp)
 
 3. 本規則對場地所描述或註記的尺寸均為概略值，實際尺寸以比賽現場的配置為準。
 
@@ -691,7 +691,7 @@ export const competitions: Competition[] = [
     ],
     link: '',
     image:
-      'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Fline-following-2026-04-15-school-inside%2F%E7%AB%B6%E8%B3%BD%E7%B6%B2%E7%AB%99%E5%AE%A3%E5%82%B3%E5%B0%81%E9%9D%A2.webp?alt=media&token=857c45dd-f498-447d-8c35-5fa9106989f6',
+      'https://img.robotctust.com/competitions/line-following-2026-04-15-school-inside/cover/lg.webp',
     tags: ['競賽', '機器人', '循線', '循線感測器'],
     priority: 1,
     createdAt: {
@@ -722,7 +722,7 @@ export const competitions: Competition[] = [
     title: '遙控避障挑戰賽',
     description: '暫無簡介',
     detailMarkdown: `
-![比賽場地](https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Fobstacle-avoidance-2025-11-12%2FSCR-20250916-tjqm.png?alt=media&token=cec28647-6068-4477-b4fa-be5124243473)
+![比賽場地](https://img.robotctust.com/competitions/obstacle-avoidance-2025-11-12/field/lg.webp)
     `,
     status: 'upcoming',
     position: 'club',
@@ -800,7 +800,7 @@ export const competitions: Competition[] = [
     ],
     link: '',
     image:
-      'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Fobstacle-avoidance-2025-11-12%2FSCR-20250916-tjqm.png?alt=media&token=cec28647-6068-4477-b4fa-be5124243473',
+      'https://img.robotctust.com/competitions/obstacle-avoidance-2025-11-12/field/lg.webp',
     tags: ['競賽', '機器人', '避障', '障礙挑戰', '遙控', '超音波感測器'],
     priority: 2,
     createdAt: {
@@ -841,7 +841,7 @@ export const competitions: Competition[] = [
 2. 對戰區直徑約150cm，圓形平台，出發區為35cm正方形。
 3. 本規則對場地所描述或註記的尺寸均為概略值，實際尺寸以比賽現場的配置為準。
 
-![](https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Frobot-combat-2026-05-27-club%2F%E6%A9%9F%E5%99%A8%E4%BA%BA%E6%93%82%E5%8F%B0%E8%B3%BD%E5%9C%B0%E5%9C%96-%E6%A8%99%E7%A4%BA.webp?alt=media&token=6aca5b8b-6b3f-4e70-bd43-afa9911e4826)
+![](https://img.robotctust.com/competitions/robot-combat-2026-05-27-club/arena-map-labeled/lg.webp)
 
 ## 比賽規則
 1. 競賽流程中，非對戰隊伍或是預備隊伍皆不得進入競賽場地，屢勸不聽者，相關隊伍將會判定喪失競賽資格。 
@@ -931,7 +931,7 @@ export const competitions: Competition[] = [
     ],
     link: '',
     image:
-      'https://firebasestorage.googleapis.com/v0/b/robot-group.firebasestorage.app/o/competitions%2Frobot-combat-2026-05-27-club%2F%E6%A9%9F%E5%99%A8%E4%BA%BA%E6%93%82%E5%8F%B0%E8%B3%BD%E5%9C%B0%E5%9C%96.webp?alt=media&token=87bba621-5f51-44e1-a3ac-3448b76b906b',
+      'https://img.robotctust.com/competitions/robot-combat-2026-05-27-club/arena-map/lg.webp',
     tags: ['競賽', '機器人', '對抗', '對戰'],
     priority: 2,
     createdAt: {
