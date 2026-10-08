@@ -1,0 +1,60 @@
+@use 'mixins';
+
+/*
+ * 全站共用元件的全域 class，全部由 _mixins.scss 產生（樣式只有一個來源）。
+ * 在 TSX 直接用 class 名稱；SCSS Module 裡則 @include 對應的 mixin。
+ *
+ * 按鈕：.primary-button / .secondary-button / .ghost-button / .danger-button / .danger-soft-button
+ *       尺寸預設 36px，加 .button-sm（32px）或 .button-lg（44px）
+ * 圖示鈕：.icon-button / .icon-button-danger（32px，記得加 aria-label）
+ * 標籤：.badge + .badge-neutral / brand / success / warning / danger / info
+ * 輸入框：.form-control（input、textarea、select 都用這個）
+ */
+
+.primary-button {
+  @include mixins.button('primary');
+}
+.secondary-button {
+  @include mixins.button('secondary');
+}
+.ghost-button {
+  @include mixins.button('ghost');
+}
+.danger-button {
+  @include mixins.button('danger');
+}
+.danger-soft-button {
+  @include mixins.button('danger-soft');
+}
+.button-sm {
+  @include mixins.button-size('small');
+}
+.button-lg {
+  @include mixins.button-size('large');
+}
+
+.icon-button {
+  @include mixins.icon-button('secondary', 'small');
+}
+.icon-button-danger {
+  @include mixins.icon-button('danger-soft', 'small');
+}
+
+.badge {
+  @include mixins.badge;
+}
+@each $tone in ('neutral', 'brand', 'success', 'warning', 'danger', 'info') {
+  .badge-#{$tone} {
+    @include mixins.badge-tone($tone);
+  }
+}
+
+input.form-control {
+  @include mixins.field;
+}
+textarea.form-control {
+  @include mixins.textarea;
+}
+select.form-control {
+  @include mixins.select;
+}

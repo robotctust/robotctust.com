@@ -10,14 +10,15 @@ interface ActionMenuProps {
   className?: string
   triggerClassName?: string
   children: ReactNode
-  ariaLabel?: string
+  // 觸發鈕只有圖示，必須提供（已翻譯）
+  ariaLabel: string
 }
 
 export default function ActionMenu({
   className,
   triggerClassName,
   children,
-  ariaLabel = '更多操作',
+  ariaLabel,
 }: ActionMenuProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [menuPosition, setMenuPosition] = useState<{
@@ -46,12 +47,32 @@ export default function ActionMenu({
       }
     }
 
+    // 鍵盤：Esc 關閉並把焦點還給觸發鈕；上下鍵在項目間移動
+    function handleKeyDown(event: KeyboardEvent) {
+      if (!isOpen || !menuRef.current) return
+      if (event.key === 'Escape') {
+        setIsOpen(false)
+        buttonRef.current?.focus()
+        return
+      }
+      if (event.key !== 'ArrowDown' && event.key !== 'ArrowUp') return
+      event.preventDefault()
+      const items = Array.from(
+        menuRef.current.querySelectorAll<HTMLElement>('button:not(:disabled), a[href]'),
+      )
+      const current = items.indexOf(document.activeElement as HTMLElement)
+      const next = event.key === 'ArrowDown' ? current + 1 : current - 1
+      items[(next + items.length) % items.length]?.focus()
+    }
+
     document.addEventListener('mousedown', handleClickOutside)
+    document.addEventListener('keydown', handleKeyDown)
     window.addEventListener('scroll', handleScroll, { capture: true })
     window.addEventListener('resize', handleScroll)
 
     return () => {
       document.removeEventListener('mousedown', handleClickOutside)
+      document.removeEventListener('keydown', handleKeyDown)
       window.removeEventListener('scroll', handleScroll, { capture: true })
       window.removeEventListener('resize', handleScroll)
     }
@@ -102,6 +123,7 @@ export default function ActionMenu({
         }}
         aria-label={ariaLabel}
         aria-expanded={isOpen}
+        aria-haspopup="menu"
       >
         <FontAwesomeIcon icon={faEllipsis} />
       </button>
@@ -116,7 +138,7 @@ export default function ActionMenu({
               position: 'fixed',
               top: menuPosition ? `${menuPosition.top}px` : 0,
               left: menuPosition ? `${menuPosition.left}px` : 0,
-              zIndex: 9999,
+              zIndex: 'var(--z-popover)',
               opacity: menuPosition ? 1 : 0,
               pointerEvents: menuPosition ? 'auto' : 'none',
             }}

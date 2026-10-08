@@ -179,7 +179,7 @@
   transition: border-color 0.15s;
 
   &:focus-within {
-    border-color: var(--foreground-secondary);
+    border-color: var(--primary);
   }
 
   span {
@@ -218,7 +218,7 @@
 
   &:focus {
     outline: none;
-    border-color: var(--foreground-secondary);
+    border-color: var(--primary);
   }
 }
 
@@ -236,7 +236,7 @@
 
   &:hover,
   &.dragOver {
-    border-color: var(--foreground-secondary);
+    border-color: var(--border-hover);
     background: rgba(var(--foreground-rgb), 0.03);
   }
 
@@ -314,7 +314,7 @@
   white-space: nowrap;
 
   &.published {
-    border-color: var(--green-500);
+    border-color: var(--border-on-color);
     background: var(--green-400);
     color: var(--color-white);
   }

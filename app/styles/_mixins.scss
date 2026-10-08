@@ -1,4 +1,6 @@
 @use 'sass:list';
+@use 'sass:selector';
+@use 'sass:string';
 
 @mixin flexbox($direction: row, $justify: center, $align: center) {
   display: flex;
@@ -46,77 +48,255 @@
   }
 }
 
-@mixin button($type: 'normal', $size: 'normal') {
+// ─── 共用元件樣式（全站唯一來源；app/styles/components.scss 由這些 mixin 產生全域 class）───
+
+// 按鈕
+// $type：primary 主要動作（一個區塊只放一顆）/ secondary 一般（舊名 normal）/ ghost 無框
+//       / danger 危險實心 / danger-soft 危險淡色（次要的刪除、移除）
+// $size：small 32px / normal 36px / large 44px
+@mixin button($type: 'secondary', $size: 'normal') {
   // 參數寫錯時編譯直接報錯（以前寫錯會靜默變成沒有顏色的按鈕）
-  @if not list.index(('normal', 'primary', 'danger'), $type) {
-    @error "mixins.button: 未知的類型 '#{$type}'（可用 normal / primary / danger）";
+  @if not list.index(('normal', 'secondary', 'primary', 'ghost', 'danger', 'danger-soft'), $type) {
+    @error "mixins.button: 未知的類型 '#{$type}'（可用 primary / secondary / ghost / danger / danger-soft）";
   }
   @if not list.index(('small', 'normal', 'large'), $size) {
     @error "mixins.button: 未知的尺寸 '#{$size}'（可用 small / normal / large）";
   }
-  @include flexbox(row, center, center);
-  gap: 9px;
-  word-wrap: nowrap;
+
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   min-width: max-content;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-weight: 500;
+  line-height: 1;
+  white-space: nowrap;
   text-decoration: none;
-  @include border-radius(9px);
   @include interactive;
 
   svg {
-    font-size: 0.9rem;
+    flex-shrink: 0;
   }
 
-  // size
+  @include button-size($size);
+  @include button-colors($type);
+}
+
+// 按鈕尺寸（全域 class 的 .button-sm / .button-lg 也用這個）
+@mixin button-size($size) {
   @if $size == 'small' {
     gap: 6px;
-    padding: 4px 8px;
-    font-size: 0.8rem;
-    svg {
-      font-size: 0.8rem;
-    }
+    min-height: 32px;
+    padding: 0 10px;
+    font-size: var(--font-size-sm);
   } @else if $size == 'normal' {
-    gap: 9px;
-    padding: 8px 12px;
-    font-size: 0.9rem;
-    svg {
-      font-size: 0.9rem;
-    }
-  } @else if $size == 'large' {
-    gap: 12px;
-    padding: 12px 18px;
-    font-size: 1rem;
-    svg {
-      font-size: 1rem;
-    }
+    gap: 8px;
+    min-height: 36px;
+    padding: 0 14px;
+    font-size: var(--font-size-sm);
+  } @else {
+    gap: 10px;
+    min-height: 44px;
+    padding: 0 20px;
+    font-size: var(--font-size-base);
   }
 
-  // type
-  @if $type == 'normal' {
-    background: var(--background-secondary);
-    border: 1px solid var(--border);
-    color: var(--foreground);
-    &:hover {
-      background: var(--background-tertiary);
-      border-color: var(--border-hover);
-    }
-  } @else if $type == 'primary' {
+}
+
+// 按鈕配色（icon-button 共用）
+@mixin button-colors($type) {
+  @if $type == 'primary' {
+    border-color: var(--border-on-color);
     background: var(--primary);
-    border: 1px solid var(--border);
     color: var(--color-white);
-    &:hover {
+    &:hover:not(:disabled, [aria-disabled='true']) {
       background: var(--primary-hover);
-      border-color: var(--border-hover);
+      border-color: var(--border-on-color-hover);
+    }
+  } @else if $type == 'ghost' {
+    border-color: transparent;
+    background: transparent;
+    color: var(--foreground-secondary);
+    &:hover:not(:disabled, [aria-disabled='true']) {
+      background: var(--background-secondary);
+      color: var(--foreground);
     }
   } @else if $type == 'danger' {
+    border-color: var(--border-on-color);
     background: var(--danger);
-    border: 1px solid var(--border);
     color: var(--color-white);
-    &:hover {
+    &:hover:not(:disabled, [aria-disabled='true']) {
       background: var(--danger-hover);
+      border-color: var(--border-on-color-hover);
+    }
+  } @else if $type == 'danger-soft' {
+    background: var(--danger-soft);
+    border-color: var(--danger-border);
+    color: var(--danger-text);
+    &:hover:not(:disabled, [aria-disabled='true']) {
+      background: color-mix(in oklch, var(--red-500) 25%, transparent);
+    }
+  } @else {
+    // secondary / normal
+    background: var(--background-secondary);
+    border-color: var(--border);
+    color: var(--foreground);
+    &:hover:not(:disabled, [aria-disabled='true']) {
+      background: var(--background-tertiary);
       border-color: var(--border-hover);
     }
   }
 }
+
+// 只有圖示的方形按鈕（記得加 aria-label）
+@mixin icon-button($type: 'ghost', $size: 'normal') {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  padding: 0;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  @include interactive;
+
+  @if $size == 'small' {
+    width: 32px;
+    height: 32px;
+    font-size: var(--font-size-sm);
+  } @else if $size == 'large' {
+    width: 44px;
+    height: 44px;
+    font-size: var(--font-size-base);
+  } @else {
+    width: 36px;
+    height: 36px;
+    font-size: var(--font-size-sm);
+  }
+
+  @include button-colors($type);
+}
+
+// 標籤（狀態、分類、角色）：淡底 + 有色文字 + 淡邊框的膠囊
+// $tone：neutral / brand / success / warning / danger / info
+@mixin badge($tone: 'neutral') {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid;
+  border-radius: var(--radius-full);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  line-height: 1;
+  white-space: nowrap;
+  @include badge-tone($tone);
+}
+
+@mixin badge-tone($tone) {
+  @if $tone == 'neutral' {
+    background: var(--background-secondary);
+    border-color: var(--border);
+    color: var(--foreground-secondary);
+  } @else {
+    background: var(--#{$tone}-soft);
+    border-color: var(--#{$tone}-border);
+    color: var(--#{$tone}-text);
+  }
+}
+
+// 輸入框（input / textarea / select 共用）
+@mixin field {
+  width: 100%;
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--background);
+  color: var(--foreground);
+  font-family: inherit;
+  font-size: var(--font-size-sm);
+  transition:
+    border-color var(--transition-duration-fast) ease,
+    box-shadow var(--transition-duration-fast) ease,
+    background-color var(--transition-duration) var(--transition-bezier);
+
+  &::placeholder {
+    color: var(--foreground-tertiary);
+  }
+
+  &:hover:not(:disabled, :focus) {
+    border-color: var(--border-hover);
+  }
+
+  // 焦點：主色邊框 + 淡色光暈（取代全域的 focus 外框）
+  &:focus,
+  &:focus-visible {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px var(--brand-soft);
+  }
+
+  &:disabled {
+    opacity: var(--disabled-opacity);
+    background: var(--background-secondary);
+    cursor: not-allowed;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: var(--danger);
+
+    &:focus {
+      box-shadow: 0 0 0 3px var(--danger-soft);
+    }
+  }
+
+  // iOS Safari 對 16px 以下的輸入框會在聚焦時自動放大畫面
+  @include respond-to('phone') {
+    font-size: 16px;
+  }
+}
+
+@mixin textarea {
+  @include field;
+  padding: 10px 12px;
+  line-height: 1.6;
+  resize: vertical;
+}
+
+// 下拉選單：拿掉各瀏覽器不同的原生箭頭，統一畫一個
+@mixin select {
+  @include field;
+  padding-right: 36px;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%238a8494' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 12px center;
+  background-size: 12px 8px;
+  cursor: pointer;
+}
+
+// 面板：靜態容器（表單區塊、設定欄），沒有 hover 效果
+@mixin panel($padding: var(--space-2x)) {
+  padding: $padding;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  background: var(--background);
+}
+
+// 卡片：整張可點（連到別頁、開啟詳細），hover 放大並加深邊框
+@mixin card($padding: var(--space-2x)) {
+  @include panel($padding);
+  @include interactive('surface');
+
+  @media (hover: hover) {
+    &:hover {
+      border-color: var(--border-hover);
+    }
+  }
+}
+
 
 
 
@@ -196,6 +376,15 @@
 // $size：control = 按鈕、圖示鈕、連結等小元件；surface = 卡片、整列寬的按鈕等大面積元素（放大幅度較小）
 // 只有可點擊的元素才用；靜態容器（面板、表單區塊）不要加 hover 效果
 @mixin interactive($size: 'control') {
+  // 必須寫在元件本身：寫在 :hover 裡的話，transition 只在 hover 期間存在，離開時會瞬間跳回
+  // （只看選擇器最後一段，也就是元件本身；祖先的 :hover 如 header:not(:hover) 不算）
+  @if & {
+    @each $complex in selector.parse(&) {
+      @if string.index('#{list.nth($complex, -1)}', ':hover') {
+        @error "mixins.interactive 不能寫在 :hover 裡（#{&}），請移到元件本身的規則";
+      }
+    }
+  }
   $hover: var(--hover-scale);
   $active: var(--active-scale);
   @if $size == 'surface' {

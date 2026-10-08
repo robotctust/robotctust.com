@@ -163,7 +163,8 @@
       "pageInfo": "{total} 筆 · 第 {current} / {totalPages} 頁",
       "prevPage": "上一頁",
       "nextPage": "下一頁",
-      "filterAll": "全部"
+      "filterAll": "全部",
+      "moreActions": "更多操作"
     },
     "RichTextEditor": {
       "pastedMediaRemoved": "貼上的內容含有其他文章或網頁的圖片，已略過，請另外插入圖片",
@@ -211,6 +212,11 @@
         "toggleHeader": "切換標題列",
         "delete": "刪除表格"
       }
+    },
+    "Modal": {
+      "close": "關閉",
+      "confirm": "確定",
+      "cancel": "取消"
     }
   },
   "Login": {
@@ -864,8 +870,11 @@
           "coverAlt": "封面預覽"
         },
         "contentPlaceholder": "開始撰寫內文⋯⋯（也可以用 Markdown 快捷輸入，例如 ## 標題、- 清單、``` 程式碼）",
-        "confirmLeave": "有未儲存的變更，確定要離開嗎？",
-        "confirmUnpublish": "取消發布後，這篇文章會從網站上移除（變回草稿），確定嗎？",
+        "confirmLeave": "有未儲存的變更，離開後會遺失。",
+        "confirmLeaveTitle": "放棄未儲存的變更？",
+        "confirmLeaveAction": "離開",
+        "confirmUnpublish": "取消發布後，這篇文章會從網站上移除，變回草稿。",
+        "confirmUnpublishTitle": "取消發布這篇文章？",
         "toast": {
           "saved": "草稿已儲存",
           "published": "文章已發布",

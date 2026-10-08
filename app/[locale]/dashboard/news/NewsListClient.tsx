@@ -6,7 +6,7 @@ import { useTranslations } from 'next-intl'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faEdit, faTrash, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { useToast } from '@/app/contexts/ToastContext'
-import { Modal } from '@/app/[locale]/dashboard/components/Modal'
+import { Modal } from '@/app/components/Modal'
 import { Table, TableColumn } from '@/app/components/Table'
 import {
   POST_CATEGORIES,
@@ -297,13 +297,14 @@ export default function NewsListClient({
         maxWidth="480px"
         footer={
           <>
-            <button onClick={() => setDeleteTarget(null)} disabled={deleting}>
+            <button type="button" className="secondary-button" onClick={() => setDeleteTarget(null)} disabled={deleting}>
               {t('deleteModal.cancel')}
             </button>
             <button
               onClick={() => void confirmDelete()}
               disabled={deleting}
-              data-danger="true"
+              type="button"
+              className="danger-button"
             >
               {deleting ? t('deleteModal.deleting') : t('deleteModal.confirm')}
             </button>
@@ -325,13 +326,14 @@ export default function NewsListClient({
         maxWidth="480px"
         footer={
           <>
-            <button onClick={() => setBulkTargets(null)} disabled={deleting}>
+            <button type="button" className="secondary-button" onClick={() => setBulkTargets(null)} disabled={deleting}>
               {t('bulkDeleteModal.cancel')}
             </button>
             <button
               onClick={() => void confirmBulkDelete()}
               disabled={deleting}
-              data-danger="true"
+              type="button"
+              className="danger-button"
             >
               {deleting
                 ? t('bulkDeleteModal.deleting')

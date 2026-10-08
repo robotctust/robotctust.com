@@ -16,6 +16,7 @@ import {
 import RichTextEditor from '@/app/components/RichText/RichTextEditor'
 import { hasPendingUploads } from '@/app/components/RichText/imageUpload'
 import { useToast } from '@/app/contexts/ToastContext'
+import { useConfirm } from '@/app/components/Modal'
 import { uploadImage } from '@/app/utils/media/client'
 import type { ContentImageUploader } from '@/app/types/media'
 import { CATEGORY_TO_SLUG, POST_CATEGORIES, PostCategory, PostStatus } from '@/app/types/post'
@@ -51,6 +52,7 @@ export default function NewsEditorClient({ post, content: initialContent }: News
   const locale = useLocale()
   const router = useRouter()
   const { showToast } = useToast()
+  const { confirm, dialog } = useConfirm()
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   // 文章欄位
@@ -125,7 +127,17 @@ export default function NewsEditorClient({ post, content: initialContent }: News
 
   async function save(action: SaveAction) {
     if (saving) return
-    if (action === 'unpublish' && !window.confirm(t('confirmUnpublish'))) return
+    if (
+      action === 'unpublish' &&
+      !(await confirm({
+        title: t('confirmUnpublishTitle'),
+        description: t('confirmUnpublish'),
+        confirmLabel: t('actions.unpublish'),
+        variant: 'danger',
+      }))
+    ) {
+      return
+    }
     setSaving(action)
     try {
       if (contentRef.current && hasPendingUploads(contentRef.current)) {
@@ -227,8 +239,16 @@ export default function NewsEditorClient({ post, content: initialContent }: News
           <Link
             href="/dashboard/news"
             className={styles.backButton}
-            onClick={(e) => {
-              if (dirty && !window.confirm(t('confirmLeave'))) e.preventDefault()
+            onClick={async (e) => {
+              if (!dirty) return
+              e.preventDefault()
+              const leave = await confirm({
+                title: t('confirmLeaveTitle'),
+                description: t('confirmLeave'),
+                confirmLabel: t('confirmLeaveAction'),
+                variant: 'danger',
+              })
+              if (leave) router.push('/dashboard/news')
             }}
           >
             <FontAwesomeIcon icon={faArrowLeft} />
@@ -391,6 +411,7 @@ export default function NewsEditorClient({ post, content: initialContent }: News
           />
         </div>
       </div>
+      {dialog}
     </div>
   )
 }

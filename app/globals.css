@@ -87,91 +87,6 @@ span.nowrap {
   white-space: nowrap;
 }
 
-/*
- * 全站按鈕 class（與 _mixins.scss 的 button / interactive mixin 同一套狀態）
- * hover 放大、按下縮回、禁用變淡且不回應
- */
-.icon-button,
-.icon-button-danger,
-.primary-button,
-.secondary-button,
-.danger-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--border);
-  cursor: pointer;
-  text-decoration: none;
-  transition: all var(--transition-duration) var(--transition-bezier-fast);
-}
-@media (hover: hover) {
-  :is(.icon-button, .icon-button-danger, .primary-button, .secondary-button, .danger-button):not(:disabled):hover {
-    transform: scale(var(--hover-scale));
-    border-color: var(--border-hover);
-  }
-}
-:is(.icon-button, .icon-button-danger, .primary-button, .secondary-button, .danger-button):not(:disabled):active {
-  transform: scale(var(--active-scale));
-  transition-duration: var(--transition-duration-fast);
-}
-:is(.icon-button, .icon-button-danger, .primary-button, .secondary-button, .danger-button):disabled {
-  opacity: var(--disabled-opacity);
-  cursor: not-allowed;
-}
-
-/* 表格 / 清單操作欄的圖示按鈕 */
-.icon-button,
-.icon-button-danger {
-  width: 32px;
-  height: 32px;
-  border-radius: 8px;
-  background: var(--background);
-  color: var(--foreground);
-  font-size: 0.9rem;
-}
-.icon-button:not(:disabled):hover {
-  background: var(--background-secondary);
-}
-.icon-button-danger {
-  color: var(--danger);
-}
-.icon-button-danger:not(:disabled):hover {
-  background: var(--danger-soft);
-  border-color: var(--danger-border);
-}
-
-/* 一般文字按鈕（normal 尺寸） */
-.primary-button,
-.secondary-button,
-.danger-button {
-  gap: 9px;
-  min-width: max-content;
-  padding: 8px 12px;
-  border-radius: 9px;
-  font-size: 0.9rem;
-}
-.primary-button {
-  background: var(--primary);
-  color: var(--color-white);
-}
-.primary-button:not(:disabled):hover {
-  background: var(--primary-hover);
-}
-.secondary-button {
-  background: var(--background-secondary);
-  color: var(--foreground);
-}
-.secondary-button:not(:disabled):hover {
-  background: var(--background-tertiary);
-}
-.danger-button {
-  background: var(--danger);
-  color: var(--color-white);
-}
-.danger-button:not(:disabled):hover {
-  background: var(--danger-hover);
-}
-
 .page {
   height: 100%;
   width: 100%;
@@ -258,6 +173,7 @@ span.nowrap {
   --z-header: 1000;
   --z-overlay: 1100;
   --z-modal: 1200;
+  --z-popover: 1250; /* 選單等浮層，可能開在對話框裡 */
   --z-toast: 1300;
 
   --font-mono: var(--font-dm-mono), monospace;

@@ -163,7 +163,8 @@
       "pageInfo": "{total} items · Page {current} of {totalPages}",
       "prevPage": "Previous page",
       "nextPage": "Next page",
-      "filterAll": "All"
+      "filterAll": "All",
+      "moreActions": "More actions"
     },
     "RichTextEditor": {
       "pastedMediaRemoved": "Images from other posts or web pages were skipped. Please insert images separately.",
@@ -211,6 +212,11 @@
         "toggleHeader": "Toggle header row",
         "delete": "Delete table"
       }
+    },
+    "Modal": {
+      "close": "Close",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
     }
   },
   "Login": {
@@ -864,8 +870,11 @@
           "coverAlt": "Cover preview"
         },
         "contentPlaceholder": "Start writing… (Markdown shortcuts work too: ## heading, - list, ``` code)",
-        "confirmLeave": "You have unsaved changes. Leave anyway?",
-        "confirmUnpublish": "Unpublishing removes this post from the site and turns it back into a draft. Continue?",
+        "confirmLeave": "Your unsaved changes will be lost.",
+        "confirmLeaveTitle": "Discard unsaved changes?",
+        "confirmLeaveAction": "Leave",
+        "confirmUnpublish": "The post will be removed from the site and turned back into a draft.",
+        "confirmUnpublishTitle": "Unpublish this post?",
         "toast": {
           "saved": "Draft saved",
           "published": "Post published",

@@ -76,7 +76,7 @@
   white-space: nowrap;
 
   &.published {
-    border-color: var(--green-500);
+    border-color: var(--border-on-color);
     background: var(--green-400);
     color: var(--color-white);
   }
@@ -95,7 +95,7 @@
   white-space: nowrap;
   background: var(--category-bg-color, rgba(var(--foreground-rgb), 0.1));
   color: var(--foreground);
-  border: 1px solid var(--border, transparent);
+  border: 1px solid var(--border-on-color);
 }
 
 .dateCell {

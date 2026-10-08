@@ -95,6 +95,11 @@
   --orange-900: oklch(0.1 0.12 75);
   --orange-950: oklch(0.05 0.09 75);
 
+  //* 鮮豔底色（主色按鈕、實心標籤等）上的邊框：模擬玻璃邊緣的亮色高光，深淺主題都一樣
+  // 一般、淺色底的容器則用主題的 --border（淺色模式是淡淡的深色勾勒）
+  --border-on-color: color-mix(in srgb, #fff 25%, transparent);
+  --border-on-color-hover: color-mix(in srgb, #fff 40%, transparent);
+
   //* 語意色：狀態標籤、提示、危險操作（全部來自上方色票）
   // {tone} 實心底（配白字）、-text 淡底上的有色文字、-soft 淡底、-border 淡邊框
   // -text 用 --theme-*-600：淺色模式偏深、深色模式偏亮（見各主題的 Dynamic Colors）
@@ -194,12 +199,10 @@
   --text-tertiary: var(--foreground-tertiary);
 
   // Border
-  --border: var(--foreground-950);
-  --border-secondary: var(--foreground-900);
-  --border-tertiary: var(--foreground-800);
-  --border-hover: var(--foreground-800);
-  --border-secondary-hover: var(--foreground-700);
-  --border-tertiary-hover: var(--foreground-600);
+  // 邊框只用來輕輕勾勒輪廓：一般 7%、hover 12%、border-secondary（分隔線等需要稍明顯的地方）10%
+  --border: color-mix(in srgb, var(--foreground) 7%, transparent);
+  --border-secondary: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --border-hover: color-mix(in srgb, var(--foreground) 12%, transparent);
 
   // Background Grid
   --background-grid-color: rgba(0, 0, 0, 0.03);
@@ -349,12 +352,10 @@
   --text-tertiary: var(--foreground-tertiary);
 
   // Border
-  --border: var(--foreground-950);
-  --border-secondary: var(--foreground-900);
-  --border-tertiary: var(--foreground-800);
-  --border-hover: var(--foreground-800);
-  --border-secondary-hover: var(--foreground-700);
-  --border-tertiary-hover: var(--foreground-600);
+  // 邊框只用來輕輕勾勒輪廓：一般 7%、hover 12%、border-secondary（分隔線等需要稍明顯的地方）10%
+  --border: color-mix(in srgb, var(--foreground) 7%, transparent);
+  --border-secondary: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --border-hover: color-mix(in srgb, var(--foreground) 12%, transparent);
 
   // Background Grid
   --background-grid-color: rgba(255, 255, 255, 0.03);

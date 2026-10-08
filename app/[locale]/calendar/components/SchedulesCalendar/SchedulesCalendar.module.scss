@@ -119,7 +119,7 @@
 
           &:hover {
             background: var(--border-hover);
-            border-color: var(--foreground-800);
+            border-color: var(--border-hover);
           }
 
           &.active {
@@ -136,7 +136,7 @@
 
             > .monthEventCount {
               background: var(--theme-purple-500);
-              border-color: var(--border-hover);
+              border-color: var(--border-on-color);
               color: var(--color-white);
             }
           }
@@ -736,7 +736,7 @@
       :global(.fc-timegrid-event-harness) {
         a {
           margin-bottom: 0;
-          border: 1px solid var(--foreground-700) !important;
+          border: 1px solid var(--border-hover) !important;
           @include mixins.border-radius(6px);
           box-shadow: 0 0 6px 0 var(--background);
 

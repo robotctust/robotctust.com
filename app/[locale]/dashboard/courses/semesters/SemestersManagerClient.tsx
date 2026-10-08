@@ -8,7 +8,7 @@ import {
   faPlus,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
-import { Modal } from '@/app/[locale]/dashboard/components/Modal'
+import { Modal } from '@/app/components/Modal'
 import { Semester, SemesterTreeNode } from '@/app/types/course-admin'
 import {
   fetchCurriculumOverview,

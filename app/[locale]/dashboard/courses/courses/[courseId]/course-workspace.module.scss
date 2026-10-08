@@ -29,21 +29,22 @@
     gap: 8px;
   }
 
-  .primaryButton {
+  // @at-root：這些 class 也用在對話框裡，Modal 以 portal 渲染在 <body> 下、不在頁面容器內，不能依賴外層巢狀
+  @at-root .primaryButton {
     @include mixins.button('primary', 'normal');
     display: inline-flex;
     align-items: center;
     gap: 8px;
   }
 
-  .subtleButton {
+  @at-root .subtleButton {
     @include mixins.button('normal', 'normal');
     display: inline-flex;
     align-items: center;
     gap: 8px;
   }
 
-  .dangerButton {
+  @at-root .dangerButton {
     @include mixins.button('normal', 'normal');
     background: color-mix(in oklch, var(--theme-red-500) 8%, transparent);
     border-color: color-mix(in oklch, var(--theme-red-500) 22%, transparent);
@@ -217,7 +218,7 @@
   }
 
   /* --- Form Elements --- */
-  .fieldGroup {
+  @at-root .fieldGroup {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -226,7 +227,7 @@
 
   .fieldGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
-  .textInput, .textareaInput, .selectInput {
+  @at-root .textInput, .textareaInput, .selectInput {
     width: 100%;
     padding: 12px 16px;
     background: var(--background);
@@ -350,20 +351,20 @@
   .lastInsertPoint { margin-top: 40px; opacity: 0.4; &:hover { opacity: 1; } }
 
   /* --- Editor Modal Custom --- */
-  .modalFieldGrid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; @include mixins.respond-to('tablet') { grid-template-columns: 1fr; } }
-  .editorTextarea {
+  @at-root .modalFieldGrid { display: grid; grid-template-columns: 1.2fr 1fr; gap: 24px; @include mixins.respond-to('tablet') { grid-template-columns: 1fr; } }
+  @at-root .editorTextarea {
     width: 100%; min-height: 300px; padding: 16px; background: var(--background);
     border: 1px solid var(--border); @include mixins.border-radius(16px);
     font-size: 1rem; line-height: 1.6; resize: vertical;
     &:focus { border-color: var(--primary); outline: none; }
   }
-  .programCodeInput { font-family: monospace; font-size: 0.85rem; min-height: 240px; }
-  .newProgramForm {
+  @at-root .programCodeInput { font-family: monospace; font-size: 0.85rem; min-height: 240px; }
+  @at-root .newProgramForm {
     display: flex; flex-direction: column; gap: 12px; padding: 16px;
     background: rgba(var(--background-rgb), 0.4); border: 1px solid var(--border);
     @include mixins.border-radius(14px); margin-top: 12px;
   }
-  .inlineActionLink {
+  @at-root .inlineActionLink {
     background: none; border: none; color: var(--theme-blue-500); font-size: 0.85rem;
     cursor: pointer; margin-left: 10px; text-decoration: underline;
   }

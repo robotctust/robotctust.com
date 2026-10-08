@@ -6,13 +6,12 @@
   border: 1px solid var(--border);
   @include mixins.border-radius(12px);
   overflow: hidden;
-  @include mixins.transition(all 0.3s ease);
   position: relative;
+  @include mixins.interactive('surface');
 
   &:hover {
     border-color: var(--border-hover);
     background: rgba(var(--background-tertiary-rgb), 0.75);
-    @include mixins.interactive('surface');
   }
 
   > .imageContainer {

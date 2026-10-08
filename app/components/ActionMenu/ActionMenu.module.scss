@@ -5,66 +5,66 @@
 }
 
 .triggerButton {
-  @include mixins.flexbox(row, center, center);
-  padding: 6px;
-  background: transparent;
-  color: var(--foreground-secondary);
-  border: none;
-  @include mixins.border-radius(6px);
-  cursor: pointer;
-
-  &:hover {
-    color: var(--foreground);
-    background: rgba(var(--background-secondary-rgb), 0.5);
-    border-color: var(--border);
-  }
+  @include mixins.icon-button('ghost', 'small');
 }
 
+// 下拉選單：外框 12px、內距 4px，所以項目用 8px 圓角
 .menuDropdown {
-  @include mixins.flexbox(column, start, start);
-  gap: 3px;
-  padding: 6px;
+  @include mixins.flexbox(column, start, stretch);
+  gap: 2px;
+  padding: 4px;
   min-width: 160px;
-  background-color: rgba(var(--background-rgb), 0.5);
   border: 1px solid var(--border);
-  @include mixins.border-radius(12px);
-  @include mixins.glass-blur(6px);
-  box-shadow: 0 0 32px 0 rgba(var(--background-rgb), 0.75);
+  border-radius: var(--radius-md);
+  background-color: color-mix(in oklch, var(--background) 80%, transparent);
+  @include mixins.glass-blur(12px);
+  box-shadow: var(--shadow-lg);
 }
 
 .menuDropdown > button,
 .menuDropdown > a,
 .menuDropdown > div > button,
 .menuDropdown > div > a {
-  background: transparent;
-  border: none;
-  padding: 10px 12px;
-  text-align: left;
-  cursor: pointer;
-  font-size: 0.9rem;
-  color: var(--foreground-secondary);
   display: flex;
   align-items: center;
   gap: 10px;
-  text-decoration: none;
   width: 100%;
-  border: 1px solid transparent;
-  @include mixins.border-radius(6px);
-  transition: all 0.2s ease;
+  padding: 8px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--foreground-secondary);
+  font-size: var(--font-size-sm);
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--transition-duration-fast) ease,
+    color var(--transition-duration-fast) ease;
 
-  &:hover {
-    border: 1px solid var(--border);
-    background-color: rgba(var(--background-secondary-rgb), 0.4);
+  svg {
+    width: 14px;
+  }
+
+  &:hover:not(:disabled),
+  &:focus-visible {
+    outline: none;
+    background-color: var(--background-secondary);
     color: var(--foreground);
   }
 
-  &[data-danger='true'] {
-    color: var(--theme-red-600);
+  &:disabled {
+    opacity: var(--disabled-opacity);
+    cursor: not-allowed;
+  }
 
-    &:hover {
-      border: 1px solid var(--border-hover);
-      background-color: var(--theme-red-400);
-      color: var(--foreground);
+  &[data-danger='true'] {
+    color: var(--danger-text);
+
+    &:hover:not(:disabled),
+    &:focus-visible {
+      background-color: var(--danger-soft);
+      color: var(--danger-text);
     }
   }
 }

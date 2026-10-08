@@ -80,7 +80,7 @@
           &.active {
             color: var(--color-white);
             background-color: var(--primary);
-            border-color: var(--border-hover);
+            border-color: var(--border-on-color);
           }
 
           span.buttonText {
@@ -195,7 +195,7 @@
               &:hover {
                 background-color: var(--primary);
                 color: var(--color-white);
-                border-color: var(--border-hover);
+                border-color: var(--border-on-color-hover);
               }
 
               > svg {

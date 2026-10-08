@@ -240,7 +240,7 @@
             &:hover {
               color: var(--color-white);
               background: var(--theme-purple-500);
-              border-color: var(--border-hover);
+              border-color: var(--border-on-color-hover);
             }
           }
         }
@@ -260,7 +260,7 @@
       &:hover {
         background: var(--theme-purple-500);
         color: var(--color-white);
-        border: 1px solid var(--foreground-700);
+        border: 1px solid var(--border-on-color-hover);
       }
     }
 

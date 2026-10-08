@@ -1,7 +1,7 @@
 @use '@/app/styles/mixins' as mixins;
 
 .toast {
-  z-index: 9999;
+  z-index: var(--z-toast);
   position: fixed;
   @include mixins.flexbox(row, center, center);
   top: calc(var(--header-height) + var(--space));
@@ -10,10 +10,8 @@
   padding: 0.75rem 1.25rem;
   background: rgba(var(--background-rgb), 0.5);
   border: 1px solid var(--border);
-  box-shadow:
-    0 10px 25px -5px rgba(0, 0, 0, 0.1),
-    0 8px 10px -6px rgba(0, 0, 0, 0.1);
-  @include mixins.border-radius(12px);
+  box-shadow: var(--shadow-md);
+  border-radius: var(--radius-md);
   @include mixins.glass-blur(12px);
   @include mixins.transform-container(translateX(-50%));
 
@@ -28,45 +26,36 @@
 
   &.success {
     .icon {
-      color: var(--theme-green-500);
+      color: var(--success-text);
     }
   }
 
   &.error {
     .icon {
-      color: var(--theme-red-500);
+      color: var(--danger-text);
     }
   }
 
   &.info {
     .icon {
-      color: var(--theme-purple-500);
+      color: var(--brand-text);
     }
   }
 
   .icon {
-    font-size: 1.25rem;
+    font-size: var(--font-size-lg);
     flex-shrink: 0;
   }
 
   .message {
     flex-grow: 1;
-    font-size: 0.875rem;
+    font-size: var(--font-size-sm);
     font-weight: 500;
     color: var(--foreground);
   }
 
   .close {
-    background: none;
-    border: none;
-    color: var(--foreground-tertiary);
-    cursor: pointer;
-    padding: 0.25rem;
-    @include mixins.transition(var(--transition-default));
-
-    &:hover {
-      color: var(--foreground);
-    }
+    @include mixins.icon-button('ghost', 'small');
   }
 }
 

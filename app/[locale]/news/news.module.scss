@@ -74,7 +74,7 @@
 
           &.active {
             background: var(--purple-700);
-            border-color: var(--foreground-dark-900);
+            border-color: var(--border-on-color);
             color: var(--color-white);
             max-width: max-content;
 
@@ -86,10 +86,6 @@
             &[data-category] {
               background: var(--category-bg-color, var(--purple-700));
               color: var(--category-text-color, var(--color-white));
-              // border-color: var(
-              //   --category-border-color,
-              //   var(--foreground-dark-900)
-              // );
             }
           }
 
@@ -101,7 +97,7 @@
             &[data-category] {
               background: var(--category-bg-color, var(--background-secondary));
               color: var(--category-text-color, var(--foreground));
-              border-color: var(--border-hover);
+              border-color: var(--border-on-color);
             }
           }
         }
@@ -347,7 +343,7 @@
                   > .categoryBadge {
                     padding: 2px 8px;
                     background: var(--primary);
-                    border: 1px solid var(--foreground-700);
+                    border: 1px solid var(--border-on-color);
                     color: var(--color-white);
                     @include mixins.border-radius(12px);
                     font-size: 0.7rem;
@@ -359,7 +355,7 @@
                       // 使用 CSS 自定義屬性來動態設定顏色
                       background: var(--category-bg-color, var(--primary));
                       color: var(--category-text-color, var(--color-white));
-                      border-color: var(--border-hover);
+                      border-color: var(--border-on-color);
                     }
                   }
 

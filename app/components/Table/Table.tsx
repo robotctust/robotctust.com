@@ -12,6 +12,7 @@ import {
   faMagnifyingGlass,
 } from '@fortawesome/free-solid-svg-icons'
 import { Skeleton } from '@/app/components/Skeleton'
+import ActionMenu from '@/app/components/ActionMenu/ActionMenu'
 import { TableColumn, TableProps, SortDirection } from './types'
 import styles from './Table.module.scss'
 
@@ -78,6 +79,7 @@ export function Table<T>({
   defaultSort,
   onRowClick,
   rowClassName,
+  rowActions,
 }: TableProps<T>) {
   const [search, setSearch] = useState('')
   const [filterValues, setFilterValues] = useState<Record<string, string>>(() =>
@@ -207,6 +209,23 @@ export function Table<T>({
     return faSort
   }
 
+  // 表格比容器寬、右邊還有內容時，「更多」欄左側加分隔線，提示可以橫向捲動
+  const wrapRef = useRef<HTMLDivElement>(null)
+  const [overflowing, setOverflowing] = useState(false)
+  useEffect(() => {
+    const el = wrapRef.current
+    if (!el) return
+    const update = () => setOverflowing(el.scrollLeft + el.clientWidth < el.scrollWidth - 1)
+    update()
+    el.addEventListener('scroll', update, { passive: true })
+    const observer = new ResizeObserver(update)
+    observer.observe(el)
+    return () => {
+      el.removeEventListener('scroll', update)
+      observer.disconnect()
+    }
+  }, [loading, processed.length])
+
   const t = useTranslations('Components.Table')
   const hasToolbar = searchable || filterCols.length > 0
 
@@ -279,7 +298,7 @@ export function Table<T>({
       ) : processed.length === 0 ? (
         <div className={styles.emptyState}>{emptyMessage}</div>
       ) : (
-        <div className={styles.tableWrap}>
+        <div ref={wrapRef} className={`${styles.tableWrap} ${overflowing ? styles.overflowing : ''}`}>
           <table className={styles.table}>
             <thead>
               <tr>
@@ -323,6 +342,11 @@ export function Table<T>({
                     </span>
                   </th>
                 ))}
+                {rowActions && (
+                  <th className={styles.actionsCell}>
+                    <span className={styles.visuallyHidden}>{t('moreActions')}</span>
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody>
@@ -369,6 +393,11 @@ export function Table<T>({
                           : String(rawValue(row, col.key) ?? '')}
                       </td>
                     ))}
+                    {rowActions && (
+                      <td className={styles.actionsCell} onClick={(e) => e.stopPropagation()}>
+                        <ActionMenu ariaLabel={t('moreActions')}>{rowActions(row)}</ActionMenu>
+                      </td>
+                    )}
                   </tr>
                 )
               })}

@@ -104,7 +104,8 @@
     gap: 8px;
   }
 
-  .subtleButton {
+  // @at-root：這些 class 也用在對話框裡，Modal 以 portal 渲染在 <body> 下、不在頁面容器內，不能依賴外層巢狀
+  @at-root .subtleButton {
     @include mixins.button('normal', 'normal');
     display: inline-flex;
     align-items: center;
@@ -112,7 +113,7 @@
     background: rgba(var(--background-rgb), 0.7);
   }
 
-  .dangerButton {
+  @at-root .dangerButton {
     @include mixins.button('normal', 'normal');
     background: color-mix(in oklch, var(--theme-red-500) 8%, transparent);
     border-color: color-mix(in oklch, var(--theme-red-500) 22%, transparent);
@@ -402,13 +403,13 @@
     color: var(--foreground-tertiary);
   }
 
-  .formContext,
+  @at-root .formContext,
   .confirmBody {
     @include mixins.flexbox(column, start, stretch);
     gap: var(--space-2x);
   }
 
-  .formGroup {
+  @at-root .formGroup {
     @include mixins.flexbox(column, start, stretch);
     gap: 12px;
 
@@ -438,7 +439,7 @@
     }
   }
 
-  .formHint {
+  @at-root .formHint {
     margin: 0;
     color: var(--foreground-secondary);
     line-height: 1.7;

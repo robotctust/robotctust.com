@@ -13,7 +13,7 @@ import {
   faSearch,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
-import { Modal } from '@/app/[locale]/dashboard/components/Modal'
+import { Modal } from '@/app/components/Modal'
 import { Course, CourseTreeNode, SemesterTreeNode } from '@/app/types/course-admin'
 import {
   fetchCurriculumOverview,

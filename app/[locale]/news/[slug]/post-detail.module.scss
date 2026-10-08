@@ -84,7 +84,7 @@
   width: fit-content;
   padding: 6px 12px;
   background: var(--category-bg-color, var(--primary));
-  border: 1px solid var(--foreground-700);
+  border: 1px solid var(--border-on-color);
   color: var(--color-white);
   @include mixins.border-radius(16px);
   font-size: 0.8rem;

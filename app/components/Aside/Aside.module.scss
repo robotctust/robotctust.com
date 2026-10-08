@@ -240,15 +240,15 @@
         opacity: 0.8;
       }
 
+      // hover 只換底色；選中項目用較深的底色，邊框只輕輕勾勒
       &:hover {
         background: var(--background-secondary);
-        border-color: var(--border-hover);
         color: var(--foreground);
       }
 
       &.active {
         background: var(--background-tertiary);
-        border-color: var(--border-hover);
+        border-color: var(--border);
         color: var(--foreground);
 
         svg {
