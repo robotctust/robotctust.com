@@ -371,6 +371,10 @@
         height: 100%;
         object-fit: contain;
         border-radius: 0;
+        // Img 的 progressive 底圖預設 cover（行內樣式），在固定比例的輪播框裡會把直式圖的左右留白填滿；
+        // 改成跟圖片一樣 contain，留白維持空白
+        background-size: contain !important;
+        background-repeat: no-repeat;
       }
     }
   }
@@ -494,9 +498,10 @@
     }
 
     // 清單項目、儲存格內的 <p> 交給前面的繼承規則；:where 不增加權重，讓 blockquote p 等規則仍能覆蓋
-    p:where(:not(li > p, td > p, th > p)) {
+    // 清單項目與段落同字級（清單內的 <p> 繼承 li）
+    p:where(:not(li > p, td > p, th > p)),
+    li {
       font-size: 1.1rem;
-      margin-bottom: var(--space);
       line-height: 1.7;
 
       @include mixins.respond-to('phone') {
@@ -504,6 +509,25 @@
       }
       @include mixins.respond-to('tablet') {
         font-size: 1rem;
+      }
+    }
+
+    p:where(:not(li > p, td > p, th > p)) {
+      margin-bottom: var(--space);
+    }
+
+    // 有序、無序清單間距一致：清單與段落同樣的下間距，項目之間留一點空隙
+    ul,
+    ol {
+      margin: 0 0 var(--space);
+
+      li {
+        margin-bottom: 0.5rem;
+      }
+
+      // 巢狀清單
+      :is(ul, ol) {
+        margin: 0.5rem 0 0;
       }
     }
 

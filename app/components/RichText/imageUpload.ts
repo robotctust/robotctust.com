@@ -13,6 +13,8 @@ interface ImageUploadStorage {
   upload: ContentImageUploader | null
   /** blob 網址 → 上傳結果；null = 上傳失敗 */
   results: Map<string, UploadedImage | null>
+  /** 這篇文章自己的圖片 / 影片網址（載入時就有的、這次插入與上傳的），貼上時只保留這些（paste.ts） */
+  known: Set<string>
 }
 
 declare module '@tiptap/core' {
@@ -35,7 +37,7 @@ export function hasPendingUploads(content: JSONContent): boolean {
  * @param pos - 插入位置；不給則插在游標處
  */
 export function insertImages(editor: Editor, files: File[], pos?: number) {
-  const { upload, results } = editor.storage.imageUpload
+  const { upload, results, known } = editor.storage.imageUpload
   const images = files.filter((f) => f.type.startsWith('image/'))
   if (!upload || images.length === 0) return
   const intoGallery =
@@ -43,6 +45,7 @@ export function insertImages(editor: Editor, files: File[], pos?: number) {
 
   // ponytail: blob 網址不回收（復原 / 重做可能還會用到），一頁編輯的量不大
   const srcs = images.map((file) => URL.createObjectURL(file))
+  srcs.forEach((src) => known.add(src))
   const nodes = srcs.map((src) => ({ type: 'image', attrs: { src } }))
   const content = nodes.length > 1 && !intoGallery ? { type: 'imageGallery', content: nodes } : nodes
   const chain = editor.chain().focus()
@@ -51,7 +54,10 @@ export function insertImages(editor: Editor, files: File[], pos?: number) {
   images.forEach((file, i) => {
     upload(file)
       .then(
-        (result) => results.set(srcs[i], result),
+        (result) => {
+          known.add(result.url)
+          results.set(srcs[i], result)
+        },
         () => results.set(srcs[i], null),
       )
       .finally(() => {
@@ -110,7 +116,13 @@ export const ImageUpload = Extension.create<{ upload: ContentImageUploader | nul
   addOptions: () => ({ upload: null }),
 
   addStorage() {
-    return { upload: this.options.upload, results: new Map() }
+    return { upload: this.options.upload, results: new Map(), known: new Set() }
+  },
+
+  onCreate() {
+    this.editor.state.doc.descendants((node) => {
+      if (node.attrs.src) this.storage.known.add(node.attrs.src)
+    })
   },
 
   addProseMirrorPlugins() {

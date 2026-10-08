@@ -30,6 +30,8 @@ import {
 import type { ContentImageUploader } from '@/app/types/media'
 import { ImageGallery, RichImage, Video, starterKitOptions } from './extensions'
 import { ImageUpload, insertImages, pickImages } from './imageUpload'
+import { PasteHandling } from './paste'
+import { useToast } from '@/app/contexts/ToastContext'
 import { CodeBlockView, GalleryView, ImageView } from './nodeViews'
 // styles：內文排版與前台共用，所見即所得
 import contentStyles from '@/app/components/Markdown/MarkdownRenderer.module.scss'
@@ -48,9 +50,11 @@ const lowlight = createLowlight(common)
 
 /**
  * 文章編輯器：節點定義與前台渲染共用 extensions.ts，只多了編輯用的 node view、程式碼上色與插圖上傳。
- * 支援 Markdown 快捷輸入（## 標題、- 清單、``` 程式碼、**粗體** 等），圖片可貼上、拖曳或從工具列插入。
+ * 支援 Markdown 快捷輸入（## 標題、- 清單、``` 程式碼、**粗體** 等）與貼上 Markdown 文字，圖片可貼上、拖曳或從工具列插入。
  */
 export default function RichTextEditor({ content, onChange, onUploadImage, placeholder }: RichTextEditorProps) {
+  const t = useTranslations('Components.RichTextEditor')
+  const { showToast } = useToast()
   const editor = useEditor({
     // Next.js SSR：等到 client 才建立，避免 hydration 不一致
     immediatelyRender: false,
@@ -66,6 +70,7 @@ export default function RichTextEditor({ content, onChange, onUploadImage, place
       TableKit,
       Placeholder.configure({ placeholder }),
       ImageUpload.configure({ upload: onUploadImage }),
+      PasteHandling.configure({ onMediaRemoved: () => showToast(t('pastedMediaRemoved'), 'info') }),
     ],
     editorProps: {
       attributes: { class: `${contentStyles.markdownContent} ${contentStyles.articleContent} ${styles.content}` },

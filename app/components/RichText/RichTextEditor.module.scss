@@ -109,7 +109,10 @@
 // ─── 內文區 ───────────────────────────────────────────────
 
 .content {
+  // 內文寬度與公開頁相同（page 容器 max-width 800px），換行位置才會一致
+  max-width: calc(800px + 4rem);
   min-height: 60vh;
+  margin: 0 auto;
   padding: 1.5rem 2rem 6rem;
   outline: none;
 
@@ -124,6 +127,12 @@
     height: 0;
     color: var(--foreground-tertiary);
     pointer-events: none;
+  }
+
+  // 程式碼不自動換行、超出時橫向捲動，與公開頁相同（ProseMirror 預設 pre-wrap）
+  pre,
+  pre code {
+    white-space: pre;
   }
 
   // 拖曳插入點

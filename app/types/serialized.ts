@@ -6,8 +6,8 @@
 import { PublicUserProfile, UserProfile } from './user'
 import { Post } from './post'
 
-//* 傳給 client 的文章資料：不含 TipTap JSON 內文（只在伺服器渲染，client 用 contentText）
-export type SerializedPost = Omit<Post, 'content'>
+//* 傳給 client 的文章資料：不含內文（JSON 只在伺服器渲染、Markdown 只是備份），client 用 contentText
+export type SerializedPost = Omit<Post, 'content' | 'contentMarkdown'>
 
 //* 將 UserProfile 收窄為可以給任何訪客看的公開名片
 //  白名單：只挑個人頁畫面用到的欄位。千萬不要改回 { ...user }——
@@ -21,9 +21,9 @@ export const toPublicUserProfile = (user: UserProfile): PublicUserProfile => ({
   backgroundURL: user.backgroundURL,
 })
 
-//* 將 Post 轉為可傳遞給客戶端的格式（timestamps 已是 ISO string；拿掉 JSON 內文）
+//* 將 Post 轉為可傳遞給客戶端的格式（timestamps 已是 ISO string；拿掉內文）
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export const serializePost = ({ content, ...post }: Post): SerializedPost => post
+export const serializePost = ({ content, contentMarkdown, ...post }: Post): SerializedPost => post
 
 //* 安全地序列化任何包含 Date 的物件
 export const serializeDates = <T extends Record<string, unknown>>(

@@ -166,6 +166,7 @@
       "filterAll": "全部"
     },
     "RichTextEditor": {
+      "pastedMediaRemoved": "貼上的內容含有其他文章或網頁的圖片，已略過，請另外插入圖片",
       "undo": "復原",
       "redo": "重做",
       "blockType": "段落樣式",

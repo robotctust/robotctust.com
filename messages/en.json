@@ -166,6 +166,7 @@
       "filterAll": "All"
     },
     "RichTextEditor": {
+      "pastedMediaRemoved": "Images from other posts or web pages were skipped. Please insert images separately.",
       "undo": "Undo",
       "redo": "Redo",
       "blockType": "Block style",

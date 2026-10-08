@@ -13,7 +13,7 @@ export type PostCategory =
 export interface Post {
   id: string // Document ID or slug
   title: string
-  contentMarkdown: string // 舊 Markdown 內文，v2.7 起只是備份（舊編輯器在 Beta 3 換掉前仍讀寫它）
+  contentMarkdown: string // v2.7 以前的 Markdown 內文，只是備份（不再更新，也不傳給 client）
   content: JSONContent | null // TipTap JSON 內文（伺服器渲染用，不傳給 client）
   contentText: string // 內文純文字：摘要、搜尋、meta description
   category: PostCategory
@@ -33,22 +33,6 @@ export interface Post {
 }
 
 export type PostStatus = 'draft' | 'published'
-
-// 建立文章資料
-export interface CreatePostData {
-  title: string
-  contentMarkdown: string
-  category: PostCategory
-  coverImageUrl?: string | null
-}
-
-// 更新文章資料
-export interface UpdatePostData {
-  title?: string
-  contentMarkdown?: string
-  category?: PostCategory
-  coverImageUrl?: string | null
-}
 
 // 權限管理
 export interface AuthorizedUser {
