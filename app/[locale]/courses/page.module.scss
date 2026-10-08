@@ -7,7 +7,7 @@
   position: relative;
   overflow: hidden;
 
-  @include mixins.respond-by-min-width(859px) {
+  @include mixins.respond-by-min-width(860px) {
     padding: 0 var(--space);
   }
 
@@ -135,7 +135,7 @@
 
   .emptyState {
     text-align: center;
-    padding: var(--space-10x) var(--space-4x);
+    padding: var(--space-8x) var(--space-4x);
     background: rgba(var(--background-secondary-rgb), 0.3);
     @include mixins.glass-blur(12px);
     border: 1px dashed var(--border);
@@ -282,7 +282,7 @@
           @include mixins.glass-blur(16px);
           border: 1px solid var(--border);
           @include mixins.border-radius(16px);
-          @include mixins.hover-scale-effect(1.02);
+          @include mixins.interactive('surface');
           padding: var(--space-2x);
           text-decoration: none;
           position: relative;
@@ -393,7 +393,6 @@
         .lockedCourseCard {
           cursor: default;
           opacity: 0.8;
-          @include mixins.hover-scale-effect(1);
           cursor: not-allowed;
 
           &:hover {

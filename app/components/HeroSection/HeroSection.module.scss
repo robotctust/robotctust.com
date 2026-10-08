@@ -13,7 +13,7 @@
   }
   background: radial-gradient(
     circle at 50% 50%,
-    rgba(var(--theme-purple-100-rgb), 0.3) 0%,
+    color-mix(in oklch, var(--theme-purple-100) 30%, transparent) 0%,
     rgba(var(--background-rgb), 0) 70%
   );
 

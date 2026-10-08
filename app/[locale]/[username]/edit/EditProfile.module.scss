@@ -71,7 +71,7 @@
   font-size: 0.9rem;
   cursor: pointer;
   @include mixins.border-radius(6px);
-  @include mixins.hover-scale-effect;
+  @include mixins.interactive;
 
   &:hover {
     background: var(--background-tertiary);
@@ -200,7 +200,7 @@
   border: 1px solid var(--border);
   cursor: pointer;
   @include mixins.border-radius(8px);
-  @include mixins.hover-scale-effect;
+  @include mixins.interactive;
 
   &:hover {
     color: var(--theme-red-600);

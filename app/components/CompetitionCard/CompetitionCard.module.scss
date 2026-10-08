@@ -12,7 +12,7 @@
   &:hover {
     border-color: var(--border-hover);
     background: rgba(var(--background-tertiary-rgb), 0.75);
-    @include mixins.hover-scale-effect(1.01);
+    @include mixins.interactive('surface');
   }
 
   > .imageContainer {
@@ -85,17 +85,17 @@
             }
 
             &.upcoming {
-              background: var(--color-info);
+              background: var(--info);
               color: var(--color-white);
             }
 
             &.registrationOpen {
-              background: var(--color-success);
+              background: var(--success);
               color: var(--color-white);
             }
 
             &.ongoing {
-              background: var(--color-warning);
+              background: var(--warning);
               color: var(--color-white);
             }
 

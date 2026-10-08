@@ -45,8 +45,8 @@
 
   .dangerButton {
     @include mixins.button('normal', 'normal');
-    background: rgba(var(--theme-red-500-rgb), 0.08);
-    border-color: rgba(var(--theme-red-500-rgb), 0.22);
+    background: color-mix(in oklch, var(--theme-red-500) 8%, transparent);
+    border-color: color-mix(in oklch, var(--theme-red-500) 22%, transparent);
     color: var(--theme-red-600);
     display: inline-flex;
     align-items: center;
@@ -92,7 +92,7 @@
 
   /* --- Layout & Panels --- */
   .errorBanner { 
-    background: rgba(var(--theme-red-500-rgb), 0.1); 
+    background: color-mix(in oklch, var(--theme-red-500) 10%, transparent); 
     color: var(--theme-red-600);
     padding: 14px 16px;
     border: 1px solid var(--border);
@@ -157,7 +157,7 @@
       gap: 8px;
       &[aria-pressed='true'] {
         color: var(--theme-purple-700);
-        background: rgba(var(--theme-purple-500-rgb), 0.12);
+        background: color-mix(in oklch, var(--theme-purple-500) 12%, transparent);
       }
     }
 
@@ -166,8 +166,8 @@
       padding: 6px 12px; font-size: 0.8rem; font-weight: 700; @include mixins.border-radius(999px);
     }
     .metaChip { background: var(--background-secondary); border: 1px solid var(--border); color: var(--foreground-secondary); }
-    .statusPublished { background: rgba(var(--theme-purple-500-rgb), 0.1); color: var(--theme-purple-600); }
-    .statusDraft { background: rgba(var(--theme-red-500-rgb), 0.1); color: var(--theme-red-600); }
+    .statusPublished { background: color-mix(in oklch, var(--theme-purple-500) 10%, transparent); color: var(--theme-purple-600); }
+    .statusDraft { background: color-mix(in oklch, var(--theme-red-500) 10%, transparent); color: var(--theme-red-600); }
   }
 
   .workspaceGrid {
@@ -233,7 +233,7 @@
     border: 1px solid var(--border);
     @include mixins.border-radius(12px);
     color: var(--foreground);
-    &:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.1); }
+    &:focus { border-color: var(--primary); outline: none; box-shadow: 0 0 0 3px color-mix(in oklch, var(--primary) 10%, transparent); }
   }
   .textareaInput { min-height: 100px; }
   .expInputWrapper { display: flex; align-items: center; gap: 10px; color: var(--foreground-secondary); }
@@ -323,8 +323,8 @@
   }
   .programChip {
     display: inline-flex; align-items: center; gap: 6px; padding: 3px 10px;
-    background: rgba(var(--primary-rgb), 0.1); color: var(--primary);
-    border: 1px solid rgba(var(--primary-rgb), 0.2); @include mixins.border-radius(12px);
+    background: color-mix(in oklch, var(--primary) 10%, transparent); color: var(--primary);
+    border: 1px solid color-mix(in oklch, var(--primary) 20%, transparent); @include mixins.border-radius(12px);
     font-size: 0.75rem; font-weight: 700; margin-top: 10px;
   }
 

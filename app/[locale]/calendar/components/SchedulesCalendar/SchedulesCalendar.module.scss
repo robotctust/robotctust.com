@@ -110,9 +110,9 @@
           @include mixins.transition(all 0.2s ease);
           cursor: pointer;
           text-align: left;
-          @include mixins.hover-scale-effect(1.02);
+          @include mixins.interactive;
 
-          @include mixins.respond-by-max-width(860px) {
+          @include mixins.respond-by-max-width(859px) {
             gap: var(--space-0-5x);
             width: 100%;
           }

@@ -28,7 +28,7 @@
     }
 
     > .button {
-      @include mixins.button('secondary', 'normal');
+      @include mixins.button('normal', 'normal');
       @include mixins.flexbox(row, center, center);
       gap: 6px;
       font-weight: 500;
@@ -52,7 +52,6 @@
       }
 
       &:hover {
-        @include mixins.hover-scale-effect(1.02);
         background: var(--background-secondary);
         border-color: var(--foreground-300);
       }
@@ -96,7 +95,7 @@
   z-index: 1;
   position: relative;
   width: 100%;
-  @include mixins.hover-scale-effect(1.02);
+  @include mixins.interactive('surface');
   @include mixins.border-radius(6px);
 
   &.active {
@@ -328,7 +327,7 @@
   background: var(--background-secondary);
 
   > .clearButton {
-    @include mixins.button('secondary', 'small');
+    @include mixins.button('normal', 'small');
     width: 100%;
     font-size: 0.85rem;
     color: var(--danger);

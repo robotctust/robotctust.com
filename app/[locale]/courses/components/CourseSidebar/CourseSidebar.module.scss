@@ -27,7 +27,7 @@
     color: var(--foreground-secondary);
     font-weight: 600;
     border-bottom: 1px solid var(--border);
-    @include mixins.transition(var(--transition-fast));
+    @include mixins.transition(all var(--transition-duration-fast) var(--transition-bezier));
 
     &:hover {
       background: var(--background-secondary);
@@ -61,7 +61,7 @@
       color: var(--foreground);
       cursor: pointer;
       @include mixins.border-radius(8px);
-      @include mixins.transition(var(--transition-fast));
+      @include mixins.transition(all var(--transition-duration-fast) var(--transition-bezier));
 
       h3 {
         font-size: 1rem;
@@ -69,24 +69,24 @@
       }
 
       &:hover {
-        background: var(--background-secondary-hover);
+        background: var(--background-tertiary);
       }
     }
 
     .chapterList {
       display: flex;
       flex-direction: column;
-      gap: var(--space-1x);
+      gap: var(--space);
       margin-bottom: var(--space);
       width: 100%;
 
       .chapterGroup {
-        width: calc(100% - var(--space-2z));
+        width: calc(100% - var(--space-2x));
         margin-left: var(--space);
         margin-right: var(--space);
         border: 1px solid var(--border);
         @include mixins.border-radius(9px);
-        @include mixins.hover-scale-effect(1.02);
+        @include mixins.interactive('surface');
         overflow: hidden;
 
         &:not(:last-child) {
@@ -139,7 +139,7 @@
           flex-direction: column;
           gap: 2px;
           padding: var(--space-0-5x) 0;
-          margin-bottom: var(--space-1x);
+          margin-bottom: var(--space);
 
           .courseLink {
             display: flex;
@@ -150,10 +150,10 @@
             color: var(--foreground-secondary);
             font-size: 0.95rem;
             @include mixins.border-radius(8px);
-            @include mixins.transition(var(--transition-fast));
+            @include mixins.transition(all var(--transition-duration-fast) var(--transition-bezier));
 
             &:hover {
-              background: var(--background-secondary-hover);
+              background: var(--background-tertiary);
               color: var(--foreground);
 
               > .courseIndex {
@@ -162,7 +162,7 @@
             }
 
             &.active {
-              background: rgba(var(--primary-rgb), 0.1);
+              background: color-mix(in oklch, var(--primary) 10%, transparent);
               color: var(--theme-purple-600);
               font-weight: 600;
 

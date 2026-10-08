@@ -177,14 +177,14 @@
     box-shadow 0.3s ease,
     border-color 0.2s ease;
 
-  @include mixins.hover-scale-effect(1.01);
+  @include mixins.interactive('surface');
 
   &.expanded {
     flex: 1;
     min-height: 200px;
     @include mixins.box-shadow(48px);
     border-color: var(--primary);
-    @include mixins.hover-scale-effect(1.0075);
+    @include mixins.interactive('surface');
 
     &:hover {
       .windowHeader {
@@ -354,7 +354,7 @@
   font-size: 1.25rem;
   font-weight: 600;
   margin-top: var(--space-4x);
-  margin-bottom: var(--space-1x);
+  margin-bottom: var(--space);
   scroll-margin-top: calc(var(--header-height) + var(--space-4x));
 }
 
@@ -399,7 +399,7 @@
 
 .unsupported {
   padding: var(--space-2x);
-  background: rgba(var(--primary-rgb), 0.1);
+  background: color-mix(in oklch, var(--primary) 10%, transparent);
   color: var(--primary);
   border: 1px dashed var(--primary);
   @include mixins.border-radius(8px);
@@ -445,7 +445,7 @@
   }
 
   li {
-    margin-bottom: var(--space-1x);
+    margin-bottom: var(--space);
   }
 
   img {

@@ -37,11 +37,15 @@
       margin-bottom: var(--space);
       width: calc(100% + 48px);
       @include mixins.border-radius(12px);
-      @include mixins.sticky-with-header-compact {
-        &.headerCompact {
-          top: var(--header-height-compact);
-          padding: 0;
-        }
+      // 黏在 header 下方，header 縮小時跟著上移
+      position: sticky;
+      top: var(--header-height);
+      z-index: 100;
+      @include mixins.transition(var(--transition-default));
+
+      &.headerCompact {
+        top: var(--header-height-compact);
+        padding: 0;
       }
 
       > .filterButtons {
@@ -53,7 +57,7 @@
         @include mixins.hide-scrollbar;
 
         > .filterButton {
-          @include mixins.button('large', 'normal');
+          @include mixins.button('normal', 'normal');
           font-size: 1rem;
           font-weight: 600;
           @include mixins.transition(all 0.2s ease);
@@ -169,7 +173,7 @@
 
           &:hover {
             color: var(--danger);
-            background: rgba(var(--danger-rgb), 0.1);
+            background: color-mix(in oklch, var(--danger) 10%, transparent);
           }
         }
       }

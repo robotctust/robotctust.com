@@ -56,7 +56,7 @@
         max-width: 100%;
         border: 1px solid var(--border);
         @include mixins.border-radius(18px);
-        @include mixins.hover-scale-effect(1.02);
+        @include mixins.interactive('surface');
         @include mixins.hide-scrollbar;
         overflow-x: auto;
 
@@ -112,7 +112,7 @@
         @include mixins.flexbox(column-reverse, center, center);
         padding: var(--space-2x);
       }
-      @include mixins.respond-by-max-width(860px) {
+      @include mixins.respond-by-max-width(859px) {
         @include mixins.flexbox(column-reverse, center, center);
       }
 
@@ -569,7 +569,7 @@
         background: radial-gradient(
           circle at 30% 30%,
           transparent 0%,
-          rgba(var(--primary-rgb), 0.05) 100%
+          color-mix(in oklch, var(--primary) 5%, transparent) 100%
         );
       }
     }
@@ -759,7 +759,7 @@
               .date {
                 background: var(--primary);
                 color: white;
-                box-shadow: 0 2px 4px rgba(var(--primary-rgb), 0.3);
+                box-shadow: 0 2px 4px color-mix(in oklch, var(--primary) 30%, transparent);
               }
             }
           }

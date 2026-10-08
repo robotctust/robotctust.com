@@ -134,7 +134,7 @@
         background: var(--background);
         border: 1px solid var(--border);
         @include mixins.border-radius(16px);
-        @include mixins.hover-scale-effect(1.02);
+        @include mixins.interactive('surface');
 
         &:hover {
           background: var(--background-secondary);

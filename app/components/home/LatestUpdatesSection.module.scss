@@ -43,7 +43,7 @@
         text-decoration: none;
         border: 1px solid var(--border);
         @include mixins.border-radius(18px);
-        @include mixins.hover-scale-effect;
+        @include mixins.interactive('surface');
         overflow: hidden;
 
         &:hover {
@@ -154,7 +154,7 @@
       color: var(--theme-blue-500);
       @include mixins.border-radius(20px);
       font-size: 0.9rem;
-      @include mixins.hover-scale-effect;
+      @include mixins.interactive;
 
       &:hover {
         background: var(--theme-blue-500);

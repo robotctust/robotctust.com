@@ -6,7 +6,7 @@
   > .actions {
     z-index: 100;
     position: fixed;
-    top: 72px;
+    top: var(--header-height);
     @include mixins.flexbox(row, flex-start, center);
     gap: var(--space);
     padding: 0 12px;
@@ -195,7 +195,7 @@
   overflow: hidden;
   @include mixins.border-radius(12px);
   @include mixins.transition(var(--transition-default));
-  @include mixins.hover-scale-effect(1.01);
+  @include mixins.interactive('surface');
 
   &:hover {
     border-color: var(--border-hover);
@@ -298,7 +298,7 @@
   overflow: hidden;
   @include mixins.border-radius(12px);
   @include mixins.transition(var(--transition-default));
-  @include mixins.hover-scale-effect(1.01);
+  @include mixins.interactive('surface');
 
   &:hover {
     border-color: var(--border-hover);

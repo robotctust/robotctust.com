@@ -23,6 +23,11 @@ export default function ThemeToggle() {
   }
 
   const handleThemeChange = () => {
+    // 切換期間所有元素用同一組顏色過渡（_colors.scss 的 .theme-switching，0.35s）
+    const root = document.documentElement
+    root.classList.add('theme-switching')
+    window.setTimeout(() => root.classList.remove('theme-switching'), 400)
+
     if (theme === 'light') {
       setTheme('dark')
     } else if (theme === 'dark') {

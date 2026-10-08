@@ -81,7 +81,7 @@
 
       &.clubOfficerItemLink {
         cursor: pointer;
-        @include mixins.hover-scale-effect(1.03);
+        @include mixins.interactive('surface');
 
         &:hover {
           background: rgba(var(--background-secondary-rgb), 0.25);

@@ -204,7 +204,7 @@
       .spinner {
         width: 40px;
         height: 40px;
-        border: 3px solid rgba(var(--theme-purple-500-rgb), 0.1);
+        border: 3px solid color-mix(in oklch, var(--theme-purple-500) 10%, transparent);
         border-top-color: var(--theme-purple-500);
         border-radius: 50%;
         animation: spin 1s linear infinite;

@@ -40,7 +40,7 @@
 //   padding: var(--space-2x);
 //   background: var(--background);
 //   height: 100%;
-//   @include mixins.hover-scale-effect(1.02);
+//   @include mixins.interactive('surface');
 
 //   &:hover {
 //     background: var(--background-secondary);

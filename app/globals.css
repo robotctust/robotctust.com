@@ -5,13 +5,13 @@
   margin: 0;
   padding: 0;
   letter-spacing: 0.05rem;
-  outline: none;
   border: 0 solid #00000000;
-  transition: var(--transition-default);
-  -webkit-transition: var(--transition-default);
-  -moz-transition: var(--transition-default);
-  -ms-transition: var(--transition-default);
-  -o-transition: var(--transition-default);
+}
+
+/* 鍵盤焦點：只在鍵盤操作時出現（滑鼠點擊不顯示），讓用 Tab 操作的人知道焦點在哪 */
+:focus-visible {
+  outline: 2px solid var(--primary);
+  outline-offset: 2px;
 }
 
 /* *:not(img)::selection {
@@ -87,83 +87,89 @@ span.nowrap {
   white-space: nowrap;
 }
 
-/* 表格 / 清單操作欄的圖示按鈕 */
+/*
+ * 全站按鈕 class（與 _mixins.scss 的 button / interactive mixin 同一套狀態）
+ * hover 放大、按下縮回、禁用變淡且不回應
+ */
 .icon-button,
-.icon-button-danger {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  background: var(--background);
-  color: var(--foreground);
-  cursor: pointer;
-  font-size: 0.9rem;
-}
-.icon-button:hover {
-  background: var(--background-secondary);
-  border-color: var(--border-hover);
-}
-.icon-button-danger {
-  color: var(--danger);
-}
-.icon-button-danger:hover {
-  background: rgba(var(--background-secondary-rgb), 0.6);
-  border-color: var(--danger);
-  color: var(--danger-hover);
-}
-
-/* 一般文字按鈕（同 _mixins.scss 的 button mixin，normal 尺寸） */
+.icon-button-danger,
 .primary-button,
 .secondary-button,
 .danger-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
+  border: 1px solid var(--border);
+  cursor: pointer;
+  text-decoration: none;
+  transition: all var(--transition-duration) var(--transition-bezier-fast);
+}
+@media (hover: hover) {
+  :is(.icon-button, .icon-button-danger, .primary-button, .secondary-button, .danger-button):not(:disabled):hover {
+    transform: scale(var(--hover-scale));
+    border-color: var(--border-hover);
+  }
+}
+:is(.icon-button, .icon-button-danger, .primary-button, .secondary-button, .danger-button):not(:disabled):active {
+  transform: scale(var(--active-scale));
+  transition-duration: var(--transition-duration-fast);
+}
+:is(.icon-button, .icon-button-danger, .primary-button, .secondary-button, .danger-button):disabled {
+  opacity: var(--disabled-opacity);
+  cursor: not-allowed;
+}
+
+/* 表格 / 清單操作欄的圖示按鈕 */
+.icon-button,
+.icon-button-danger {
+  width: 32px;
+  height: 32px;
+  border-radius: 8px;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.9rem;
+}
+.icon-button:not(:disabled):hover {
+  background: var(--background-secondary);
+}
+.icon-button-danger {
+  color: var(--danger);
+}
+.icon-button-danger:not(:disabled):hover {
+  background: var(--danger-soft);
+  border-color: var(--danger-border);
+}
+
+/* 一般文字按鈕（normal 尺寸） */
+.primary-button,
+.secondary-button,
+.danger-button {
   gap: 9px;
   min-width: max-content;
   padding: 8px 12px;
-  border: 1px solid var(--border);
   border-radius: 9px;
   font-size: 0.9rem;
-  text-decoration: none;
-  cursor: pointer;
-  transition: all var(--transition-duration) var(--transition-bezier-fast);
 }
 .primary-button {
   background: var(--primary);
   color: var(--color-white);
 }
-.primary-button:hover {
+.primary-button:not(:disabled):hover {
   background: var(--primary-hover);
 }
 .secondary-button {
   background: var(--background-secondary);
   color: var(--foreground);
 }
-.secondary-button:hover {
+.secondary-button:not(:disabled):hover {
   background: var(--background-tertiary);
 }
 .danger-button {
   background: var(--danger);
   color: var(--color-white);
 }
-.danger-button:hover {
-  background: var(--danger-hover);
-}
-.primary-button:not(:disabled):hover,
-.secondary-button:not(:disabled):hover,
 .danger-button:not(:disabled):hover {
-  border-color: var(--border-hover);
-  transform: scale(1.05);
-}
-.primary-button:disabled,
-.secondary-button:disabled,
-.danger-button:disabled {
-  opacity: 0.5;
-  cursor: not-allowed;
+  background: var(--danger-hover);
 }
 
 .page {
@@ -209,15 +215,52 @@ span.nowrap {
   --safe-area-top: 0;
   --safe-area-bottom: 0;
 
+  /* 動畫：一般過渡 0.35s；按下等需要立即回饋的用 fast */
   --transition-duration: 0.35s;
-  --transition-duration-spring: 0.4s;
+  --transition-duration-fast: 0.15s;
   --transition-bezier: cubic-bezier(0.23, 1, 0.32, 1);
   --transition-bezier-fast: cubic-bezier(0.25, 0, 0, 1);
   --transition-bezier-spring: cubic-bezier(0.4, 1.3, 0.3, 0.95);
-
   --transition-default: all var(--transition-duration) var(--transition-bezier);
-  --transition-spring: all var(--transition-duration-spring)
-    var(--transition-bezier-spring);
+
+  /* 互動回饋（_mixins.scss 的 interactive）：control = 小元件、surface = 卡片等大面積元素 */
+  --hover-scale: 1.05;
+  --active-scale: 0.95;
+  --hover-scale-surface: 1.02;
+  --active-scale-surface: 0.99;
+  --disabled-opacity: 0.5;
+
+  /* 圓角：基準 8px；巢狀時內層 = 外層 − 內距（不小於 xs） */
+  --radius-xs: 4px; /* 標籤內的小元件、勾選框 */
+  --radius-sm: 8px; /* 按鈕、輸入框、選單項目 */
+  --radius-md: 12px; /* 內容卡片、下拉選單、圖片 */
+  --radius-lg: 16px; /* 頁面層級的面板、對話框 */
+  --radius-xl: 24px; /* 首頁等大型展示區塊 */
+  --radius-full: 999px; /* 膠囊標籤、頭像 */
+
+  /* 字級 */
+  --font-size-xs: 0.75rem; /* 標籤、註解 */
+  --font-size-sm: 0.875rem; /* 次要文字、按鈕、表格 */
+  --font-size-base: 1rem;
+  --font-size-md: 1.125rem;
+  --font-size-lg: 1.25rem;
+  --font-size-xl: 1.5rem;
+  --font-size-2xl: 2rem; /* 頁面標題 */
+
+  /* 陰影 */
+  --shadow-sm: 0 1px 3px var(--shadow-color);
+  --shadow-md: 0 8px 24px var(--shadow-color);
+  --shadow-lg: 0 24px 56px var(--shadow-color);
+
+  /* 圖層順序 */
+  --z-sticky: 10;
+  --z-dropdown: 100;
+  --z-header: 1000;
+  --z-overlay: 1100;
+  --z-modal: 1200;
+  --z-toast: 1300;
+
+  --font-mono: var(--font-dm-mono), monospace;
 }
 @supports (bottom: env(safe-area-inset-top)) {
   :root {

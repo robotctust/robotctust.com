@@ -53,7 +53,7 @@
   width: 100%;
   padding: var(--space-2x);
   border: 1px solid var(--border);
-  background: rgba(var(--primary-rgb), 0.08);
+  background: color-mix(in oklch, var(--primary) 8%, transparent);
   @include mixins.border-radius(16px);
 
   h1 {

@@ -29,8 +29,8 @@
       width: min(60%, 520px);
       background: linear-gradient(
         135deg,
-        rgba(var(--theme-purple-500-rgb), 0.16),
-        rgba(var(--theme-blue-500-rgb), 0.08),
+        color-mix(in oklch, var(--theme-purple-500) 16%, transparent),
+        color-mix(in oklch, var(--theme-blue-500) 8%, transparent),
         transparent
       );
       pointer-events: none;
@@ -124,8 +124,8 @@
     display: inline-flex;
     align-items: center;
     gap: 8px;
-    background: rgba(var(--theme-red-500-rgb), 0.08);
-    border-color: rgba(var(--theme-red-500-rgb), 0.22);
+    background: color-mix(in oklch, var(--theme-red-500) 8%, transparent);
+    border-color: color-mix(in oklch, var(--theme-red-500) 22%, transparent);
     color: var(--theme-red-600);
   }
 
@@ -138,11 +138,11 @@
   }
 
   > .message {
-    background: rgba(var(--theme-blue-500-rgb), 0.1);
+    background: color-mix(in oklch, var(--theme-blue-500) 10%, transparent);
   }
 
   > .errorMessage {
-    background: rgba(var(--theme-red-500-rgb), 0.1);
+    background: color-mix(in oklch, var(--theme-red-500) 10%, transparent);
     color: var(--theme-red-600);
   }
 
@@ -247,7 +247,7 @@
               align-items: center;
               justify-content: center;
               flex-shrink: 0;
-              background: rgba(var(--theme-purple-500-rgb), 0.15);
+              background: color-mix(in oklch, var(--theme-purple-500) 15%, transparent);
               color: var(--theme-purple-600);
               font-weight: 800;
               @include mixins.border-radius(12px);
@@ -298,8 +298,8 @@
 
   .iconButtonDanger:hover {
     color: var(--theme-red-600);
-    border-color: rgba(var(--theme-red-500-rgb), 0.32);
-    background: rgba(var(--theme-red-500-rgb), 0.1);
+    border-color: color-mix(in oklch, var(--theme-red-500) 32%, transparent);
+    background: color-mix(in oklch, var(--theme-red-500) 10%, transparent);
   }
 
   .iconButton:disabled {
@@ -340,8 +340,8 @@
 
     &:focus {
       outline: none;
-      border-color: rgba(var(--theme-purple-500-rgb), 0.8);
-      box-shadow: 0 0 0 4px rgba(var(--theme-purple-500-rgb), 0.12);
+      border-color: color-mix(in oklch, var(--theme-purple-500) 80%, transparent);
+      box-shadow: 0 0 0 4px color-mix(in oklch, var(--theme-purple-500) 12%, transparent);
       background: rgba(var(--background-rgb), 0.82);
     }
   }

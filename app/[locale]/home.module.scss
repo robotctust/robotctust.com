@@ -54,7 +54,7 @@
           background-color: rgba(var(--background-secondary-rgb), 0.5);
           @include mixins.border-radius(12px);
           @include mixins.glass-blur;
-          @include mixins.hover-scale-effect(1.025);
+          @include mixins.interactive('surface');
 
           &:hover {
             background-color: rgba(var(--background-tertiary-rgb), 0.5);

@@ -17,7 +17,6 @@
 
     @include mixins.respond-by-min-width(860px) {
       // gap: var(--space-3x);
-      max-width: var(--max-window-width);
     }
 
     @include mixins.respond-by-max-width(859px) {

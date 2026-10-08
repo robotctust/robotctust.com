@@ -93,7 +93,7 @@
         }
 
         &:focus-visible {
-          outline: 2px solid rgba(var(--theme-purple-500-rgb), 0.55);
+          outline: 2px solid color-mix(in oklch, var(--theme-purple-500) 55%, transparent);
           outline-offset: 2px;
         }
 

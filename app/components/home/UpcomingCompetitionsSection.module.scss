@@ -195,7 +195,7 @@
           text-decoration: none;
           border: 1px solid var(--border);
           @include mixins.border-radius(18px);
-          @include mixins.hover-scale-effect(1.05);
+          @include mixins.interactive('surface');
           overflow: hidden;
 
           @include mixins.respond-to('desktop') {
@@ -255,7 +255,7 @@
       color: var(--theme-purple-600);
       @include mixins.border-radius(20px);
       font-size: 0.9rem;
-      @include mixins.hover-scale-effect;
+      @include mixins.interactive;
 
       &:hover {
         background: var(--theme-purple-500);

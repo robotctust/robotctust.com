@@ -54,21 +54,21 @@
     gap: 8px;
 
     &.pending {
-      background: color-mix(in srgb, var(--color-warning), transparent 90%);
-      color: var(--color-warning);
-      border: 1px solid var(--color-warning);
+      background: var(--warning-soft);
+      color: var(--warning-text);
+      border: 1px solid var(--warning-border);
     }
 
     &.approved {
-      background: color-mix(in srgb, var(--color-success), transparent 90%);
-      color: var(--color-success);
-      border: 1px solid var(--color-success);
+      background: var(--success-soft);
+      color: var(--success-text);
+      border: 1px solid var(--success-border);
     }
 
     &.rejected {
-      background: color-mix(in srgb, var(--color-error), transparent 90%);
-      color: var(--color-error);
-      border: 1px solid var(--color-error);
+      background: var(--danger-soft);
+      color: var(--danger-text);
+      border: 1px solid var(--danger-border);
     }
   }
 

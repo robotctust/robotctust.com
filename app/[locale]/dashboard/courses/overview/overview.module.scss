@@ -287,7 +287,7 @@
             @include mixins.border-radius(16px);
 
             &:focus-visible {
-              outline: 2px solid rgba(var(--theme-purple-500-rgb), 0.55);
+              outline: 2px solid color-mix(in oklch, var(--theme-purple-500) 55%, transparent);
               outline-offset: 2px;
             }
 
@@ -305,7 +305,7 @@
                 align-items: center;
                 justify-content: center;
                 flex-shrink: 0;
-                background: rgba(var(--theme-purple-500-rgb), 0.15);
+                background: color-mix(in oklch, var(--theme-purple-500) 15%, transparent);
                 color: var(--theme-purple-600);
                 font-weight: 800;
                 @include mixins.border-radius(12px);
@@ -334,7 +334,7 @@
               > .iconButton,
               .iconButtonDanger {
                 @include mixins.border-radius(9px);
-                @include mixins.hover-scale-effect;
+                @include mixins.interactive;
               }
               > .chapterToggleIcon {
                 margin-left: var(--space);
@@ -400,11 +400,11 @@
   }
 
   > .message {
-    background: rgba(var(--theme-blue-500-rgb), 0.1);
+    background: color-mix(in oklch, var(--theme-blue-500) 10%, transparent);
   }
 
   > .errorMessage {
-    background: rgba(var(--theme-red-500-rgb), 0.1);
+    background: color-mix(in oklch, var(--theme-red-500) 10%, transparent);
     color: var(--theme-red-600);
   }
 

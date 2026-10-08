@@ -28,7 +28,7 @@
     }
 
     > .sortButtons {
-      @include mixins.hover-scale-effect;
+      @include mixins.interactive;
       @include mixins.flexbox(row, start, center);
       gap: 6px;
       background: rgba(var(--background-secondary-rgb), 0.25);
@@ -107,11 +107,11 @@
         min-width: 240px;
         min-height: 100%;
         position: sticky;
-        top: 72px;
+        top: var(--header-height);
         @include mixins.transition(var(--transition-default));
 
         &.compact {
-          top: 48px;
+          top: var(--header-height-compact);
         }
 
         //* Sticky 狀態

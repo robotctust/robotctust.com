@@ -96,7 +96,7 @@
           font-size: 0.7rem;
           font-weight: 700;
           padding: 4px 8px;
-          background: rgba(var(--theme-purple-500-rgb), 0.1);
+          background: color-mix(in oklch, var(--theme-purple-500) 10%, transparent);
           color: var(--theme-purple-400);
           border-radius: 6px;
           text-transform: uppercase;

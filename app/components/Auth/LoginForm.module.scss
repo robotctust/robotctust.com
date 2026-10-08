@@ -18,7 +18,7 @@
     color: var(--foreground);
     border: 1px solid var(--border);
     @include mixins.border-radius(6px);
-    @include mixins.hover-scale-effect;
+    @include mixins.interactive;
     cursor: pointer;
 
     &:hover {
@@ -92,7 +92,7 @@
     background: var(--primary);
     border: 1px solid var(--border);
     @include mixins.border-radius(6px);
-    @include mixins.hover-scale-effect(1.01);
+    @include mixins.interactive('surface');
     cursor: pointer;
 
     &:hover:not(:disabled) {

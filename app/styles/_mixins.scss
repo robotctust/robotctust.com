@@ -1,3 +1,5 @@
+@use 'sass:list';
+
 @mixin flexbox($direction: row, $justify: center, $align: center) {
   display: flex;
   flex-direction: $direction;
@@ -11,18 +13,7 @@
   gap: $gap;
 }
 
-@mixin sticky-container($top: 0, $z-index: 100) {
-  position: sticky;
-  top: $top;
-  z-index: $z-index;
-}
 
-// 根據 header compact 狀態，調整 sticky 元素的 top 偏移量
-@mixin sticky-with-header-compact() {
-  @include sticky-container(var(--header-height), 100);
-  @include transition(var(--transition-default));
-  @content;
-}
 
 @mixin respond-to($breakpoint) {
   @if $breakpoint == 'phone' {
@@ -56,14 +47,20 @@
 }
 
 @mixin button($type: 'normal', $size: 'normal') {
+  // 參數寫錯時編譯直接報錯（以前寫錯會靜默變成沒有顏色的按鈕）
+  @if not list.index(('normal', 'primary', 'danger'), $type) {
+    @error "mixins.button: 未知的類型 '#{$type}'（可用 normal / primary / danger）";
+  }
+  @if not list.index(('small', 'normal', 'large'), $size) {
+    @error "mixins.button: 未知的尺寸 '#{$size}'（可用 small / normal / large）";
+  }
   @include flexbox(row, center, center);
   gap: 9px;
   word-wrap: nowrap;
   min-width: max-content;
   text-decoration: none;
-  cursor: pointer;
   @include border-radius(9px);
-  @include hover-scale-effect;
+  @include interactive;
 
   svg {
     font-size: 0.9rem;
@@ -121,26 +118,7 @@
   }
 }
 
-@mixin transition_default {
-  transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-  -webkit-transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-  -moz-transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-  -ms-transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-  -o-transition: all 0.3s cubic-bezier(0.23, 1, 0.32, 1);
-}
 
-// page container
-@mixin page {
-  // @include flexbox(column, start, center);
-  position: relative;
-  padding: 0;
-  padding-top: var(--header-height);
-  padding-bottom: var(--space-4x);
-  width: 100%;
-  height: 100%;
-  min-height: 100svh;
-  background-color: var(--background-color);
-}
 
 @mixin page-container {
   @include flexbox(column, start, center);
@@ -155,31 +133,7 @@
   width: calc(100%);
 }
 
-// child page container
-@mixin child-page {
-  @include page;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-}
 
-@mixin page-container-content($maxWidth: var(--page-max-width-m)) {
-  padding: 0;
-  padding-top: var(--space);
-  padding-bottom: var(--space-2x);
-  width: 100%;
-  max-width: $maxWidth;
-  // height: 100%;
-  // overflow-y: scroll;
-
-  @include respond-to('phone') {
-    padding: 12px 24px 24px 24px;
-  }
-  @include respond-to('tablet') {
-    padding: 12px 24px 24px 24px;
-  }
-}
 
 @mixin glass-blur($blur: 6px) {
   -webkit-backdrop-filter: blur($blur);
@@ -194,22 +148,7 @@
   -o-box-shadow: 0 0 $blur calc($blur / 2) var(--shadow-color);
 }
 
-@mixin hover-scale-effect($scale: 1.05) {
-  @include transition(
-    all var(--transition-duration) var(--transition-bezier-fast)
-  );
-  &:hover {
-    transform: scale($scale);
-  }
-}
 
-@mixin float-label {
-  position: relative;
-
-  &:hover > :global(.label) {
-    opacity: 1;
-  }
-}
 
 @mixin hide-scrollbar {
   &::-webkit-scrollbar {
@@ -219,26 +158,7 @@
   scrollbar-width: none;
 }
 
-@mixin custom-scrollbar {
-  // 滾動軌道
-  &::-webkit-scrollbar-track {
-    background-color: var(--background-secondary-color);
-  }
 
-  // 滾動條
-  &::-webkit-scrollbar-thumb {
-    background-color: var(--border-color);
-  }
-}
-
-@mixin background-blur($background: var(--background-color-rgb), $blur: 8px) {
-  background: rgba($background, 0.75);
-  backdrop-filter: blur($blur);
-  -webkit-backdrop-filter: blur($blur);
-  -moz-backdrop-filter: blur($blur);
-  -ms-backdrop-filter: blur($blur);
-  -o-backdrop-filter: blur($blur);
-}
 
 @mixin border-radius($radius: 12px) {
   border-radius: $radius;
@@ -270,4 +190,37 @@
   -moz-animation: $animation;
   -ms-animation: $animation;
   -o-animation: $animation;
+}
+
+// 可點擊元素的統一回饋：hover 放大、按下縮回、禁用變淡且不回應
+// $size：control = 按鈕、圖示鈕、連結等小元件；surface = 卡片、整列寬的按鈕等大面積元素（放大幅度較小）
+// 只有可點擊的元素才用；靜態容器（面板、表單區塊）不要加 hover 效果
+@mixin interactive($size: 'control') {
+  $hover: var(--hover-scale);
+  $active: var(--active-scale);
+  @if $size == 'surface' {
+    $hover: var(--hover-scale-surface);
+    $active: var(--active-scale-surface);
+  }
+
+  cursor: pointer;
+  @include transition(all var(--transition-duration) var(--transition-bezier-fast));
+
+  // 觸控裝置沒有真正的 hover，點一下會卡在放大狀態，只在滑鼠環境放大
+  @media (hover: hover) {
+    &:hover:not(:disabled, [aria-disabled='true']) {
+      transform: scale($hover);
+    }
+  }
+
+  &:active:not(:disabled, [aria-disabled='true']) {
+    transform: scale($active);
+    transition-duration: var(--transition-duration-fast);
+  }
+
+  &:disabled,
+  &[aria-disabled='true'] {
+    opacity: var(--disabled-opacity);
+    cursor: not-allowed;
+  }
 }

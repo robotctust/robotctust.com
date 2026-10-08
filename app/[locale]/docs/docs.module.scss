@@ -38,7 +38,7 @@
           &:hover {
             background: rgba(var(--background-secondary-rgb), 0.75);
             border: 1px solid var(--border-hover);
-            @include mixins.hover-scale-effect(1.01);
+            @include mixins.interactive('surface');
 
             > .docCategory {
               background-color: var(--background-tertiary);

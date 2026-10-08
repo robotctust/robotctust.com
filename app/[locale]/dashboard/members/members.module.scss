@@ -251,7 +251,7 @@
             margin: 4px 0 0 0;
             font-size: 0.8rem;
             color: var(--theme-purple-500);
-            background: rgba(var(--theme-purple-500-rgb), 0.1);
+            background: color-mix(in oklch, var(--theme-purple-500) 10%, transparent);
             padding: 2px 6px;
             width: fit-content;
             @include mixins.border-radius(4px);

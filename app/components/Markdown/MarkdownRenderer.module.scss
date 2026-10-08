@@ -395,7 +395,7 @@
     color: var(--color-white);
     background: transparent;
     @include mixins.border-radius(50%);
-    @include mixins.hover-scale-effect;
+    @include mixins.interactive;
 
     &:hover {
     border: 1px solid var(--border);

@@ -95,6 +95,14 @@ The course system is normalized PostgreSQL (semester → chapter → course → 
 ## Conventions
 - **Path alias:** `@/*` maps to repo root (e.g. `@/app/utils/...`).
 - **Styling:** SCSS Modules are primary (`Component.module.scss`), Tailwind v4 is auxiliary. Shared tokens/mixins in `app/styles/_colors.scss` and `_mixins.scss`.
+- **Design system (v2.7 Beta 5+ — use tokens, don't invent values):** non-color tokens live in `:root` of `app/globals.css`, colors in `_colors.scss`. Being migrated page by page; new or touched code must use them.
+  - Radius `--radius-xs/sm/md/lg/xl/full` (4/8/12/16/24/999px; 8px is the base). Nested: inner radius = outer − padding, never below `xs`.
+  - Font size `--font-size-xs/sm/base/md/lg/xl/2xl` (0.75/0.875/1/1.125/1.25/1.5/2rem); weights 500/600/700 only. Spacing `--space-*`, shadows `--shadow-sm/md/lg`, z-index `--z-sticky/dropdown/header/overlay/modal/toast`.
+  - Colors: only the site palette (`--{gray,blue,green,red,purple,yellow,orange}-*`, theme-flipping `--theme-*`). Never Tailwind's `--color-*-*` or hard-coded hex. Status/tone colors: `--{success,warning,danger,info}` (solid, white text) plus `-text` / `-soft` / `-border` for tinted badges and alerts, and `--brand-*`. Translucent colors: `color-mix(in oklch, var(--x) 15%, transparent)` — there are no `*-rgb` tokens except `--background(-secondary/-tertiary)-rgb` / `--foreground-rgb`, so an undefined var silently drops the whole declaration.
+  - Interaction: anything clickable uses `@include mixins.interactive` (small controls, hover scale 1.05) or `interactive('surface')` (cards / full-width buttons, 1.02). It covers hover (mouse only), pressed and disabled (`:disabled` / `aria-disabled`). Static containers (panels, form sections) get **no** hover effect. The global `.primary-button` / `.secondary-button` / `.danger-button` / `.icon-button` classes and `mixins.button` follow the same states (`mixins.button` errors at compile time on an unknown type/size).
+  - Focus: `:focus-visible` shows a 2px primary outline globally — don't remove outlines without a replacement focus style.
+  - Header height: use `var(--header-height)` / `var(--header-height-compact)`, never 72px/48px; the dashboard overrides both to `var(--space)` (no header). Aside breakpoint: `respond-by-max-width(859px)` / `respond-by-min-width(860px)`.
+  - Theme switches add `.theme-switching` to `<html>` for 0.4s so every element fades colors together (`ThemeToggle`).
 - **Feature-based component folders:** a page's local UI lives in a `ui/` subfolder beside it, each component in its own dir (`about/ui/ClubOfficer/ClubOfficer.tsx` + `ClubOfficer.module.scss`). Cross-page shared components go in `app/components/`.
 - TypeScript types live in `app/types/`; keep new features typed there.
 - Comments in this codebase are written in Traditional Chinese; match the surrounding style.

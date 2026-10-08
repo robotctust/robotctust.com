@@ -102,7 +102,7 @@
   white-space: nowrap;
   @include mixins.border-radius(6px);
   @include mixins.transition();
-  @include mixins.hover-scale-effect;
+  @include mixins.interactive;
 
   &:disabled {
     opacity: 0.6;
