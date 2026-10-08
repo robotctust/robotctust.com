@@ -27,8 +27,12 @@ export interface Post {
   // 時間戳記（ISO 8601 字串）
   createdAt: string
   updatedAt: string
-  publishedAt: string | null // 草稿為 null
+  publishedAt: string | null // 第一次發布的時間；從沒發布過為 null（撤回成草稿後保留）
+  status: PostStatus
+  mediaKey: string // 文章圖片的 R2 資料夾 posts/{mediaKey}/
 }
+
+export type PostStatus = 'draft' | 'published'
 
 // 建立文章資料
 export interface CreatePostData {

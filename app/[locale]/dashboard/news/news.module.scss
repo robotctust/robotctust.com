@@ -54,6 +54,31 @@
     &:hover {
       color: var(--foreground);
     }
+
+    &.untitled {
+      color: var(--foreground-tertiary);
+      font-style: italic;
+    }
+  }
+}
+
+// 文章狀態：草稿（灰）/ 已發布（綠）
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--background-secondary);
+  color: var(--foreground-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.published {
+    border-color: var(--green-500);
+    background: var(--green-400);
+    color: var(--color-white);
   }
 }
 

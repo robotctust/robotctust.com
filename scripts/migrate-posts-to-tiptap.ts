@@ -34,7 +34,7 @@ import { Node as PMNode } from '@tiptap/pm/model'
 import { createAdminClient } from '@/app/utils/supabase/admin'
 import { remarkImageGallery } from '@/app/components/Markdown/remarkImageGallery'
 import { richTextExtensions } from '@/app/components/RichText/extensions'
-import { getPlainText } from '@/app/components/RichText/plainText'
+import { getPlainText } from '@/app/components/RichText/content'
 
 const APPLY = process.argv.includes('--apply')
 const OUT_DIR = path.join(process.cwd(), 'scripts/.tiptap-migration')

@@ -1,5 +1,6 @@
 import { NextRequest } from 'next/server'
 import { createClient } from '@/app/utils/supabase/server'
+import { createAdminClient } from '@/app/utils/supabase/admin'
 import {
   isDashboardAccessError,
   requireDashboardAccess,
@@ -18,23 +19,25 @@ const KINDS: MediaKind[] = ['avatar', 'background', 'post', 'course']
 
 /** 課程 ID 會成為 R2 key 的一段，只接受安全字元 */
 const SAFE_ID = /^[A-Za-z0-9_-]{1,64}$/
+const UUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/
 
 /**
  * 確認操作者對該種類圖片的權限
  * - avatar / background：須登入，擁有者一律取自 session（不採信前端傳入的 uid）
  * - post：須有 news 模組權限
  * - course：須有 courses 模組權限
- * @returns 擁有者 ID（使用者 uid 或課程 ID）
+ * @param ownerId - course 為課程 ID；post 為文章的 media_key（舊文章圖片沒有）
+ * @returns 擁有者 ID（使用者 uid、文章 media_key 或課程 ID）
  */
-async function authorize(kind: MediaKind, courseId?: string | null): Promise<string | undefined> {
+async function authorize(kind: MediaKind, ownerId?: string | null): Promise<string | undefined> {
   if (kind === 'post') {
     await requireDashboardAccess('news')
-    return undefined
+    return ownerId ?? undefined
   }
   if (kind === 'course') {
     await requireDashboardAccess('courses')
-    if (!courseId || !SAFE_ID.test(courseId)) throw new MediaError('缺少或不合法的課程 ID', 400)
-    return courseId
+    if (!ownerId || !SAFE_ID.test(ownerId)) throw new MediaError('缺少或不合法的課程 ID', 400)
+    return ownerId
   }
   const supabase = await createClient()
   const {
@@ -54,7 +57,7 @@ function toErrorResponse(error: unknown): Response {
 
 /**
  * [POST] 上傳圖片：處理成 sm / lg 兩個 WebP 後存到 R2
- * query：kind、courseId（course 用）、cropX / cropY（background 用，0~1）
+ * query：kind、courseId（course 用）、mediaKey（post 用，文章的 media_key）、cropX / cropY（background 用，0~1）
  * body：multipart，欄位 file
  * 權限與大小檢查放在讀取 body 之前，未授權的請求不會讓伺服器讀入整個檔案
  * @returns UploadedImage：lg 版網址與實際寬高
@@ -65,7 +68,13 @@ export async function POST(request: NextRequest) {
     const kind = params.get('kind') as MediaKind
     if (!KINDS.includes(kind)) throw new MediaError('不合法的圖片種類', 400)
 
-    const ownerId = await authorize(kind, params.get('courseId'))
+    const ownerId = await authorize(kind, params.get(kind === 'post' ? 'mediaKey' : 'courseId'))
+    // 文章圖片存在 posts/{media_key}/ 底下（刪文時整個資料夾清掉），media_key 必須屬於某篇文章
+    if (kind === 'post') {
+      if (!ownerId || !UUID.test(ownerId)) throw new MediaError('缺少或不合法的文章 media_key', 400)
+      const { data } = await createAdminClient().from('posts').select('id').eq('media_key', ownerId).maybeSingle()
+      if (!data) throw new MediaError('找不到對應的文章', 404)
+    }
 
     // multipart 外框另有少量位元組，上限多留 1MB
     if (Number(request.headers.get('content-length') ?? 0) > MAX_UPLOAD_BYTES + 1024 * 1024) {

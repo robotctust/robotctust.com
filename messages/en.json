@@ -798,7 +798,8 @@
         "author": "Author",
         "createdAt": "Created",
         "updatedAt": "Updated",
-        "actions": "Actions"
+        "actions": "Actions",
+        "status": "Status"
       },
       "actions": {
         "edit": "Edit post",
@@ -825,6 +826,61 @@
         "deletedError": "Delete failed",
         "deletedBulk": "Deleted {count} posts",
         "deletedPartial": "{success} deleted, {failed} failed"
+      },
+      "editor": {
+        "back": "Posts",
+        "titleDraft": "Edit draft",
+        "titlePublished": "Edit post",
+        "status": {
+          "draft": "Draft",
+          "published": "Published"
+        },
+        "saveState": {
+          "unsaved": "Unsaved changes",
+          "saved": "Saved {time}",
+          "waitingUploads": "Waiting for images to upload…",
+          "saving": "Saving…"
+        },
+        "actions": {
+          "saveDraft": "Save draft",
+          "publish": "Publish",
+          "update": "Update",
+          "unpublish": "Unpublish",
+          "view": "View post"
+        },
+        "fields": {
+          "title": "Title",
+          "titlePlaceholder": "Post title…",
+          "category": "Category",
+          "slug": "URL",
+          "slugHint": "Lowercase letters, numbers and hyphens; can't be changed after publishing",
+          "slugLocked": "This post has been published, so its URL is fixed",
+          "cover": "Cover image",
+          "coverHint": "Click or drop an image here",
+          "coverLimit": "Up to 20MB, JPG / PNG / WebP",
+          "coverChange": "Change image",
+          "coverRemove": "Remove image",
+          "coverAlt": "Cover preview"
+        },
+        "contentPlaceholder": "Start writing… (Markdown shortcuts work too: ## heading, - list, ``` code)",
+        "confirmLeave": "You have unsaved changes. Leave anyway?",
+        "confirmUnpublish": "Unpublishing removes this post from the site and turns it back into a draft. Continue?",
+        "toast": {
+          "saved": "Draft saved",
+          "published": "Post published",
+          "updated": "Post updated",
+          "unpublished": "Unpublished; the post is a draft again",
+          "error": "Couldn't save, please try again",
+          "coverTooLarge": "Images can't exceed 20MB",
+          "uploadFailed": "Couldn't upload “{name}”: {message}"
+        }
+      },
+      "untitled": "(Untitled draft)",
+      "creating": "Creating…",
+      "createError": "Couldn't create a draft",
+      "status": {
+        "draft": "Draft",
+        "published": "Published"
       }
     }
   },

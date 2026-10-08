@@ -69,6 +69,20 @@
       font-size: 1.2rem;
       font-weight: 700;
     }
+
+    .saveState {
+      color: var(--foreground-tertiary);
+      font-size: 0.8rem;
+      white-space: nowrap;
+
+      &.unsaved {
+        color: var(--orange-500);
+      }
+
+      @include mixins.respond-to('phone') {
+        display: none;
+      }
+    }
   }
 
   .headerActions {
@@ -147,6 +161,50 @@
   }
 }
 
+.fieldHint {
+  margin: 0;
+  color: var(--foreground-tertiary);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+// 網址：固定的 /news/ 前綴 + 可編輯的 slug
+.slugInput {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  @include mixins.border-radius(10px);
+  background: var(--background-secondary);
+  overflow: hidden;
+  transition: border-color 0.15s;
+
+  &:focus-within {
+    border-color: var(--foreground-secondary);
+  }
+
+  span {
+    padding-left: 14px;
+    color: var(--foreground-tertiary);
+    font-size: 0.95rem;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 14px 10px 2px;
+    border: none;
+    background: transparent;
+    color: var(--foreground);
+    font-size: 0.95rem;
+    outline: none;
+
+    &:disabled {
+      color: var(--foreground-tertiary);
+      cursor: not-allowed;
+    }
+  }
+}
+
 .textInput,
 .selectInput {
   padding: 10px 14px;
@@ -194,6 +252,12 @@
     font-size: 0.85rem;
     color: var(--foreground-secondary);
   }
+
+  .coverUploadIcon {
+    margin-bottom: 8px;
+    font-size: 1.5rem;
+    color: var(--foreground-secondary);
+  }
 }
 
 .coverPreview {
@@ -221,7 +285,8 @@
     transition: opacity 0.2s;
   }
 
-  &:hover .coverOverlay {
+  &:hover .coverOverlay,
+  .coverOverlay.visible {
     opacity: 1;
   }
 }
@@ -233,4 +298,24 @@
 .editorPanel {
   @include card;
   min-width: 0;
+}
+
+// 文章狀態：草稿（灰）/ 已發布（綠）
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--background-secondary);
+  color: var(--foreground-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.published {
+    border-color: var(--green-500);
+    background: var(--green-400);
+    color: var(--color-white);
+  }
 }

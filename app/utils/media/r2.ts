@@ -45,9 +45,10 @@ async function r2Request(key: string, init: RequestInit) {
  * key 格式：
  * - users/avatars/{uid}/{uuid}/lg.webp
  * - users/backgrounds/{uid}/{uuid}/lg.webp
- * - posts/{uuid}/lg.webp
+ * - posts/{mediaKey}/{uuid}/lg.webp（v2.7 起，mediaKey = posts.media_key）
+ * - posts/{uuid}/lg.webp（v2.7 以前的文章圖片）
  * - courses/{courseId}/{uuid}/lg.webp
- * @returns 種類、擁有者（使用者 uid 或課程 ID）與不含檔名的資料夾；非本系統網址回傳 null
+ * @returns 種類、擁有者（使用者 uid、文章 media_key 或課程 ID）與不含檔名的資料夾；非本系統網址回傳 null
  */
 export function parseMediaUrl(
   url: string,
@@ -64,8 +65,8 @@ export function parseMediaUrl(
       folder: key.slice(0, -'/lg.webp'.length),
     }
   }
-  m = key.match(new RegExp(`^posts/${uuid}/lg\\.webp$`))
-  if (m) return { kind: 'post', ownerId: null, folder: key.slice(0, -'/lg.webp'.length) }
+  m = key.match(new RegExp(`^posts/(?:(${uuid})/)?${uuid}/lg\\.webp$`))
+  if (m) return { kind: 'post', ownerId: m[1] ?? null, folder: key.slice(0, -'/lg.webp'.length) }
   m = key.match(new RegExp(`^courses/([^/]+)/${uuid}/lg\\.webp$`))
   if (m) return { kind: 'course', ownerId: m[1], folder: key.slice(0, -'/lg.webp'.length) }
   return null
@@ -74,7 +75,7 @@ export function parseMediaUrl(
 /**
  * 產生新圖片的資料夾 key（每次上傳都是新的 uuid）
  * @param kind - 圖片種類
- * @param ownerId - avatar / background 為使用者 uid；course 為課程 ID；post 不需要
+ * @param ownerId - avatar / background 為使用者 uid；post 為文章的 media_key；course 為課程 ID
  */
 export function newMediaFolder(kind: MediaKind, ownerId?: string): string {
   const id = crypto.randomUUID()
@@ -84,7 +85,7 @@ export function newMediaFolder(kind: MediaKind, ownerId?: string): string {
     case 'background':
       return `users/backgrounds/${ownerId}/${id}`
     case 'post':
-      return `posts/${id}`
+      return `posts/${ownerId}/${id}`
     case 'course':
       return `courses/${ownerId}/${id}`
   }
@@ -135,15 +136,12 @@ export async function deleteMediaByUrl(url: string | null | undefined): Promise<
 }
 
 /**
- * 刪除某個前綴底下的所有物件（刪除課程、刪除帳號時整批清除）
- * 不做權限檢查：呼叫端須自行確認；前綴必須以 / 結尾，避免誤刪同名開頭的其他資料夾
- * @param prefix - 例如 `courses/{courseId}/`、`users/avatars/{uid}/`
+ * 列出某個前綴底下的所有物件
+ * @param prefix - 必須以 / 結尾
  */
-export async function deleteMediaPrefix(prefix: string): Promise<void> {
-  if (!prefix.endsWith('/') || prefix.split('/').filter(Boolean).length < 2) {
-    throw new Error(`拒絕刪除過於寬鬆的前綴：${prefix}`)
-  }
+export async function listMedia(prefix: string): Promise<{ key: string; lastModified: Date }[]> {
   const { client, endpoint } = getR2()
+  const objects: { key: string; lastModified: Date }[] = []
   let token: string | undefined
   do {
     const params = new URLSearchParams({ 'list-type': '2', prefix })
@@ -152,9 +150,49 @@ export async function deleteMediaPrefix(prefix: string): Promise<void> {
     const xml = await res.text()
     if (!res.ok) throw new Error(`R2 列出 ${prefix} 失敗：${res.status} ${xml}`)
 
-    const keys = [...xml.matchAll(/<Key>([^<]+)<\/Key>/g)].map((m) => m[1])
-    await Promise.all(keys.map((key) => r2Request(key, { method: 'DELETE' })))
-
+    for (const [, body] of xml.matchAll(/<Contents>([\s\S]*?)<\/Contents>/g)) {
+      const key = body.match(/<Key>([^<]+)<\/Key>/)?.[1]
+      const modified = body.match(/<LastModified>([^<]+)<\/LastModified>/)?.[1]
+      if (key && modified) objects.push({ key, lastModified: new Date(modified) })
+    }
     token = xml.match(/<NextContinuationToken>([^<]+)<\/NextContinuationToken>/)?.[1]
   } while (token)
+  return objects
+}
+
+/**
+ * 刪除某個前綴底下的所有物件（刪除課程、刪除帳號時整批清除）
+ * 不做權限檢查：呼叫端須自行確認；前綴必須以 / 結尾，避免誤刪同名開頭的其他資料夾
+ * @param prefix - 例如 `courses/{courseId}/`、`users/avatars/{uid}/`
+ */
+export async function deleteMediaPrefix(prefix: string): Promise<void> {
+  if (!prefix.endsWith('/') || prefix.split('/').filter(Boolean).length < 2) {
+    throw new Error(`拒絕刪除過於寬鬆的前綴：${prefix}`)
+  }
+  const objects = await listMedia(prefix)
+  await Promise.all(objects.map(({ key }) => r2Request(key, { method: 'DELETE' })))
+}
+
+/** 清掃時只刪超過這個時間的檔案，避免刪到剛上傳、還沒存檔的圖片 */
+const SWEEP_MIN_AGE_MS = 60 * 60 * 1000
+
+/**
+ * 清掃文章的圖片資料夾 posts/{mediaKey}/：刪除內文與封面都沒用到、且上傳超過 1 小時的圖片
+ * （插入後又刪掉、換掉的封面等）。不做權限檢查，呼叫端須先確認有 news 模組權限
+ * @param referencedUrls - 文章目前引用的圖片網址（內文圖片與封面）
+ * @param minAgeMs - 只刪上傳超過這個時間的檔案（預設 1 小時）
+ */
+export async function sweepPostMedia(
+  mediaKey: string,
+  referencedUrls: string[],
+  minAgeMs = SWEEP_MIN_AGE_MS,
+): Promise<void> {
+  const prefix = `posts/${mediaKey}/`
+  const referenced = new Set(referencedUrls.map((url) => parseMediaUrl(url)?.folder).filter(Boolean))
+  const cutoff = Date.now() - minAgeMs
+  const stale = (await listMedia(prefix)).filter(({ key, lastModified }) => {
+    const folder = key.slice(0, key.lastIndexOf('/'))
+    return !referenced.has(folder) && lastModified.getTime() < cutoff
+  })
+  await Promise.all(stale.map(({ key }) => r2Request(key, { method: 'DELETE' })))
 }

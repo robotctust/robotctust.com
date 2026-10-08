@@ -1,219 +1,289 @@
 'use client'
 
-import { useState, useCallback, useRef } from 'react'
-import { Link } from '@/i18n/navigation'
+import { useCallback, useEffect, useRef, useState } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
+import type { JSONContent } from '@tiptap/core'
+import { Link, useRouter } from '@/i18n/navigation'
 import Img from '@/app/components/Img/Img'
-import { useRouter } from '@/i18n/navigation'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faArrowLeft,
-  faUpload,
-  faTrash,
+  faArrowUpRightFromSquare,
   faSpinner,
+  faTrash,
+  faUpload,
 } from '@fortawesome/free-solid-svg-icons'
-import type { JSONContent } from '@tiptap/core'
 import RichTextEditor from '@/app/components/RichText/RichTextEditor'
+import { hasPendingUploads } from '@/app/components/RichText/imageUpload'
 import { useToast } from '@/app/contexts/ToastContext'
-import { deleteImage, uploadImage } from '@/app/utils/media/client'
+import { uploadImage } from '@/app/utils/media/client'
 import type { ContentImageUploader } from '@/app/types/media'
-import {
-  POST_CATEGORIES,
-  POST_CATEGORY_LABELS,
-  PostCategory,
-} from '@/app/types/post'
+import { CATEGORY_TO_SLUG, POST_CATEGORIES, PostCategory, PostStatus } from '@/app/types/post'
 import { SerializedPost } from '@/app/types/serialized'
 import styles from './editor.module.scss'
 
+type SaveAction = 'save' | 'publish' | 'unpublish'
+
 interface NewsEditorClientProps {
-  /** 編輯既有文章時由伺服器帶入；新增時為空 */
-  post?: SerializedPost
+  post: SerializedPost
   /** 文章的 TipTap JSON 內文（serializePost 不含內文，另外傳） */
-  content?: JSONContent | null
+  content: JSONContent | null
 }
 
+/** 判斷有無未儲存變更用的快照 */
+const snapshotOf = (fields: {
+  title: string
+  category: PostCategory
+  coverImageUrl: string | null
+  slug: string
+  content: JSONContent | null
+}) => JSON.stringify(fields)
+
+/**
+ * 文章編輯頁（手動存檔）
+ * - 草稿：儲存草稿 / 發布；已發布：更新 / 取消發布。沒有變更時不能存。⌘S / Ctrl+S 儲存
+ * - 存檔前等內文圖片上傳完成；送出載入時的 updated_at，別人改過會被伺服器擋下（409）
+ * - 網址只有從沒發布過的文章能改
+ */
 export default function NewsEditorClient({ post, content: initialContent }: NewsEditorClientProps) {
-  const postId = post?.id
+  const t = useTranslations('Dashboard.News.editor')
+  const tCategories = useTranslations('News.categories')
+  const locale = useLocale()
   const router = useRouter()
   const { showToast } = useToast()
-  const isEditing = Boolean(postId)
   const fileInputRef = useRef<HTMLInputElement>(null)
 
-  // Form state
-  const [title, setTitle] = useState(post?.title ?? '')
-  const [category, setCategory] = useState<PostCategory>(
-    (post?.category as PostCategory) ?? '社團活動',
-  )
-  const [content, setContent] = useState<JSONContent | null>(initialContent ?? null)
-  const [slug, setSlug] = useState('')
-  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(
-    post?.coverImageUrl ?? null,
-  )
-  const [coverImageFile, setCoverImageFile] = useState<File | null>(null)
-  const [coverPreview, setCoverPreview] = useState<string | null>(
-    post?.coverImageUrl ?? null,
-  )
-  const [removeCoverImage, setRemoveCoverImage] = useState(false)
+  // 文章欄位
+  const [title, setTitle] = useState(post.title)
+  const [category, setCategory] = useState<PostCategory>(post.category)
+  const [coverImageUrl, setCoverImageUrl] = useState<string | null>(post.coverImageUrl)
+  const [slug, setSlug] = useState(post.id)
+  const [content, setContent] = useState<JSONContent | null>(initialContent)
+  const contentRef = useRef(initialContent)
 
-  // UI state
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  // 伺服器上的狀態（每次存檔後更新）
+  const [postId, setPostId] = useState(post.id)
+  const [status, setStatus] = useState<PostStatus>(post.status)
+  const [publishedAt, setPublishedAt] = useState(post.publishedAt)
+  const [updatedAt, setUpdatedAt] = useState(post.updatedAt)
+  const [savedSnapshot, setSavedSnapshot] = useState(() =>
+    snapshotOf({ title: post.title, category: post.category, coverImageUrl: post.coverImageUrl, slug: post.id, content: initialContent }),
+  )
+
+  // UI 狀態
+  const [saving, setSaving] = useState<SaveAction | null>(null)
+  const [waitingUploads, setWaitingUploads] = useState(false)
+  const [coverUploading, setCoverUploading] = useState(false)
   const [dragOver, setDragOver] = useState(false)
 
-  const handleContentChange = useCallback((newContent: JSONContent) => {
-    setContent(newContent)
-  }, [])
+  const dirty = snapshotOf({ title, category, coverImageUrl, slug, content }) !== savedSnapshot
+  const isPublished = status === 'published'
 
-  // 內文插圖：上傳到 R2，失敗時提示（編輯器會自行移除佔位文字）
-  // ponytail: 插入後又刪掉、或最後沒儲存的內文圖會留在 R2，需要時再做定期清理
-  const handleUploadContentImage = useCallback<ContentImageUploader>(
-    (file) =>
-      uploadImage(file, 'post').catch((err: Error) => {
-        showToast(`「${file.name}」上傳失敗：${err.message}`, 'error')
+  // ─── 內文與上傳 ─────────────────────────────────────────
+
+  // 存檔時若還有圖片在上傳，等它們完成（成功換成網址、失敗被移除都算完成）
+  const uploadWaiters = useRef<(() => void)[]>([])
+  const handleContentChange = useCallback((next: JSONContent) => {
+    contentRef.current = next
+    setContent(next)
+    if (!hasPendingUploads(next)) uploadWaiters.current.splice(0).forEach((resolve) => resolve())
+  }, [])
+  const waitForUploads = () =>
+    contentRef.current && hasPendingUploads(contentRef.current)
+      ? new Promise<void>((resolve) => uploadWaiters.current.push(resolve))
+      : Promise.resolve()
+
+  const uploadPostImage = useCallback(
+    (file: File) =>
+      uploadImage(file, 'post', { mediaKey: post.mediaKey }).catch((err: Error) => {
+        showToast(t('toast.uploadFailed', { name: file.name, message: err.message }), 'error')
         throw err
       }),
-    [showToast],
+    [post.mediaKey, showToast, t],
   )
+  const handleUploadContentImage = useCallback<ContentImageUploader>(uploadPostImage, [uploadPostImage])
 
-  function handleFileSelect(file: File) {
+  // 封面選了就上傳（舊封面在存檔後由伺服器清除）
+  async function handleCoverFile(file: File) {
+    if (!file.type.startsWith('image/')) return
     if (file.size > 20 * 1024 * 1024) {
-      showToast('圖片大小不能超過 20MB', 'error')
+      showToast(t('toast.coverTooLarge'), 'error')
       return
     }
-    setCoverImageFile(file)
-    setCoverPreview(URL.createObjectURL(file))
-    setRemoveCoverImage(false)
-  }
-
-  function handleFileInputChange(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (file) handleFileSelect(file)
-  }
-
-  function handleDrop(e: React.DragEvent) {
-    e.preventDefault()
-    setDragOver(false)
-    const file = e.dataTransfer.files[0]
-    if (file && file.type.startsWith('image/')) handleFileSelect(file)
-  }
-
-  function handleRemoveCover() {
-    setCoverImageFile(null)
-    setCoverPreview(null)
-    setRemoveCoverImage(true)
-    if (fileInputRef.current) fileInputRef.current.value = ''
-  }
-
-  async function handleSubmit() {
-    if (!title.trim()) {
-      showToast('請輸入文章標題', 'error')
-      return
-    }
-    if (!content) {
-      showToast('請輸入文章內容', 'error')
-      return
-    }
-
-    setIsSubmitting(true)
-    // 已上傳但文章尚未存成功的新封面，失敗時要清掉
-    let pendingCoverUrl: string | null = null
+    setCoverUploading(true)
     try {
-      let finalCoverImageUrl: string | null = coverImageUrl
-
-      // 上傳新封面（R2，sm / lg 雙版本）
-      if (coverImageFile) {
-        finalCoverImageUrl = (await uploadImage(coverImageFile, 'post')).url
-        pendingCoverUrl = finalCoverImageUrl
-      } else if (removeCoverImage) {
-        finalCoverImageUrl = null
-      }
-
-      const payload = {
-        title: title.trim(),
-        content,
-        category,
-        coverImageUrl: finalCoverImageUrl,
-        ...(!isEditing && slug.trim() ? { slug: slug.trim() } : {}),
-        ...(isEditing && removeCoverImage ? { removeCoverImage: true } : {}),
-      }
-
-      const url = isEditing ? `/api/dashboard/news/${postId}` : '/api/dashboard/news'
-      const method = isEditing ? 'PATCH' : 'POST'
-
-      const res = await fetch(url, {
-        method,
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-      })
-
-      if (!res.ok) {
-        const data = await res.json()
-        throw new Error(data.error || '操作失敗')
-      }
-
-      pendingCoverUrl = null
-      showToast(isEditing ? '文章已更新' : '文章已發布', 'success')
-      router.push('/dashboard/news')
-    } catch (err) {
-      if (pendingCoverUrl) deleteImage(pendingCoverUrl).catch(console.error)
-      showToast(err instanceof Error ? err.message : '操作失敗，請稍後再試', 'error')
+      setCoverImageUrl((await uploadPostImage(file)).url)
+    } catch {
+      // 錯誤已提示
     } finally {
-      setIsSubmitting(false)
+      setCoverUploading(false)
+      if (fileInputRef.current) fileInputRef.current.value = ''
     }
   }
+
+  // ─── 存檔 ───────────────────────────────────────────────
+
+  async function save(action: SaveAction) {
+    if (saving) return
+    if (action === 'unpublish' && !window.confirm(t('confirmUnpublish'))) return
+    setSaving(action)
+    try {
+      if (contentRef.current && hasPendingUploads(contentRef.current)) {
+        setWaitingUploads(true)
+        await waitForUploads()
+        setWaitingUploads(false)
+      }
+      const sent = { title, category, coverImageUrl, slug, content: contentRef.current }
+      const res = await fetch(`/api/dashboard/news/${postId}`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ...sent, action, expectedUpdatedAt: updatedAt }),
+      })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || t('toast.error'))
+
+      const saved = data.post as SerializedPost
+      setStatus(saved.status)
+      setPublishedAt(saved.publishedAt)
+      setUpdatedAt(saved.updatedAt)
+      setSavedSnapshot(snapshotOf(sent))
+      if (saved.id !== postId) {
+        setPostId(saved.id)
+        router.replace(`/dashboard/news/${saved.id}`)
+      }
+      showToast(
+        t(
+          action === 'publish'
+            ? 'toast.published'
+            : action === 'unpublish'
+              ? 'toast.unpublished'
+              : saved.status === 'published'
+                ? 'toast.updated'
+                : 'toast.saved',
+        ),
+        'success',
+      )
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : t('toast.error'), 'error')
+    } finally {
+      setWaitingUploads(false)
+      setSaving(null)
+    }
+  }
+
+  // ⌘S / Ctrl+S：儲存（草稿存草稿、已發布即更新）
+  const saveRef = useRef(save)
+  saveRef.current = save
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 's') {
+        e.preventDefault()
+        void saveRef.current('save')
+      }
+    }
+    window.addEventListener('keydown', onKeyDown)
+    return () => window.removeEventListener('keydown', onKeyDown)
+  }, [])
+
+  // 有未儲存的變更時，關閉分頁 / 重新整理要確認
+  useEffect(() => {
+    if (!dirty) return
+    const onBeforeUnload = (e: BeforeUnloadEvent) => e.preventDefault()
+    window.addEventListener('beforeunload', onBeforeUnload)
+    return () => window.removeEventListener('beforeunload', onBeforeUnload)
+  }, [dirty])
+
+  // ─── 畫面 ───────────────────────────────────────────────
+
+  const saveState = saving
+    ? t(waitingUploads ? 'saveState.waitingUploads' : 'saveState.saving')
+    : dirty
+      ? t('saveState.unsaved')
+      : t('saveState.saved', {
+          // 今天只顯示時間，其他日子加上日期
+          time: new Date(updatedAt).toLocaleString(locale, {
+            ...(new Date(updatedAt).toDateString() === new Date().toDateString()
+              ? {}
+              : { year: 'numeric', month: 'numeric', day: 'numeric' }),
+            hour: '2-digit',
+            minute: '2-digit',
+          }),
+        })
+
+  const spinner = (action: SaveAction, label: string) =>
+    saving === action ? (
+      <>
+        <FontAwesomeIcon icon={faSpinner} spin />
+        <span>{label}</span>
+      </>
+    ) : (
+      <span>{label}</span>
+    )
 
   return (
     <div className={styles.editorPage}>
-      {/* Header */}
       <header className={styles.editorHeader}>
         <div className={styles.headerLeft}>
-          <Link href="/dashboard/news" className={styles.backButton}>
+          <Link
+            href="/dashboard/news"
+            className={styles.backButton}
+            onClick={(e) => {
+              if (dirty && !window.confirm(t('confirmLeave'))) e.preventDefault()
+            }}
+          >
             <FontAwesomeIcon icon={faArrowLeft} />
-            <span>文章列表</span>
+            <span>{t('back')}</span>
           </Link>
-          <h1>{isEditing ? '編輯文章' : '新建文章'}</h1>
+          <h1>{t(isPublished ? 'titlePublished' : 'titleDraft')}</h1>
+          <span className={`${styles.statusBadge} ${isPublished ? styles.published : ''}`}>
+            {t(`status.${status}`)}
+          </span>
+          <span className={`${styles.saveState} ${dirty ? styles.unsaved : ''}`}>{saveState}</span>
         </div>
         <div className={styles.headerActions}>
-          <Link href="/dashboard/news" className="secondary-button">
-            取消
-          </Link>
-          {/* v2.7 Beta 2：編輯器先上線試用，儲存要等 Beta 3 的草稿流程（開發環境連的是正式資料庫） */}
-          <button
-            className="primary-button"
-            onClick={() => void handleSubmit()}
-            disabled
-            title="儲存功能將在 v2.7 Beta 3 開放"
-          >
-            {isSubmitting ? (
-              <>
-                <FontAwesomeIcon icon={faSpinner} spin />
-                <span>儲存中...</span>
-              </>
-            ) : (
-              <span>{isEditing ? '儲存變更' : '發布文章'}</span>
-            )}
-          </button>
+          {isPublished ? (
+            <>
+              <Link href={`/news/${postId}`} target="_blank" className="secondary-button">
+                <FontAwesomeIcon icon={faArrowUpRightFromSquare} />
+                <span>{t('actions.view')}</span>
+              </Link>
+              <button className="secondary-button" onClick={() => void save('unpublish')} disabled={!!saving}>
+                {spinner('unpublish', t('actions.unpublish'))}
+              </button>
+              <button className="primary-button" onClick={() => void save('save')} disabled={!!saving || !dirty}>
+                {spinner('save', t('actions.update'))}
+              </button>
+            </>
+          ) : (
+            <>
+              <button className="secondary-button" onClick={() => void save('save')} disabled={!!saving || !dirty}>
+                {spinner('save', t('actions.saveDraft'))}
+              </button>
+              <button className="primary-button" onClick={() => void save('publish')} disabled={!!saving}>
+                {spinner('publish', t('actions.publish'))}
+              </button>
+            </>
+          )}
         </div>
       </header>
 
-      {/* Body: Left sidebar + Right editor */}
       <div className={styles.editorBody}>
-        {/* Sidebar */}
+        {/* 文章設定 */}
         <aside className={styles.sidebar}>
-          {/* Title */}
           <div className={styles.fieldGroup}>
-            <label htmlFor="post-title">文章標題</label>
+            <label htmlFor="post-title">{t('fields.title')}</label>
             <input
               id="post-title"
               type="text"
               className={styles.textInput}
-              placeholder="輸入文章標題..."
+              placeholder={t('fields.titlePlaceholder')}
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
           </div>
 
-          {/* Category */}
           <div className={styles.fieldGroup}>
-            <label htmlFor="post-category">分類</label>
+            <label htmlFor="post-category">{t('fields.category')}</label>
             <select
               id="post-category"
               className={styles.selectInput}
@@ -222,94 +292,102 @@ export default function NewsEditorClient({ post, content: initialContent }: News
             >
               {POST_CATEGORIES.map((cat) => (
                 <option key={cat} value={cat}>
-                  {POST_CATEGORY_LABELS[cat]}
+                  {tCategories(CATEGORY_TO_SLUG[cat])}
                 </option>
               ))}
             </select>
           </div>
 
-          {/* Custom Slug (new posts only) */}
-          {!isEditing && (
-            <div className={styles.fieldGroup}>
-              <label htmlFor="post-slug">自訂網址 slug（選填）</label>
+          <div className={styles.fieldGroup}>
+            <label htmlFor="post-slug">{t('fields.slug')}</label>
+            <div className={styles.slugInput}>
+              <span>/news/</span>
               <input
                 id="post-slug"
                 type="text"
-                className={styles.textInput}
-                placeholder="留空將自動生成 10 碼短網址"
                 value={slug}
-                onChange={(e) => setSlug(e.target.value.replace(/\s/g, '-'))}
+                disabled={!!publishedAt}
+                onChange={(e) => setSlug(e.target.value.toLowerCase().replace(/\s+/g, '-'))}
               />
             </div>
-          )}
+            <p className={styles.fieldHint}>{t(publishedAt ? 'fields.slugLocked' : 'fields.slugHint')}</p>
+          </div>
 
-          {/* Cover Image */}
           <div className={styles.fieldGroup}>
-            <label>封面圖片</label>
-            {coverPreview ? (
+            <label>{t('fields.cover')}</label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              hidden
+              onChange={(e) => {
+                const file = e.target.files?.[0]
+                if (file) void handleCoverFile(file)
+              }}
+            />
+            {coverImageUrl || coverUploading ? (
               <div className={styles.coverPreview}>
-                <Img
-                  src={coverPreview}
-                  alt="封面預覽"
-                  fill
-                  style={{ objectFit: 'cover' }}
-                />
-                <div className={styles.coverOverlay}>
-                  <button
-                    type="button"
-                    className="icon-button"
-                    title="更換圖片"
-                    onClick={() => fileInputRef.current?.click()}
-                  >
-                    <FontAwesomeIcon icon={faUpload} />
-                  </button>
-                  <button
-                    type="button"
-                    className="icon-button-danger"
-                    title="移除圖片"
-                    onClick={handleRemoveCover}
-                  >
-                    <FontAwesomeIcon icon={faTrash} />
-                  </button>
-                </div>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  onChange={handleFileInputChange}
-                />
+                {coverImageUrl && (
+                  <Img src={coverImageUrl} alt={t('fields.coverAlt')} fill style={{ objectFit: 'cover' }} />
+                )}
+                {coverUploading ? (
+                  <div className={`${styles.coverOverlay} ${styles.visible}`}>
+                    <FontAwesomeIcon icon={faSpinner} spin />
+                  </div>
+                ) : (
+                  <div className={styles.coverOverlay}>
+                    <button
+                      type="button"
+                      className="icon-button"
+                      title={t('fields.coverChange')}
+                      aria-label={t('fields.coverChange')}
+                      onClick={() => fileInputRef.current?.click()}
+                    >
+                      <FontAwesomeIcon icon={faUpload} />
+                    </button>
+                    <button
+                      type="button"
+                      className="icon-button-danger"
+                      title={t('fields.coverRemove')}
+                      aria-label={t('fields.coverRemove')}
+                      onClick={() => setCoverImageUrl(null)}
+                    >
+                      <FontAwesomeIcon icon={faTrash} />
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <div
                 className={`${styles.coverUploadArea} ${dragOver ? styles.dragOver : ''}`}
-                onDragOver={(e) => { e.preventDefault(); setDragOver(true) }}
+                onDragOver={(e) => {
+                  e.preventDefault()
+                  setDragOver(true)
+                }}
                 onDragLeave={() => setDragOver(false)}
-                onDrop={handleDrop}
+                onDrop={(e) => {
+                  e.preventDefault()
+                  setDragOver(false)
+                  const file = e.dataTransfer.files[0]
+                  if (file) void handleCoverFile(file)
+                }}
                 onClick={() => fileInputRef.current?.click()}
               >
-                <FontAwesomeIcon icon={faUpload} style={{ marginBottom: 8, fontSize: '1.5rem', color: 'var(--foreground-secondary)' }} />
-                <p>點擊或拖拽圖片到此處上傳</p>
-                <p style={{ marginTop: 4, fontSize: '0.78rem' }}>最大 20MB，支援 JPG / PNG / WebP</p>
-                <input
-                  ref={fileInputRef}
-                  type="file"
-                  accept="image/*"
-                  style={{ display: 'none' }}
-                  onChange={handleFileInputChange}
-                />
+                <FontAwesomeIcon icon={faUpload} className={styles.coverUploadIcon} />
+                <p>{t('fields.coverHint')}</p>
+                <p className={styles.fieldHint}>{t('fields.coverLimit')}</p>
               </div>
             )}
           </div>
         </aside>
 
-        {/* 內文編輯器 */}
+        {/* 內文 */}
         <div className={styles.editorPanel}>
           <RichTextEditor
-            content={initialContent ?? null}
+            content={initialContent}
             onChange={handleContentChange}
             onUploadImage={handleUploadContentImage}
-            placeholder="開始撰寫內文⋯⋯（也可以用 Markdown 快捷輸入，例如 ## 標題、- 清單、``` 程式碼）"
+            placeholder={t('contentPlaceholder')}
           />
         </div>
       </div>

@@ -798,7 +798,8 @@
         "author": "作者",
         "createdAt": "建立時間",
         "updatedAt": "更新時間",
-        "actions": "操作"
+        "actions": "操作",
+        "status": "狀態"
       },
       "actions": {
         "edit": "編輯文章",
@@ -825,6 +826,61 @@
         "deletedError": "刪除失敗",
         "deletedBulk": "已刪除 {count} 篇文章",
         "deletedPartial": "刪除 {success} 篇成功，{failed} 篇失敗"
+      },
+      "editor": {
+        "back": "文章列表",
+        "titleDraft": "編輯草稿",
+        "titlePublished": "編輯文章",
+        "status": {
+          "draft": "草稿",
+          "published": "已發布"
+        },
+        "saveState": {
+          "unsaved": "有未儲存的變更",
+          "saved": "已儲存 {time}",
+          "waitingUploads": "等待圖片上傳完成…",
+          "saving": "儲存中…"
+        },
+        "actions": {
+          "saveDraft": "儲存草稿",
+          "publish": "發布",
+          "update": "更新",
+          "unpublish": "取消發布",
+          "view": "查看文章"
+        },
+        "fields": {
+          "title": "文章標題",
+          "titlePlaceholder": "輸入文章標題…",
+          "category": "分類",
+          "slug": "網址",
+          "slugHint": "小寫英文、數字與連字號（-）；發布後就不能再改",
+          "slugLocked": "文章發布過，網址已固定",
+          "cover": "封面圖片",
+          "coverHint": "點擊或拖曳圖片到這裡上傳",
+          "coverLimit": "最大 20MB，支援 JPG / PNG / WebP",
+          "coverChange": "更換圖片",
+          "coverRemove": "移除圖片",
+          "coverAlt": "封面預覽"
+        },
+        "contentPlaceholder": "開始撰寫內文⋯⋯（也可以用 Markdown 快捷輸入，例如 ## 標題、- 清單、``` 程式碼）",
+        "confirmLeave": "有未儲存的變更，確定要離開嗎？",
+        "confirmUnpublish": "取消發布後，這篇文章會從網站上移除（變回草稿），確定嗎？",
+        "toast": {
+          "saved": "草稿已儲存",
+          "published": "文章已發布",
+          "updated": "文章已更新",
+          "unpublished": "已取消發布，文章變回草稿",
+          "error": "儲存失敗，請稍後再試",
+          "coverTooLarge": "圖片大小不能超過 20MB",
+          "uploadFailed": "「{name}」上傳失敗：{message}"
+        }
+      },
+      "untitled": "（未命名草稿）",
+      "creating": "建立中…",
+      "createError": "建立草稿失敗",
+      "status": {
+        "draft": "草稿",
+        "published": "已發布"
       }
     }
   },

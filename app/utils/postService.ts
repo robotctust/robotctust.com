@@ -4,11 +4,12 @@ import { createPublicClient } from './supabase/public'
 import {
   Post,
   PostCategory,
+  PostStatus,
 } from '../types/post'
 import { canAccessModuleByRoles } from './auth/roles'
 import { Locale } from '../types/i18n'
 import type { JSONContent } from '@tiptap/core'
-import { getPlainText } from '../components/RichText/plainText'
+import { getPlainText } from '../components/RichText/content'
 
 /**
  * 檢查使用者是否有發布權限
@@ -29,6 +30,8 @@ type SupabasePostRow = {
   created_at: string
   updated_at: string
   published_at: string | null
+  status: string
+  media_key: string
   author: { display_name: string; username: string } | null
 }
 
@@ -50,6 +53,8 @@ function rowToPost(row: SupabasePostRow): Post {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     publishedAt: row.published_at,
+    status: row.status as PostStatus,
+    mediaKey: row.media_key,
   }
 }
 
