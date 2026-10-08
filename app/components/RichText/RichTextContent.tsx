@@ -24,7 +24,7 @@ export default function RichTextContent({
   if (!content) return null
 
   return (
-    <article className={`${styles.markdownContent} ${className}`}>
+    <article className={`${styles.markdownContent} ${styles.articleContent} ${className}`}>
       {renderToReactElement({
         content,
         extensions: richTextExtensions,
@@ -34,7 +34,7 @@ export default function RichTextContent({
               <figure className={styles.imageWrapper}>
                 <Img
                   src={node.attrs.src}
-                  alt={node.attrs.alt ?? ''}
+                  alt={node.attrs.alt || node.attrs.caption || ''}
                   width={node.attrs.width ?? undefined}
                   height={node.attrs.height ?? undefined}
                   sizes="(max-width: 800px) 100vw, 1200px"

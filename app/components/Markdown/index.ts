@@ -1,9 +1,7 @@
 export { default as MarkdownRenderer } from './MarkdownRenderer'
 export { default as MarkdownContent } from './MarkdownContent'
-export { default as MarkdownEditor } from './MarkdownEditor'
 
 // Type exports
-export type { MarkdownEditorProps } from './MarkdownEditor'
 export type { MarkdownRendererProps } from './MarkdownRenderer'
 export type { MarkdownContentProps } from './MarkdownContent'
 

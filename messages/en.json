@@ -164,6 +164,52 @@
       "prevPage": "Previous page",
       "nextPage": "Next page",
       "filterAll": "All"
+    },
+    "RichTextEditor": {
+      "undo": "Undo",
+      "redo": "Redo",
+      "blockType": "Block style",
+      "paragraph": "Paragraph",
+      "heading": "Heading {level}",
+      "bold": "Bold",
+      "italic": "Italic",
+      "strike": "Strikethrough",
+      "code": "Inline code",
+      "bulletList": "Bulleted list",
+      "orderedList": "Numbered list",
+      "blockquote": "Quote",
+      "horizontalRule": "Divider",
+      "link": {
+        "label": "Link",
+        "apply": "Apply",
+        "remove": "Remove link",
+        "cancel": "Cancel"
+      },
+      "image": {
+        "insert": "Insert images (select two or more to make a gallery)",
+        "uploading": "Uploading…",
+        "delete": "Delete image",
+        "captionPlaceholder": "Caption (optional)"
+      },
+      "gallery": {
+        "label": "Gallery · {count} images (shown as a carousel)",
+        "add": "Add images",
+        "ungroup": "Split into single images"
+      },
+      "codeBlock": {
+        "label": "Code block",
+        "language": "Language",
+        "plain": "Plain text"
+      },
+      "table": {
+        "insert": "Insert table",
+        "addRow": "Add row",
+        "addColumn": "Add column",
+        "deleteRow": "Delete row",
+        "deleteColumn": "Delete column",
+        "toggleHeader": "Toggle header row",
+        "delete": "Delete table"
+      }
     }
   },
   "Login": {

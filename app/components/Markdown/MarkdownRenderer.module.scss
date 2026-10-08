@@ -175,8 +175,9 @@
     }
   }
 
-  // 表格樣式
-  .tableWrapper {
+  // 表格樣式（:global 版給 TipTap 編輯器內的表格外框，所見即所得）
+  .tableWrapper,
+  :global(.tableWrapper) {
     overflow-x: auto;
     margin: 1rem 0;
     border: 1px solid var(--border);
@@ -436,16 +437,132 @@
     transform: scale(1.25);
   }
 
+  // 高度隨寬度與影片比例決定（height: 100% 會撐成整篇文章的高度、擋住內文）；
+  // 有 width / height 屬性就照影片比例，沒有則用 16:9
   video {
+    display: block;
     width: 100%;
-    height: 100%;
+    height: auto;
     margin: var(--space-2x) 0;
     border: 1px solid var(--border);
     @include mixins.border-radius(12px);
-    aspect-ratio: 16/9;
-    object-fit: cover;
-    object-position: top;
+    aspect-ratio: auto 16 / 9;
+    object-fit: contain;
+    background: #000;
     flex-shrink: 0;
     overflow: hidden;
+  }
+
+  // 新聞文章的排版（RichTextContent 與編輯器共用，編輯器才會所見即所得）；
+  // 文件、隱私權等其他 Markdown 頁面不套用
+  &.articleContent {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin-top: var(--space-2x);
+      margin-bottom: var(--space);
+      color: var(--foreground);
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 900;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    h4 {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    // 清單項目、儲存格內的 <p> 交給前面的繼承規則；:where 不增加權重，讓 blockquote p 等規則仍能覆蓋
+    p:where(:not(li > p, td > p, th > p)) {
+      font-size: 1.1rem;
+      margin-bottom: var(--space);
+      line-height: 1.7;
+
+      @include mixins.respond-to('phone') {
+        font-size: 0.95rem;
+      }
+      @include mixins.respond-to('tablet') {
+        font-size: 1rem;
+      }
+    }
+
+    blockquote {
+      position: relative;
+      margin: var(--space-4x) auto;
+      padding: var(--space-2x);
+      border: none;
+      width: fit-content;
+      height: fit-content;
+      background: var(--background);
+
+      p {
+        margin-bottom: 0;
+      }
+
+      &::before {
+        content: '“';
+        position: absolute;
+        left: -2rem;
+        top: calc(var(--space) * -1);
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--foreground-tertiary);
+      }
+      &::after {
+        content: '”';
+        position: absolute;
+        right: -1rem;
+        bottom: calc(var(--space) * -1 - 2rem);
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--foreground-tertiary);
+      }
+    }
+
+    hr {
+      margin: var(--space-2x) 0;
+      border: none;
+      border-top: 2px solid var(--border);
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--theme-blue-600);
+
+      text-decoration: underline;
+      text-decoration-color: var(--theme-blue-600);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+
+      &:hover {
+        color: var(--theme-blue-500);
+        text-decoration-color: var(--theme-blue-500);
+      }
+      &:visited {
+        color: var(--theme-purple-600);
+        text-decoration-color: var(--theme-purple-600);
+      }
+    }
   }
 }

@@ -1,5 +1,5 @@
 import { Node, mergeAttributes } from '@tiptap/core'
-import StarterKit from '@tiptap/starter-kit'
+import StarterKit, { type StarterKitOptions } from '@tiptap/starter-kit'
 import Image from '@tiptap/extension-image'
 import { TableKit } from '@tiptap/extension-table'
 
@@ -65,13 +65,16 @@ export const Video = Node.create({
   renderHTML: ({ HTMLAttributes }) => ['video', mergeAttributes(HTMLAttributes, { controls: '' })],
 })
 
+/** 編輯器沿用同一份設定，只把 codeBlock 換成會上色的 CodeBlockLowlight（節點名稱與屬性相同） */
+export const starterKitOptions: Partial<StarterKitOptions> = {
+  heading: { levels: [2, 3, 4] },
+  underline: false,
+  // 同舊 Markdown 文章：同分頁開啟、不加 nofollow（預設是 target=_blank + rel=nofollow）
+  link: { openOnClick: false, protocols: ['mailto'], HTMLAttributes: { target: null, rel: null } },
+}
+
 export const richTextExtensions = [
-  StarterKit.configure({
-    heading: { levels: [2, 3, 4] },
-    underline: false,
-    // 同舊 Markdown 文章：同分頁開啟、不加 nofollow（預設是 target=_blank + rel=nofollow）
-    link: { openOnClick: false, protocols: ['mailto'], HTMLAttributes: { target: null, rel: null } },
-  }),
+  StarterKit.configure(starterKitOptions),
   RichImage,
   ImageGallery,
   Video,

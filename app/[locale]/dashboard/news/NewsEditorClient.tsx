@@ -11,7 +11,8 @@ import {
   faTrash,
   faSpinner,
 } from '@fortawesome/free-solid-svg-icons'
-import MarkdownEditor from '@/app/components/Markdown/MarkdownEditor'
+import type { JSONContent } from '@tiptap/core'
+import RichTextEditor from '@/app/components/RichText/RichTextEditor'
 import { useToast } from '@/app/contexts/ToastContext'
 import { deleteImage, uploadImage } from '@/app/utils/media/client'
 import type { ContentImageUploader } from '@/app/types/media'
@@ -26,9 +27,11 @@ import styles from './editor.module.scss'
 interface NewsEditorClientProps {
   /** 編輯既有文章時由伺服器帶入；新增時為空 */
   post?: SerializedPost
+  /** 文章的 TipTap JSON 內文（serializePost 不含內文，另外傳） */
+  content?: JSONContent | null
 }
 
-export default function NewsEditorClient({ post }: NewsEditorClientProps) {
+export default function NewsEditorClient({ post, content: initialContent }: NewsEditorClientProps) {
   const postId = post?.id
   const router = useRouter()
   const { showToast } = useToast()
@@ -40,7 +43,7 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
   const [category, setCategory] = useState<PostCategory>(
     (post?.category as PostCategory) ?? '社團活動',
   )
-  const [content, setContent] = useState(post?.contentMarkdown ?? '')
+  const [content, setContent] = useState<JSONContent | null>(initialContent ?? null)
   const [slug, setSlug] = useState('')
   const [coverImageUrl, setCoverImageUrl] = useState<string | null>(
     post?.coverImageUrl ?? null,
@@ -55,7 +58,7 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [dragOver, setDragOver] = useState(false)
 
-  const handleContentChange = useCallback((newContent: string) => {
+  const handleContentChange = useCallback((newContent: JSONContent) => {
     setContent(newContent)
   }, [])
 
@@ -104,7 +107,7 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
       showToast('請輸入文章標題', 'error')
       return
     }
-    if (!content.trim()) {
+    if (!content) {
       showToast('請輸入文章內容', 'error')
       return
     }
@@ -125,7 +128,7 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
 
       const payload = {
         title: title.trim(),
-        contentMarkdown: content.trim(),
+        content,
         category,
         coverImageUrl: finalCoverImageUrl,
         ...(!isEditing && slug.trim() ? { slug: slug.trim() } : {}),
@@ -172,10 +175,12 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
           <Link href="/dashboard/news" className="secondary-button">
             取消
           </Link>
+          {/* v2.7 Beta 2：編輯器先上線試用，儲存要等 Beta 3 的草稿流程（開發環境連的是正式資料庫） */}
           <button
             className="primary-button"
             onClick={() => void handleSubmit()}
-            disabled={isSubmitting}
+            disabled
+            title="儲存功能將在 v2.7 Beta 3 開放"
           >
             {isSubmitting ? (
               <>
@@ -298,13 +303,13 @@ export default function NewsEditorClient({ post }: NewsEditorClientProps) {
           </div>
         </aside>
 
-        {/* Markdown Editor */}
+        {/* 內文編輯器 */}
         <div className={styles.editorPanel}>
-          <MarkdownEditor
-            initialContent={content}
+          <RichTextEditor
+            content={initialContent ?? null}
             onChange={handleContentChange}
             onUploadImage={handleUploadContentImage}
-            placeholder="在此輸入文章內容（支援 Markdown 語法）..."
+            placeholder="開始撰寫內文⋯⋯（也可以用 Markdown 快捷輸入，例如 ## 標題、- 清單、``` 程式碼）"
           />
         </div>
       </div>

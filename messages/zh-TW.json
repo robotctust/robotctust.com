@@ -164,6 +164,52 @@
       "prevPage": "上一頁",
       "nextPage": "下一頁",
       "filterAll": "全部"
+    },
+    "RichTextEditor": {
+      "undo": "復原",
+      "redo": "重做",
+      "blockType": "段落樣式",
+      "paragraph": "內文",
+      "heading": "標題 {level}",
+      "bold": "粗體",
+      "italic": "斜體",
+      "strike": "刪除線",
+      "code": "行內程式碼",
+      "bulletList": "項目清單",
+      "orderedList": "編號清單",
+      "blockquote": "引用",
+      "horizontalRule": "分隔線",
+      "link": {
+        "label": "連結",
+        "apply": "套用",
+        "remove": "移除連結",
+        "cancel": "取消"
+      },
+      "image": {
+        "insert": "插入圖片（可多選，兩張以上組成圖片組）",
+        "uploading": "上傳中…",
+        "delete": "刪除圖片",
+        "captionPlaceholder": "圖片說明（選填）"
+      },
+      "gallery": {
+        "label": "圖片組・{count} 張（前台顯示為輪播）",
+        "add": "加入圖片",
+        "ungroup": "拆成單張"
+      },
+      "codeBlock": {
+        "label": "程式碼區塊",
+        "language": "程式語言",
+        "plain": "純文字"
+      },
+      "table": {
+        "insert": "插入表格",
+        "addRow": "新增列",
+        "addColumn": "新增欄",
+        "deleteRow": "刪除列",
+        "deleteColumn": "刪除欄",
+        "toggleHeader": "切換標題列",
+        "delete": "刪除表格"
+      }
     }
   },
   "Login": {
