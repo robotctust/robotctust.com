@@ -29,8 +29,8 @@
       width: min(60%, 520px);
       background: linear-gradient(
         135deg,
-        rgba(var(--theme-purple-500-rgb), 0.16),
-        rgba(var(--theme-blue-500-rgb), 0.08),
+        color-mix(in oklch, var(--theme-purple-500) 16%, transparent),
+        color-mix(in oklch, var(--theme-blue-500) 8%, transparent),
         transparent
       );
       pointer-events: none;
@@ -87,7 +87,8 @@
     }
   }
 
-  .primaryButton,
+  // @at-root：這些 class 也用在對話框裡，Modal 以 portal 渲染在 <body> 下、不在頁面容器內，不能依賴外層巢狀
+  @at-root .primaryButton,
   .subtleButton,
   .dangerButton {
     display: inline-flex;
@@ -101,23 +102,23 @@
       transform 0.2s ease;
   }
 
-  .primaryButton {
+  @at-root .primaryButton {
     @include mixins.button('primary', 'normal');
   }
 
-  .subtleButton {
+  @at-root .subtleButton {
     @include mixins.button('normal', 'normal');
     background: rgba(var(--background-rgb), 0.7);
   }
 
-  .dangerButton {
+  @at-root .dangerButton {
     @include mixins.button('normal', 'normal');
-    background: rgba(var(--theme-red-500-rgb), 0.08);
-    border-color: rgba(var(--theme-red-500-rgb), 0.22);
+    background: color-mix(in oklch, var(--theme-red-500) 8%, transparent);
+    border-color: color-mix(in oklch, var(--theme-red-500) 22%, transparent);
     color: var(--theme-red-600);
   }
 
-  .subtleButton:hover,
+  @at-root .subtleButton:hover,
   .dangerButton:hover {
     transform: translateY(-1px);
   }
@@ -164,11 +165,11 @@
   }
 
   > .message {
-    background: rgba(var(--theme-blue-500-rgb), 0.1);
+    background: color-mix(in oklch, var(--theme-blue-500) 10%, transparent);
   }
 
   > .errorMessage {
-    background: rgba(var(--theme-red-500-rgb), 0.1);
+    background: color-mix(in oklch, var(--theme-red-500) 10%, transparent);
     color: var(--theme-red-600);
   }
 
@@ -247,48 +248,48 @@
 
     .activeBadge {
       color: var(--theme-blue-700);
-      background: rgba(var(--theme-blue-500-rgb), 0.16);
-      border: 1px solid rgba(var(--theme-blue-500-rgb), 0.28);
+      background: color-mix(in oklch, var(--theme-blue-500) 16%, transparent);
+      border: 1px solid color-mix(in oklch, var(--theme-blue-500) 28%, transparent);
     }
 
     .draftBadge {
       color: var(--theme-red-600);
-      background: rgba(var(--theme-red-500-rgb), 0.12);
-      border: 1px solid rgba(var(--theme-red-500-rgb), 0.2);
+      background: color-mix(in oklch, var(--theme-red-500) 12%, transparent);
+      border: 1px solid color-mix(in oklch, var(--theme-red-500) 20%, transparent);
     }
 
     .publishedBadge {
       color: var(--theme-purple-700);
-      background: rgba(var(--theme-purple-500-rgb), 0.12);
-      border: 1px solid rgba(var(--theme-purple-500-rgb), 0.22);
+      background: color-mix(in oklch, var(--theme-purple-500) 12%, transparent);
+      border: 1px solid color-mix(in oklch, var(--theme-purple-500) 22%, transparent);
     }
   }
 
-  .modalForm,
+  @at-root .modalForm,
   .confirmBody {
     display: flex;
     flex-direction: column;
     gap: var(--space);
   }
 
-  .fieldGroup {
+  @at-root .fieldGroup {
     display: flex;
     flex-direction: column;
     gap: 8px;
   }
 
-  .fieldLabel {
+  @at-root .fieldLabel {
     font-size: 0.92rem;
     font-weight: 600;
   }
 
-  .fieldHint {
+  @at-root .fieldHint {
     margin: 0;
     color: var(--foreground-secondary);
     line-height: 1.7;
   }
 
-  .checkboxRow {
+  @at-root .checkboxRow {
     display: flex;
     align-items: center;
     gap: 10px;
@@ -296,7 +297,7 @@
     color: var(--foreground-secondary);
   }
 
-  .textInput {
+  @at-root .textInput {
     width: 100%;
     padding: 0.9rem 1rem;
     background: rgba(var(--background-secondary-rgb), 0.62);
@@ -310,8 +311,8 @@
 
     &:focus {
       outline: none;
-      border-color: rgba(var(--theme-purple-500-rgb), 0.8);
-      box-shadow: 0 0 0 4px rgba(var(--theme-purple-500-rgb), 0.12);
+      border-color: color-mix(in oklch, var(--theme-purple-500) 80%, transparent);
+      box-shadow: 0 0 0 4px color-mix(in oklch, var(--theme-purple-500) 12%, transparent);
       background: rgba(var(--background-rgb), 0.82);
     }
   }

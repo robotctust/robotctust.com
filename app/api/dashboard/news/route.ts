@@ -1,4 +1,3 @@
-import { NextRequest } from 'next/server'
 import {
   requireDashboardAccess,
   toRouteErrorResponse,
@@ -6,8 +5,7 @@ import {
 import { createAdminClient } from '@/app/utils/supabase/admin'
 import { getDashboardPosts } from '@/app/utils/postService'
 import { serializePost } from '@/app/types/serialized'
-import { revalidateUpdatePage } from '@/app/action/revalidate'
-import { PostCategory } from '@/app/types/post'
+import { POST_CATEGORIES } from '@/app/types/post'
 
 const BASE62 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
 
@@ -40,74 +38,39 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+/**
+ * [POST] 新增文章：先建立一篇空白草稿，前端拿到 postId 後跳到編輯頁
+ * （草稿從沒發布過，網址 slug 之後在編輯頁還能改）
+ */
+export async function POST() {
   try {
     const actor = await requireDashboardAccess('news')
-
-    const body = await request.json()
-    const { title, contentMarkdown, category, coverImageUrl, slug: customSlug } = body as {
-      title: string
-      contentMarkdown: string
-      category: PostCategory
-      coverImageUrl?: string | null
-      slug?: string
-    }
-
-    if (!title?.trim()) {
-      return Response.json({ error: '請提供文章標題' }, { status: 400 })
-    }
-    if (!contentMarkdown?.trim()) {
-      return Response.json({ error: '請提供文章內容' }, { status: 400 })
-    }
-    if (!category) {
-      return Response.json({ error: '請選擇文章分類' }, { status: 400 })
-    }
-
     const admin = createAdminClient()
 
-    // 查詢作者顯示名稱
+    // 作者顯示名稱快照（刪除帳號時會改成「已刪除的使用者」）
     const { data: userRow } = await admin
       .from('users')
       .select('display_name')
       .eq('id', actor.userId)
       .maybeSingle()
 
-    const authorDisplayName = userRow?.display_name || actor.userId
-
-    // 決定文章 ID
-    let postId: string
-    if (customSlug?.trim()) {
-      const slugValue = customSlug.trim()
-      const { data: existing } = await admin.from('posts').select('id').eq('id', slugValue).maybeSingle()
-      if (existing) {
-        return Response.json({ error: '此 slug 已被使用，請選擇其他名稱' }, { status: 409 })
-      }
-      postId = slugValue
-    } else {
-      postId = await generateUniqueSlug(admin)
-    }
-
+    const postId = await generateUniqueSlug(admin)
     const now = new Date().toISOString()
     const { error } = await admin.from('posts').insert({
       id: postId,
-      title: title.trim(),
-      content_markdown: contentMarkdown.trim(),
-      category,
-      cover_image_url: coverImageUrl ?? null,
+      title: '',
+      category: POST_CATEGORIES[0],
+      status: 'draft',
       author_id: actor.userId,
-      author_display_name: authorDisplayName,
-      status: 'published',
+      author_display_name: userRow?.display_name || actor.userId,
       created_at: now,
       updated_at: now,
-      published_at: now,
     })
 
     if (error) {
-      console.error('Error inserting post:', error)
-      return Response.json({ error: '建立文章失敗' }, { status: 500 })
+      console.error('Error creating draft:', error)
+      return Response.json({ error: '建立草稿失敗' }, { status: 500 })
     }
-
-    await revalidateUpdatePage()
 
     return Response.json({ postId }, { status: 201 })
   } catch (error) {

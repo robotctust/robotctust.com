@@ -3,16 +3,13 @@ import type { ReactNode } from 'react'
 import styles from './post-detail.module.scss'
 
 // utils
-import {
-  metadata,
-  formatFirebaseTimestampToISO,
-  generateDescriptionFromMarkdown,
-} from '@/app/utils/metadata'
+import { metadata, formatFirebaseTimestampToISO } from '@/app/utils/metadata'
 import {
   getAllPosts,
   getPostById,
   getAdjacentPosts,
   getRelatedPosts,
+  getPostExcerpt,
   type AdjacentPost,
 } from '@/app/utils/postService'
 import { getTranslations } from 'next-intl/server'
@@ -20,7 +17,7 @@ import { getTranslations } from 'next-intl/server'
 // components
 import Page from '@/app/components/page/Page'
 import NewsDetailClient from './NewsDetailClient'
-import { MarkdownContent } from '@/app/components/Markdown'
+import RichTextContent from '@/app/components/RichText/RichTextContent'
 
 // types
 import { Post } from '@/app/types/post'
@@ -54,14 +51,14 @@ export default async function NewsDetailPage({
   let olderPost: AdjacentPost | null = null
   let newerPost: AdjacentPost | null = null
   let relatedPosts: AdjacentPost[] = []
-  // 在 server 端預先渲染的 Markdown 內文，透過 children 傳給 client 元件
+  // 在 server 端預先渲染的內文，透過 children 傳給 client 元件
   let contentNode: ReactNode = null
 
   try {
     const post = await getPostById(slug)
     if (post) {
       initialPost = serializePost(post)
-      contentNode = <MarkdownContent content={post.contentMarkdown} />
+      contentNode = <RichTextContent content={post.content} />
       const adjacent = await getAdjacentPosts(post.publishedAt)
       olderPost = adjacent.older
       newerPost = adjacent.newer
@@ -128,7 +125,7 @@ export async function generateMetadata({
         category: categoryLabel,
       }),
       description:
-        generateDescriptionFromMarkdown(post.contentMarkdown, 160) ||
+        getPostExcerpt(post.contentText, 160) ||
         t('detail.meta.descriptionTemplate', {
           title: post.title,
           author: post.authorDisplayName,
@@ -140,7 +137,7 @@ export async function generateMetadata({
       image: post.coverImageUrl || undefined,
       url: `/news/${slug}`,
       type: 'article',
-      publishedTime: formatFirebaseTimestampToISO(post.createdAt),
+      publishedTime: formatFirebaseTimestampToISO(post.publishedAt ?? post.createdAt),
       modifiedTime: formatFirebaseTimestampToISO(post.updatedAt),
       authors: [{ name: post.authorDisplayName }],
       category: categoryLabel,

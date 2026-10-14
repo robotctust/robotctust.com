@@ -28,7 +28,7 @@
     }
 
     > .button {
-      @include mixins.button('secondary', 'normal');
+      @include mixins.button('normal', 'normal');
       @include mixins.flexbox(row, center, center);
       gap: 6px;
       font-weight: 500;
@@ -52,9 +52,8 @@
       }
 
       &:hover {
-        @include mixins.hover-scale-effect(1.02);
         background: var(--background-secondary);
-        border-color: var(--foreground-300);
+        border-color: var(--border-hover);
       }
 
       &:disabled {
@@ -96,7 +95,7 @@
   z-index: 1;
   position: relative;
   width: 100%;
-  @include mixins.hover-scale-effect(1.02);
+  @include mixins.interactive('surface');
   @include mixins.border-radius(6px);
 
   &.active {
@@ -134,12 +133,12 @@
 
     &:focus {
       outline: none;
-      border-color: var(--foreground-900);
+      border-color: var(--border-hover);
       background: var(--background-secondary);
     }
 
     &.open {
-      border-color: var(--foreground-900);
+      border-color: var(--border-hover);
       background: var(--background-secondary);
       @include mixins.border-radius(8px 8px 0 0);
     }
@@ -177,14 +176,14 @@
     left: 0;
     right: 0;
     background: var(--background);
-    border: 1px solid var(--foreground-900);
+    border: 1px solid var(--border);
     border-top: none;
     @include mixins.border-radius(0 0 8px 8px);
     box-shadow: 0 4px 12px var(--shadow-color);
     overflow-y: auto;
 
     &:hover {
-      border: 1px solid var(--foreground-800);
+      border: 1px solid var(--border-hover);
       border-top: none;
     }
 
@@ -299,7 +298,7 @@
 //* Portal dropdown（position: fixed，由 JS 注入 top/left/width）
 .dropdownPortal {
   background: var(--background);
-  border: 1px solid var(--foreground-900);
+  border: 1px solid var(--border);
   border-top: none;
   @include mixins.border-radius(0 0 8px 8px);
   box-shadow: 0 4px 12px var(--shadow-color);
@@ -308,7 +307,7 @@
   @include mixins.animation-container(fadeIn 0.2s ease-out);
 
   &:hover {
-    border: 1px solid var(--foreground-800);
+    border: 1px solid var(--border-hover);
     border-top: none;
   }
 
@@ -328,7 +327,7 @@
   background: var(--background-secondary);
 
   > .clearButton {
-    @include mixins.button('secondary', 'small');
+    @include mixins.button('normal', 'small');
     width: 100%;
     font-size: 0.85rem;
     color: var(--danger);

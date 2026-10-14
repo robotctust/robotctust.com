@@ -4,11 +4,14 @@ import { useState } from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import {
   faCalendarDays,
+  faCopy,
+  faFileExport,
+  faFileImport,
   faPencil,
   faPlus,
   faTrash,
 } from '@fortawesome/free-solid-svg-icons'
-import { Modal } from '@/app/[locale]/dashboard/components/Modal'
+import { Modal } from '@/app/components/Modal'
 import { Semester, SemesterTreeNode } from '@/app/types/course-admin'
 import {
   fetchCurriculumOverview,
@@ -16,6 +19,7 @@ import {
   requestJson,
 } from '../client-utils'
 import styles from './semesters.module.scss'
+import CourseBundleDialog, { CourseBundleMode } from './ui/CourseBundleDialog/CourseBundleDialog'
 
 type ModalState =
   | null
@@ -35,6 +39,10 @@ export default function SemestersManagerClient({
   const [deleteTarget, setDeleteTarget] = useState<SemesterTreeNode | null>(null)
   const [name, setName] = useState('')
   const [isActive, setIsActive] = useState(false)
+  const [bundleDialog, setBundleDialog] = useState<{
+    mode: CourseBundleMode
+    semester: SemesterTreeNode
+  } | null>(null)
 
   async function load() {
     setLoading(true)
@@ -223,6 +231,28 @@ export default function SemestersManagerClient({
                 <p>建立時間：{formatDashboardDate(semester.created_at)}</p>
               </div>
               <div className={styles.sectionActions}>
+                <button
+                  className={styles.subtleButton}
+                  onClick={() => setBundleDialog({ mode: 'copy', semester })}
+                >
+                  <FontAwesomeIcon icon={faCopy} />
+                  <span>從其他學期複製</span>
+                </button>
+                <button
+                  className={styles.subtleButton}
+                  onClick={() => setBundleDialog({ mode: 'import', semester })}
+                >
+                  <FontAwesomeIcon icon={faFileImport} />
+                  <span>匯入</span>
+                </button>
+                <button
+                  className={styles.subtleButton}
+                  onClick={() => setBundleDialog({ mode: 'export', semester })}
+                  disabled={semester.stats.courseCount === 0}
+                >
+                  <FontAwesomeIcon icon={faFileExport} />
+                  <span>匯出</span>
+                </button>
                 <button className={styles.subtleButton} onClick={() => openEdit(semester)}>
                   <FontAwesomeIcon icon={faPencil} />
                   <span>編輯</span>
@@ -297,6 +327,20 @@ export default function SemestersManagerClient({
           </label>
         </div>
       </Modal>
+
+      {bundleDialog ? (
+        <CourseBundleDialog
+          mode={bundleDialog.mode}
+          semester={bundleDialog.semester}
+          semesters={semesters}
+          onClose={() => setBundleDialog(null)}
+          onImported={(courseIds) => {
+            setBundleDialog(null)
+            setMessage(`已建立 ${courseIds.length} 堂課程（草稿），請到課程庫檢查後再發布`)
+            void load()
+          }}
+        />
+      ) : null}
 
       <Modal
         isOpen={deleteTarget !== null}

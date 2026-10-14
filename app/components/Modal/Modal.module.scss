@@ -6,7 +6,7 @@
   left: 0;
   right: 0;
   bottom: 0;
-  z-index: 9999;
+  z-index: var(--z-modal);
   background: rgba(var(--background-rgb), 0.5);
   @include mixins.flexbox(column, center, center);
   padding: 24px;
@@ -38,7 +38,7 @@
     background: rgba(var(--background-secondary-rgb), 0.5);
     @include mixins.glass-blur(32px);
     border: 1px solid var(--border);
-    @include mixins.border-radius(16px);
+    border-radius: var(--radius-lg);
     @include mixins.flexbox(column, start, stretch);
     overflow: hidden;
     @include mixins.transform-container(scale(0.95));
@@ -69,41 +69,16 @@
 
       > h2 {
         margin: 0;
-        font-size: 1.25rem;
+        font-size: var(--font-size-lg);
         font-weight: 600;
         color: var(--foreground);
       }
 
       > .closeButton {
-        @include mixins.flexbox(row, center, center);
-        width: 32px;
-        height: 32px;
-        padding: 0;
-        background: transparent;
-        border: 1px solid transparent;
-        color: var(--foreground-tertiary);
-        cursor: pointer;
-        @include mixins.border-radius(8px);
-        @include mixins.transition(var(--transition-default));
-
-        &:hover:not(:disabled) {
-          border: 1px solid var(--border);
-          background: var(--background-tertiary);
-          color: var(--foreground);
-        }
-
-        &:focus-visible {
-          outline: 2px solid rgba(var(--theme-purple-500-rgb), 0.55);
-          outline-offset: 2px;
-        }
-
-        &:disabled {
-          opacity: 0.5;
-          cursor: not-allowed;
-        }
+        @include mixins.icon-button('ghost', 'small');
 
         svg {
-          font-size: 1.25rem;
+          font-size: var(--font-size-lg);
         }
       }
     }
@@ -117,9 +92,20 @@
 
       > .formContent {
         @include mixins.flexbox(column, start, stretch);
-        gap: var(--space);
+        gap: var(--space-2x);
         width: 100%;
       }
+
+      // 處理中鎖定的表單欄位（各頁自訂的輸入框不一定有 disabled 樣式）
+      :disabled {
+        opacity: var(--disabled-opacity);
+        cursor: not-allowed;
+      }
+    }
+
+    // 小型確認對話框：段落之間不用表單那麼大的間距
+    &.compact > .content > .formContent {
+      gap: var(--space);
     }
 
     > .footer {

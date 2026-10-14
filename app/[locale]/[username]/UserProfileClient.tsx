@@ -13,7 +13,7 @@ import { PublicUserProfile } from '@/app/types/user'
 
 // components
 import FollowListModal from './FollowListModal'
-import { ConfirmModal } from '@/app/components/Settings'
+import { ConfirmModal } from '@/app/components/Modal'
 
 // actions
 import { followUser, unfollowUser, fetchFollowState } from './followActions'

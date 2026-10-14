@@ -14,8 +14,8 @@
 
   // 單條模式：標準水平滾動
   &.single {
-    border-top: 1px solid var(--foreground-950);
-    border-bottom: 1px solid var(--foreground-950);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
 
     .track {
       transform: none;
@@ -87,8 +87,8 @@
   display: flex;
   padding: 0.75rem 0;
   background: var(--background);
-  border-top: 1px solid var(--foreground-950);
-  border-bottom: 1px solid var(--foreground-950);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
   overflow: hidden;
   width: 100%;
   @include mixins.transition(var(--transition-default));

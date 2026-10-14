@@ -1,0 +1,45 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+// ConfirmModal 內容（容器 / 標題 / footer 由共用 Modal 提供）
+.desc {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--foreground-secondary);
+  line-height: 1.6;
+}
+
+.warning {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  color: var(--danger-text);
+}
+
+// 引導步驟（有序清單）、後果條列
+.list {
+  margin: 0;
+  padding-left: 1.2rem;
+  @include mixins.flexbox(column, flex-start, stretch);
+  gap: var(--space-0-5x);
+
+  > li {
+    font-size: var(--font-size-sm);
+    color: var(--foreground-secondary);
+    line-height: 1.55;
+  }
+}
+
+.confirmLabel {
+  font-size: var(--font-size-sm);
+  color: var(--foreground-secondary);
+  line-height: 1.5;
+}
+
+.input {
+  @include mixins.field;
+
+  &.danger:focus {
+    border-color: var(--danger);
+    box-shadow: 0 0 0 3px var(--danger-soft);
+  }
+}

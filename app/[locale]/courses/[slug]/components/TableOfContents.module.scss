@@ -79,12 +79,12 @@
 
     a {
       display: block;
-      padding: var(--space-1x) 0;
+      padding: var(--space) 0;
       color: var(--foreground-tertiary);
       font-size: 0.95rem;
       line-height: 1.4;
       text-decoration: none;
-      @include mixins.transition(var(--transition-fast));
+      @include mixins.transition(all var(--transition-duration-fast) var(--transition-bezier));
       text-overflow: ellipsis;
       overflow: hidden;
       white-space: nowrap;

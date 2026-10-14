@@ -1,12 +1,12 @@
 'use client'
 
 import { useState, useMemo } from 'react'
-import { Link } from '@/i18n/navigation'
+import { Link, useRouter } from '@/i18n/navigation'
 import { useTranslations } from 'next-intl'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlus, faEdit, faTrash } from '@fortawesome/free-solid-svg-icons'
+import { faPlus, faEdit, faTrash, faSpinner } from '@fortawesome/free-solid-svg-icons'
 import { useToast } from '@/app/contexts/ToastContext'
-import { Modal } from '@/app/[locale]/dashboard/components/Modal'
+import { Modal } from '@/app/components/Modal'
 import { Table, TableColumn } from '@/app/components/Table'
 import {
   POST_CATEGORIES,
@@ -23,6 +23,7 @@ export default function NewsListClient({
   initialPosts: SerializedPost[]
 }) {
   const { showToast } = useToast()
+  const router = useRouter()
   const t = useTranslations('Dashboard.News')
   const tCategories = useTranslations('News.categories')
   const [posts, setPosts] = useState<SerializedPost[]>(initialPosts)
@@ -30,6 +31,21 @@ export default function NewsListClient({
   const [deleteTarget, setDeleteTarget] = useState<SerializedPost | null>(null)
   const [bulkTargets, setBulkTargets] = useState<SerializedPost[] | null>(null)
   const [deleting, setDeleting] = useState(false)
+  const [creating, setCreating] = useState(false)
+
+  // 新增：先建立空白草稿再進編輯頁（超過一天沒寫的空白草稿會在列表載入時清掉）
+  async function createDraft() {
+    setCreating(true)
+    try {
+      const res = await fetch('/api/dashboard/news', { method: 'POST' })
+      const data = await res.json().catch(() => ({}))
+      if (!res.ok) throw new Error(data.error || t('createError'))
+      router.push(`/dashboard/news/${data.postId}`)
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : t('createError'), 'error')
+      setCreating(false)
+    }
+  }
 
   async function loadPosts() {
     setLoading(true)
@@ -120,10 +136,22 @@ export default function NewsListClient({
         render: (post) => (
           <Link
             href={`/dashboard/news/${post.id}`}
-            className={styles.titleLink}
+            className={`${styles.titleLink} ${post.title ? '' : styles.untitled}`}
           >
-            {post.title}
+            {post.title || t('untitled')}
           </Link>
+        ),
+      },
+      {
+        key: 'status',
+        header: t('columns.status'),
+        sortable: true,
+        sortAccessor: (post) => post.status,
+        nowrap: true,
+        render: (post) => (
+          <span className={`${styles.statusBadge} ${post.status === 'published' ? styles.published : ''}`}>
+            {t(`status.${post.status}`)}
+          </span>
         ),
       },
       {
@@ -228,10 +256,15 @@ export default function NewsListClient({
       <header className={styles.header}>
         <h1 className={styles.title}>{t('title')}</h1>
         <div className={styles.controls}>
-          <Link href="/dashboard/news/new" className={styles.newNewsButton}>
-            <FontAwesomeIcon icon={faPlus} />
-            <span>{t('newPost')}</span>
-          </Link>
+          <button
+            type="button"
+            className={styles.newNewsButton}
+            onClick={() => void createDraft()}
+            disabled={creating}
+          >
+            <FontAwesomeIcon icon={creating ? faSpinner : faPlus} spin={creating} />
+            <span>{creating ? t('creating') : t('newPost')}</span>
+          </button>
         </div>
       </header>
 
@@ -264,13 +297,14 @@ export default function NewsListClient({
         maxWidth="480px"
         footer={
           <>
-            <button onClick={() => setDeleteTarget(null)} disabled={deleting}>
+            <button type="button" className="secondary-button" onClick={() => setDeleteTarget(null)} disabled={deleting}>
               {t('deleteModal.cancel')}
             </button>
             <button
               onClick={() => void confirmDelete()}
               disabled={deleting}
-              data-danger="true"
+              type="button"
+              className="danger-button"
             >
               {deleting ? t('deleteModal.deleting') : t('deleteModal.confirm')}
             </button>
@@ -292,13 +326,14 @@ export default function NewsListClient({
         maxWidth="480px"
         footer={
           <>
-            <button onClick={() => setBulkTargets(null)} disabled={deleting}>
+            <button type="button" className="secondary-button" onClick={() => setBulkTargets(null)} disabled={deleting}>
               {t('bulkDeleteModal.cancel')}
             </button>
             <button
               onClick={() => void confirmBulkDelete()}
               disabled={deleting}
-              data-danger="true"
+              type="button"
+              className="danger-button"
             >
               {deleting
                 ? t('bulkDeleteModal.deleting')

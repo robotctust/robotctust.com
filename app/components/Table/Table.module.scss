@@ -26,27 +26,16 @@
   .searchIcon {
     position: absolute;
     left: 12px;
-    font-size: 0.85rem;
+    font-size: var(--font-size-sm);
     color: var(--foreground-secondary);
     pointer-events: none;
   }
 
   .searchInput {
-    height: 40px;
-    padding: 6px 12px 6px 34px;
-    border: 1px solid var(--border);
-    @include mixins.border-radius(9px);
-    background: var(--background);
-    color: var(--foreground);
+    @include mixins.field;
     width: 260px;
     max-width: 100%;
-    font-size: 0.9rem;
-
-    &:focus {
-      outline: none;
-      background: var(--background-secondary);
-      border-color: var(--border-hover);
-    }
+    padding-left: 34px;
   }
 }
 
@@ -58,20 +47,8 @@
 }
 
 .filterSelect {
-  height: 40px;
-  padding: 6px 12px;
-  border: 1px solid var(--border);
-  @include mixins.border-radius(9px);
-  background: var(--background);
-  color: var(--foreground);
-  font-size: 0.9rem;
-  cursor: pointer;
-
-  &:focus {
-    outline: none;
-    background: var(--background-secondary);
-    border-color: var(--border-hover);
-  }
+  @include mixins.select;
+  width: auto;
 }
 
 /* =========================================
@@ -85,11 +62,11 @@
   flex-wrap: wrap;
   padding: 8px 16px;
   border: 1px solid var(--border-hover);
-  @include mixins.border-radius(12px);
-  background: rgba(var(--background-secondary-rgb), 0.6);
+  border-radius: var(--radius-md);
+  background: var(--background-secondary);
 
   .selectionCount {
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
     font-weight: 600;
     color: var(--foreground);
   }
@@ -110,10 +87,32 @@
    ========================================= */
 .tableWrap {
   border: 1px solid var(--border);
-  @include mixins.border-radius(16px);
-  overflow: auto;
-  background: rgba(var(--background-rgb), 0.4);
+  border-radius: var(--radius-lg);
+  overflow-x: auto;
+  background: var(--background);
+
+  // 自訂細捲軸：macOS 預設的浮動捲軸會疊在最後一列上，自訂後改佔下方一條 8px 的空間、不擋內容
+  &::-webkit-scrollbar {
+    height: 8px;
+  }
+  &::-webkit-scrollbar-track {
+    margin: 0 var(--radius-lg);
+    background: transparent;
+  }
+  &::-webkit-scrollbar-thumb {
+    border-radius: var(--radius-full);
+    background: color-mix(in srgb, var(--foreground) 20%, transparent);
+  }
+  @supports not selector(::-webkit-scrollbar) {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--foreground) 20%, transparent) transparent;
+  }
 }
+
+// 表頭、hover 等底色都用不透明色：固定在右側的「更多」欄底下會有內容捲過去
+$header-bg: color-mix(in oklch, var(--background-secondary) 50%, var(--background));
+$hover-bg: color-mix(in oklch, var(--background-secondary) 30%, var(--background));
+$selected-bg: color-mix(in oklch, var(--background-secondary) 60%, var(--background));
 
 .table {
   width: 100%;
@@ -125,13 +124,14 @@
     padding: 11px 18px;
     text-align: left;
     border-bottom: 1px solid var(--border);
+    background: var(--background);
   }
 
   th {
-    font-size: 0.8rem;
+    font-size: var(--font-size-xs);
     font-weight: 600;
     color: var(--foreground-secondary);
-    background: rgba(var(--background-secondary-rgb), 0.5);
+    background: $header-bg;
     text-transform: uppercase;
     letter-spacing: 0.05em;
     white-space: nowrap;
@@ -147,7 +147,7 @@
   }
 
   td {
-    font-size: 0.9rem;
+    font-size: var(--font-size-sm);
     color: var(--foreground);
   }
 
@@ -156,7 +156,7 @@
   }
 
   tbody tr:hover td {
-    background: rgba(var(--background-secondary-rgb), 0.3);
+    background: $hover-bg;
   }
 
   .clickableRow {
@@ -164,8 +164,31 @@
   }
 
   .selectedRow td {
-    background: rgba(var(--background-secondary-rgb), 0.5);
+    background: $selected-bg;
   }
+
+  // 「更多」欄：固定在最右側
+  .actionsCell {
+    position: sticky;
+    right: 0;
+    z-index: 1;
+    width: 1%;
+    padding: 0 var(--space-0-75x);
+    text-align: center;
+  }
+}
+
+.overflowing .actionsCell {
+  box-shadow: inset 1px 0 0 var(--border);
+}
+
+.visuallyHidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
 }
 
 .headerContent {
@@ -175,7 +198,7 @@
 }
 
 .sortIcon {
-  font-size: 0.7rem;
+  font-size: var(--font-size-xs);
   opacity: 0.35;
   transition: opacity var(--transition-duration) var(--transition-bezier-fast);
 }
@@ -237,8 +260,8 @@
 .checkboxBox {
   width: 18px;
   height: 18px;
-  border: 1.5px solid var(--border);
-  @include mixins.border-radius(5px);
+  border: 1.5px solid var(--border-hover);
+  border-radius: var(--radius-xs);
   background: var(--background);
   flex-shrink: 0;
   transition:
@@ -258,7 +281,7 @@
   padding: 48px 24px;
   color: var(--foreground-secondary);
   border: 1px dashed var(--border);
-  @include mixins.border-radius(16px);
+  border-radius: var(--radius-lg);
 }
 
 /* =========================================
@@ -276,24 +299,17 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   color: var(--foreground-secondary);
 }
 
 .pageSizeSelect {
-  height: 32px;
-  padding: 2px 8px;
-  border: 1px solid var(--border);
-  @include mixins.border-radius(8px);
-  background: var(--background);
-  color: var(--foreground);
-  font-size: 0.85rem;
-  cursor: pointer;
-
-  &:focus {
-    outline: none;
-    border-color: var(--border-hover);
-  }
+  @include mixins.select;
+  width: auto;
+  min-height: 32px;
+  padding-left: 10px;
+  padding-right: 30px;
+  background-position: right 10px center;
 }
 
 .pageControl {
@@ -303,28 +319,10 @@
 }
 
 .pageInfo {
-  font-size: 0.85rem;
+  font-size: var(--font-size-sm);
   color: var(--foreground-secondary);
 }
 
 .pageButton {
-  @include mixins.flexbox(row, center, center);
-  width: 32px;
-  height: 32px;
-  border: 1px solid var(--border);
-  @include mixins.border-radius(8px);
-  background: var(--background);
-  color: var(--foreground);
-  cursor: pointer;
-  @include mixins.transition();
-
-  &:hover:not(:disabled) {
-    background: var(--background-secondary);
-    border-color: var(--border-hover);
-  }
-
-  &:disabled {
-    opacity: 0.4;
-    cursor: not-allowed;
-  }
+  @include mixins.icon-button('secondary', 'small');
 }

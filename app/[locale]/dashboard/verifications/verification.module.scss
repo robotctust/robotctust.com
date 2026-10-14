@@ -121,12 +121,12 @@
     font-weight: 600;
 
     &.approved {
-      background: rgba(var(--theme-green-500-rgb), 0.1);
+      background: color-mix(in oklch, var(--theme-green-500) 10%, transparent);
       color: var(--theme-green-600);
     }
 
     &.rejected {
-      background: rgba(var(--theme-red-500-rgb), 0.1);
+      background: color-mix(in oklch, var(--theme-red-500) 10%, transparent);
       color: var(--theme-red-600);
     }
   }
@@ -163,7 +163,7 @@
 
   // 新請求出現時的 highlight 動畫
   @keyframes rowHighlight {
-    0%   { background: rgba(var(--theme-blue-500-rgb), 0.15); }
+    0%   { background: color-mix(in oklch, var(--theme-blue-500) 15%, transparent); }
     100% { background: transparent; }
   }
 
@@ -190,9 +190,9 @@
       }
 
       &:last-child {
-        background: rgba(var(--theme-red-500-rgb), 0.1);
+        background: color-mix(in oklch, var(--theme-red-500) 10%, transparent);
         color: var(--theme-red-600);
-        border: 1px solid rgba(var(--theme-red-500-rgb), 0.2);
+        border: 1px solid color-mix(in oklch, var(--theme-red-500) 20%, transparent);
 
         &:hover {
           background: var(--theme-red-400);
@@ -216,9 +216,9 @@
 .modalDangerButton {
   @include mixins.button('normal', 'normal');
   @include mixins.border-radius(8px);
-  background: rgba(var(--theme-red-500-rgb), 0.1);
+  background: color-mix(in oklch, var(--theme-red-500) 10%, transparent);
   color: var(--theme-red-600);
-  border: 1px solid rgba(var(--theme-red-500-rgb), 0.2);
+  border: 1px solid color-mix(in oklch, var(--theme-red-500) 20%, transparent);
 
   &:hover {
     background: var(--theme-red-400);

@@ -54,7 +54,7 @@
           background-color: rgba(var(--background-secondary-rgb), 0.5);
           @include mixins.border-radius(12px);
           @include mixins.glass-blur;
-          @include mixins.hover-scale-effect(1.025);
+          @include mixins.interactive('surface');
 
           &:hover {
             background-color: rgba(var(--background-tertiary-rgb), 0.5);
@@ -213,7 +213,7 @@
           width: 60px;
           height: 60px;
           background-color: var(--primary);
-          border: 1px solid var(--border-secondary);
+          border: 1px solid var(--border-on-color);
           @include mixins.border-radius(30px);
           color: var(--foreground);
           font-size: 1.5rem;

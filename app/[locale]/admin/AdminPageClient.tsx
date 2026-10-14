@@ -9,6 +9,7 @@ import { AuthContext } from '@/app/contexts/AuthContext'
 import { batchSyncCompetitions } from '@/app/utils/competitionService'
 import { competitions } from '@/app/[locale]/competitions/Competitions'
 import { useToast } from '@/app/contexts/ToastContext'
+import { useConfirm } from '@/app/components/Modal'
 
 export default function AdminPageClient() {
   const { showToast } = useToast()
@@ -24,12 +25,13 @@ export default function AdminPageClient() {
     loading: authLoading,
   } = context
 
+  const { confirm, dialog } = useConfirm()
   const [syncStatus, setSyncStatus] = useState<'idle' | 'syncing' | 'success' | 'error'>('idle')
   const [syncResult, setSyncResult] = useState<{ success: number; errors: string[] } | null>(null)
 
   const handleSyncCompetitions = async () => {
     if (!supabaseUser) return
-    if (!window.confirm(`確定要同步 ${competitions.length} 個競賽到 Firestore 嗎？`)) return
+    if (!(await confirm({ title: `確定要同步 ${competitions.length} 個競賽到 Firestore 嗎？` }))) return
 
     try {
       setSyncStatus('syncing')
@@ -116,6 +118,7 @@ export default function AdminPageClient() {
           </div>
         </section>
       </div>
+      {dialog}
     </Page>
   )
 }

@@ -51,7 +51,7 @@
   width: calc(100% - var(--space-2x));
   @include mixins.transition;
 
-  @include mixins.respond-by-max-width(860px) {
+  @include mixins.respond-by-max-width(859px) {
     max-width: 280px;
   }
   @include mixins.respond-by-max-width(504px) {
@@ -132,7 +132,7 @@
 .aside {
   z-index: 1000;
   position: sticky;
-  top: var(--header-height, 72px);
+  top: var(--header-height);
   width: 100%;
   max-width: 280px;
   background: rgba(var(--background-rgb), 0.5);
@@ -240,15 +240,15 @@
         opacity: 0.8;
       }
 
+      // hover 只換底色；選中項目用較深的底色，邊框只輕輕勾勒
       &:hover {
         background: var(--background-secondary);
-        border-color: var(--border-hover);
         color: var(--foreground);
       }
 
       &.active {
         background: var(--background-tertiary);
-        border-color: var(--border-hover);
+        border-color: var(--border);
         color: var(--foreground);
 
         svg {
@@ -282,11 +282,12 @@
 
   @include mixins.respond-by-min-width(860px) {
     height: fit-content;
-    max-height: calc(100vh - 72px - var(--space-2x));
+    max-height: calc(100vh - var(--header-height) - var(--space-2x));
 
+    // 後台沒有 header，兩個變數都被覆寫成 var(--space)，捲動時位置不變
     &.headerCompact {
-      top: 48px;
-      max-height: calc(100vh - 48px - var(--space-2x));
+      top: var(--header-height-compact);
+      max-height: calc(100vh - var(--header-height-compact) - var(--space-2x));
     }
   }
 }

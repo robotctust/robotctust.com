@@ -16,5 +16,5 @@ export default async function EditNewsPage({
   // 文章在伺服器抓好直接帶入編輯器，不必先顯示「載入中」再打 API
   const post = await getDashboardPostById(postId)
   if (!post) notFound()
-  return <NewsEditorClient post={serializePost(post)} />
+  return <NewsEditorClient post={serializePost(post)} content={post.content} />
 }

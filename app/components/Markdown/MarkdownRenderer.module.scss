@@ -72,6 +72,14 @@
   }
 
   // 有序列表樣式
+  // TipTap 的清單項目與儲存格內容一律包在 <p> 裡（舊 Markdown 則是直接放文字），
+  // 讓這層 <p> 沿用外層的字級與行高、不加段落間距，兩種文章看起來一致
+  :is(li, td, th) > p {
+    margin: 0;
+    font-size: inherit;
+    line-height: inherit;
+  }
+
   ol {
     list-style-type: decimal;
     list-style-position: outside;
@@ -167,8 +175,9 @@
     }
   }
 
-  // 表格樣式
-  .tableWrapper {
+  // 表格樣式（:global 版給 TipTap 編輯器內的表格外框，所見即所得）
+  .tableWrapper,
+  :global(.tableWrapper) {
     overflow-x: auto;
     margin: 1rem 0;
     border: 1px solid var(--border);
@@ -301,6 +310,16 @@
     }
   }
 
+  // 圖片說明文字（TipTap 文章的 image.caption）
+  .imageCaption {
+    align-self: stretch;
+    padding: 0.5rem 1rem;
+    border-top: 1px solid var(--border);
+    color: var(--foreground-secondary);
+    font-size: 0.875rem;
+    text-align: center;
+  }
+
   .markdownImage {
     border-radius: 0.5rem;
     object-fit: contain;
@@ -334,6 +353,7 @@
 
     .imageWrapper {
       display: flex;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
       width: 100%;
@@ -343,11 +363,18 @@
       border-radius: 0;
       background: var(--background);
 
+      // 有說明文字時圖片讓出底部空間
       img {
+        flex: 1 1 0;
+        min-height: 0;
         width: 100%;
         height: 100%;
         object-fit: contain;
         border-radius: 0;
+        // Img 的 progressive 底圖預設 cover（行內樣式），在固定比例的輪播框裡會把直式圖的左右留白填滿；
+        // 改成跟圖片一樣 contain，留白維持空白
+        background-size: contain !important;
+        background-repeat: no-repeat;
       }
     }
   }
@@ -368,7 +395,7 @@
     color: var(--color-white);
     background: transparent;
     @include mixins.border-radius(50%);
-    @include mixins.hover-scale-effect;
+    @include mixins.interactive;
 
     &:hover {
     border: 1px solid var(--border);
@@ -414,16 +441,152 @@
     transform: scale(1.25);
   }
 
+  // 高度隨寬度與影片比例決定（height: 100% 會撐成整篇文章的高度、擋住內文）；
+  // 有 width / height 屬性就照影片比例，沒有則用 16:9
   video {
+    display: block;
     width: 100%;
-    height: 100%;
+    height: auto;
     margin: var(--space-2x) 0;
     border: 1px solid var(--border);
     @include mixins.border-radius(12px);
-    aspect-ratio: 16/9;
-    object-fit: cover;
-    object-position: top;
+    aspect-ratio: auto 16 / 9;
+    object-fit: contain;
+    background: #000;
     flex-shrink: 0;
     overflow: hidden;
+  }
+
+  // 新聞文章的排版（RichTextContent 與編輯器共用，編輯器才會所見即所得）；
+  // 文件、隱私權等其他 Markdown 頁面不套用
+  &.articleContent {
+    h1,
+    h2,
+    h3,
+    h4,
+    h5,
+    h6 {
+      margin-top: var(--space-2x);
+      margin-bottom: var(--space);
+      color: var(--foreground);
+
+      &:first-child {
+        margin-top: 0;
+      }
+    }
+
+    h1 {
+      font-size: 1.75rem;
+      font-weight: 900;
+      border-bottom: 2px solid var(--border);
+      padding-bottom: 8px;
+    }
+
+    h2 {
+      font-size: 1.5rem;
+      font-weight: 700;
+    }
+
+    h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+    }
+
+    h4 {
+      font-size: 1.15rem;
+      font-weight: 700;
+    }
+
+    // 清單項目、儲存格內的 <p> 交給前面的繼承規則；:where 不增加權重，讓 blockquote p 等規則仍能覆蓋
+    // 清單項目與段落同字級（清單內的 <p> 繼承 li）
+    p:where(:not(li > p, td > p, th > p)),
+    li {
+      font-size: 1.1rem;
+      line-height: 1.7;
+
+      @include mixins.respond-to('phone') {
+        font-size: 0.95rem;
+      }
+      @include mixins.respond-to('tablet') {
+        font-size: 1rem;
+      }
+    }
+
+    p:where(:not(li > p, td > p, th > p)) {
+      margin-bottom: var(--space);
+    }
+
+    // 有序、無序清單間距一致：清單與段落同樣的下間距，項目之間留一點空隙
+    ul,
+    ol {
+      margin: 0 0 var(--space);
+
+      li {
+        margin-bottom: 0.5rem;
+      }
+
+      // 巢狀清單
+      :is(ul, ol) {
+        margin: 0.5rem 0 0;
+      }
+    }
+
+    blockquote {
+      position: relative;
+      margin: var(--space-4x) auto;
+      padding: var(--space-2x);
+      border: none;
+      width: fit-content;
+      height: fit-content;
+      background: var(--background);
+
+      p {
+        margin-bottom: 0;
+      }
+
+      &::before {
+        content: '“';
+        position: absolute;
+        left: -2rem;
+        top: calc(var(--space) * -1);
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--foreground-tertiary);
+      }
+      &::after {
+        content: '”';
+        position: absolute;
+        right: -1rem;
+        bottom: calc(var(--space) * -1 - 2rem);
+        font-size: 3rem;
+        font-weight: 900;
+        color: var(--foreground-tertiary);
+      }
+    }
+
+    hr {
+      margin: var(--space-2x) 0;
+      border: none;
+      border-top: 2px solid var(--border);
+    }
+
+    a {
+      text-decoration: none;
+      color: var(--theme-blue-600);
+
+      text-decoration: underline;
+      text-decoration-color: var(--theme-blue-600);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 2px;
+
+      &:hover {
+        color: var(--theme-blue-500);
+        text-decoration-color: var(--theme-blue-500);
+      }
+      &:visited {
+        color: var(--theme-purple-600);
+        text-decoration-color: var(--theme-purple-600);
+      }
+    }
   }
 }

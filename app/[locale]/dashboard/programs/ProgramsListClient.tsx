@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPlus, faCode, faTrash } from '@fortawesome/free-solid-svg-icons'
 import { Program } from '@/app/types/course-admin'
 import { useToast } from '@/app/contexts/ToastContext'
-import { Modal } from '@/app/[locale]/dashboard/components/Modal'
+import { Modal } from '@/app/components/Modal'
 import { Skeleton } from '@/app/components/Skeleton'
 import styles from './programs.module.scss'
 
@@ -131,13 +131,14 @@ export default function ProgramsListClient({
         maxWidth="480px"
         footer={
           <>
-            <button onClick={() => setDeleteTarget(null)} disabled={deleting}>
+            <button type="button" className="secondary-button" onClick={() => setDeleteTarget(null)} disabled={deleting}>
               取消
             </button>
             <button
               onClick={() => void confirmDelete()}
               disabled={deleting}
-              data-danger="true"
+              type="button"
+              className="danger-button"
             >
               {deleting ? '刪除中...' : '確認刪除'}
             </button>

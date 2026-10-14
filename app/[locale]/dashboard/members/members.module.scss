@@ -251,7 +251,7 @@
             margin: 4px 0 0 0;
             font-size: 0.8rem;
             color: var(--theme-purple-500);
-            background: rgba(var(--theme-purple-500-rgb), 0.1);
+            background: color-mix(in oklch, var(--theme-purple-500) 10%, transparent);
             padding: 2px 6px;
             width: fit-content;
             @include mixins.border-radius(4px);
@@ -274,7 +274,7 @@
             &:hover {
               color: var(--theme-red-900);
               background: var(--theme-red-400);
-              border-color: var(--border-hover);
+              border-color: var(--border-on-color-hover);
             }
           }
         }
@@ -297,7 +297,8 @@
   /* =========================================
      Forms & Modals
      ========================================= */
-  .modalForm {
+  // @at-root：這些 class 也用在對話框裡，Modal 以 portal 渲染在 <body> 下、不在頁面容器內，不能依賴外層巢狀
+  @at-root .modalForm {
     display: flex;
     flex-direction: column;
     gap: var(--space);
@@ -344,7 +345,7 @@
     }
   }
 
-  .confirmBody {
+  @at-root .confirmBody {
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -362,7 +363,7 @@
   }
 
   /* Shared Modal Components */
-  .modalActions {
+  @at-root .modalActions {
     display: flex;
     gap: 10px;
     margin-top: 10px;
@@ -373,15 +374,15 @@
   }
 
   /* Button Variants */
-  .primaryButton {
+  @at-root .primaryButton {
     @include mixins.button('primary', 'normal');
   }
 
-  .dangerButton {
+  @at-root .dangerButton {
     @include mixins.button('danger', 'normal');
   }
 
-  .cancelButton {
+  @at-root .cancelButton {
     @include mixins.button('normal', 'normal');
   }
 }

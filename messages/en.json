@@ -163,7 +163,60 @@
       "pageInfo": "{total} items · Page {current} of {totalPages}",
       "prevPage": "Previous page",
       "nextPage": "Next page",
-      "filterAll": "All"
+      "filterAll": "All",
+      "moreActions": "More actions"
+    },
+    "RichTextEditor": {
+      "pastedMediaRemoved": "Images from other posts or web pages were skipped. Please insert images separately.",
+      "undo": "Undo",
+      "redo": "Redo",
+      "blockType": "Block style",
+      "paragraph": "Paragraph",
+      "heading": "Heading {level}",
+      "bold": "Bold",
+      "italic": "Italic",
+      "strike": "Strikethrough",
+      "code": "Inline code",
+      "bulletList": "Bulleted list",
+      "orderedList": "Numbered list",
+      "blockquote": "Quote",
+      "horizontalRule": "Divider",
+      "link": {
+        "label": "Link",
+        "apply": "Apply",
+        "remove": "Remove link",
+        "cancel": "Cancel"
+      },
+      "image": {
+        "insert": "Insert images (select two or more to make a gallery)",
+        "uploading": "Uploading…",
+        "delete": "Delete image",
+        "captionPlaceholder": "Caption (optional)"
+      },
+      "gallery": {
+        "label": "Gallery · {count} images (shown as a carousel)",
+        "add": "Add images",
+        "ungroup": "Split into single images"
+      },
+      "codeBlock": {
+        "label": "Code block",
+        "language": "Language",
+        "plain": "Plain text"
+      },
+      "table": {
+        "insert": "Insert table",
+        "addRow": "Add row",
+        "addColumn": "Add column",
+        "deleteRow": "Delete row",
+        "deleteColumn": "Delete column",
+        "toggleHeader": "Toggle header row",
+        "delete": "Delete table"
+      }
+    },
+    "Modal": {
+      "close": "Close",
+      "confirm": "Confirm",
+      "cancel": "Cancel"
     }
   },
   "Login": {
@@ -752,7 +805,8 @@
         "author": "Author",
         "createdAt": "Created",
         "updatedAt": "Updated",
-        "actions": "Actions"
+        "actions": "Actions",
+        "status": "Status"
       },
       "actions": {
         "edit": "Edit post",
@@ -779,6 +833,64 @@
         "deletedError": "Delete failed",
         "deletedBulk": "Deleted {count} posts",
         "deletedPartial": "{success} deleted, {failed} failed"
+      },
+      "editor": {
+        "back": "Posts",
+        "titleDraft": "Edit draft",
+        "titlePublished": "Edit post",
+        "status": {
+          "draft": "Draft",
+          "published": "Published"
+        },
+        "saveState": {
+          "unsaved": "Unsaved changes",
+          "saved": "Saved {time}",
+          "waitingUploads": "Waiting for images to upload…",
+          "saving": "Saving…"
+        },
+        "actions": {
+          "saveDraft": "Save draft",
+          "publish": "Publish",
+          "update": "Update",
+          "unpublish": "Unpublish",
+          "view": "View post"
+        },
+        "fields": {
+          "title": "Title",
+          "titlePlaceholder": "Post title…",
+          "category": "Category",
+          "slug": "URL",
+          "slugHint": "Lowercase letters, numbers and hyphens; can't be changed after publishing",
+          "slugLocked": "This post has been published, so its URL is fixed",
+          "cover": "Cover image",
+          "coverHint": "Click or drop an image here",
+          "coverLimit": "Up to 20MB, JPG / PNG / WebP",
+          "coverChange": "Change image",
+          "coverRemove": "Remove image",
+          "coverAlt": "Cover preview"
+        },
+        "contentPlaceholder": "Start writing… (Markdown shortcuts work too: ## heading, - list, ``` code)",
+        "confirmLeave": "Your unsaved changes will be lost.",
+        "confirmLeaveTitle": "Discard unsaved changes?",
+        "confirmLeaveAction": "Leave",
+        "confirmUnpublish": "The post will be removed from the site and turned back into a draft.",
+        "confirmUnpublishTitle": "Unpublish this post?",
+        "toast": {
+          "saved": "Draft saved",
+          "published": "Post published",
+          "updated": "Post updated",
+          "unpublished": "Unpublished; the post is a draft again",
+          "error": "Couldn't save, please try again",
+          "coverTooLarge": "Images can't exceed 20MB",
+          "uploadFailed": "Couldn't upload “{name}”: {message}"
+        }
+      },
+      "untitled": "(Untitled draft)",
+      "creating": "Creating…",
+      "createError": "Couldn't create a draft",
+      "status": {
+        "draft": "Draft",
+        "published": "Published"
       }
     }
   },

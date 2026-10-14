@@ -2,22 +2,31 @@
 
 /* =========================================
    Editor Layout
+   獨立頁面（不顯示後台側欄）：header 與背景同層，
+   左欄文章設定（固定不捲動）、右欄內文（隨整頁捲動，工具列固定在上方）
    ========================================= */
 .editorPage {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  gap: var(--space);
+  gap: var(--space-2x);
+  padding-top: var(--space);
+
+  // 後台容器在窄螢幕為側欄開關按鈕預留 44px，這頁沒有側欄
+  @include mixins.respond-by-max-width(859px) {
+    margin-top: -44px;
+  }
+
+  @include mixins.respond-to('phone') {
+    gap: var(--space);
+  }
 }
 
 .editorHeader {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--space);
-  padding: var(--space) var(--space-2x);
-  border-bottom: 1px solid var(--border);
-  flex-shrink: 0;
 
   .headerLeft {
     display: flex;
@@ -31,6 +40,7 @@
       color: var(--foreground-secondary);
       text-decoration: none;
       font-size: 0.9rem;
+      white-space: nowrap;
       padding: 6px 12px;
       border-radius: 8px;
       transition: background 0.15s;
@@ -39,12 +49,39 @@
         background: rgba(var(--foreground-rgb), 0.06);
         color: var(--foreground);
       }
+
+      // 手機只留箭頭，文字保留給螢幕閱讀器
+      @include mixins.respond-to('phone') {
+        span {
+          position: absolute;
+          width: 1px;
+          height: 1px;
+          overflow: hidden;
+          clip-path: inset(50%);
+          white-space: nowrap;
+        }
+      }
     }
 
     h1 {
       margin: 0;
+      white-space: nowrap;
       font-size: 1.2rem;
       font-weight: 700;
+    }
+
+    .saveState {
+      color: var(--foreground-tertiary);
+      font-size: 0.8rem;
+      white-space: nowrap;
+
+      &.unsaved {
+        color: var(--orange-500);
+      }
+
+      @include mixins.respond-to('phone') {
+        display: none;
+      }
     }
   }
 
@@ -57,32 +94,58 @@
 
 .editorBody {
   display: grid;
-  grid-template-columns: 300px 1fr;
-  flex: 1;
-  min-height: 0;
-  overflow: hidden;
+  grid-template-columns: 300px minmax(0, 1fr);
+  align-items: start;
+  gap: var(--space-2x);
 
-  @include mixins.respond-to('tablet') {
-    grid-template-columns: 1fr;
-    overflow: auto;
+  // 平板與手機都改成單欄（respond-to('tablet') 不含手機寬度）
+  @include mixins.respond-by-max-width(1024px) {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+// 懸浮卡片：與後台其他卡片同樣的外框、圓角與 hover 狀態
+@mixin card {
+  background: var(--background);
+  border: 1px solid var(--border);
+  @include mixins.border-radius(16px);
+  transition: border-color 0.2s ease;
+
+  &:hover,
+  &:focus-within {
+    border-color: var(--border-hover);
+  }
+
+  // 手機：不用卡片外框，內容直接貼齊頁面
+  @include mixins.respond-to('phone') {
+    border: none;
+    border-radius: 0;
+    background: transparent;
   }
 }
 
 /* =========================================
-   Sidebar (Left Panel)
+   Settings (Left Card)
    ========================================= */
 .sidebar {
+  @include card;
+  position: sticky;
+  top: var(--space);
   display: flex;
   flex-direction: column;
   gap: var(--space-2x);
+  max-height: calc(100vh - var(--space-2x));
   padding: var(--space-2x);
-  border-right: 1px solid var(--border);
   overflow-y: auto;
+  @include mixins.hide-scrollbar;
 
-  @include mixins.respond-to('tablet') {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-    overflow-y: visible;
+  @include mixins.respond-by-max-width(1024px) {
+    position: static;
+    max-height: none;
+  }
+
+  @include mixins.respond-to('phone') {
+    padding: 0;
   }
 }
 
@@ -95,6 +158,50 @@
     font-size: 0.85rem;
     font-weight: 600;
     color: var(--foreground-secondary);
+  }
+}
+
+.fieldHint {
+  margin: 0;
+  color: var(--foreground-tertiary);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+// 網址：固定的 /news/ 前綴 + 可編輯的 slug
+.slugInput {
+  display: flex;
+  align-items: center;
+  border: 1px solid var(--border);
+  @include mixins.border-radius(10px);
+  background: var(--background-secondary);
+  overflow: hidden;
+  transition: border-color 0.15s;
+
+  &:focus-within {
+    border-color: var(--primary);
+  }
+
+  span {
+    padding-left: 14px;
+    color: var(--foreground-tertiary);
+    font-size: 0.95rem;
+  }
+
+  input {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 14px 10px 2px;
+    border: none;
+    background: transparent;
+    color: var(--foreground);
+    font-size: 0.95rem;
+    outline: none;
+
+    &:disabled {
+      color: var(--foreground-tertiary);
+      cursor: not-allowed;
+    }
   }
 }
 
@@ -111,7 +218,7 @@
 
   &:focus {
     outline: none;
-    border-color: var(--foreground-secondary);
+    border-color: var(--primary);
   }
 }
 
@@ -129,7 +236,7 @@
 
   &:hover,
   &.dragOver {
-    border-color: var(--foreground-secondary);
+    border-color: var(--border-hover);
     background: rgba(var(--foreground-rgb), 0.03);
   }
 
@@ -143,6 +250,12 @@
   p {
     margin: 0;
     font-size: 0.85rem;
+    color: var(--foreground-secondary);
+  }
+
+  .coverUploadIcon {
+    margin-bottom: 8px;
+    font-size: 1.5rem;
     color: var(--foreground-secondary);
   }
 }
@@ -172,17 +285,37 @@
     transition: opacity 0.2s;
   }
 
-  &:hover .coverOverlay {
+  &:hover .coverOverlay,
+  .coverOverlay.visible {
     opacity: 1;
   }
 }
 
 /* =========================================
-   Markdown Editor Panel (Right)
+   Content (Right Card)
+   不設 overflow，讓編輯器工具列的 position: sticky 以整頁捲動為準
    ========================================= */
 .editorPanel {
-  display: flex;
-  flex-direction: column;
-  min-height: 0;
-  overflow: hidden;
+  @include card;
+  min-width: 0;
+}
+
+// 文章狀態：草稿（灰）/ 已發布（綠）
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 10px;
+  border: 1px solid var(--border);
+  border-radius: 100px;
+  background: var(--background-secondary);
+  color: var(--foreground-secondary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &.published {
+    border-color: var(--border-on-color);
+    background: var(--green-400);
+    color: var(--color-white);
+  }
 }

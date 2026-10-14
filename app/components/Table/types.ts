@@ -71,4 +71,7 @@ export interface TableProps<T> {
   onRowClick?: (row: T) => void
   // 動態列 class（供 newRow 高亮等）
   rowClassName?: (row: T) => string | undefined
+  // 每列的「更多」選單內容（按鈕 / 連結；危險操作加 data-danger="true"）。
+  // 有給才顯示最右側的「更多」欄，表格橫向捲動時固定在右邊
+  rowActions?: (row: T) => ReactNode
 }

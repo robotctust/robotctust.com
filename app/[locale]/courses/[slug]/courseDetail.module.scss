@@ -53,7 +53,7 @@
   width: 100%;
   padding: var(--space-2x);
   border: 1px solid var(--border);
-  background: rgba(var(--primary-rgb), 0.08);
+  background: color-mix(in oklch, var(--primary) 8%, transparent);
   @include mixins.border-radius(16px);
 
   h1 {
@@ -75,7 +75,7 @@
   padding: var(--space) var(--space-2x);
   color: white;
   background: var(--primary);
-  border: 1px solid var(--border);
+  border: 1px solid var(--border-on-color);
   text-decoration: none;
   font-weight: 700;
   @include mixins.border-radius(12px);

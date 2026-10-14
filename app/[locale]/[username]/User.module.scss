@@ -249,7 +249,7 @@
 
             &:hover {
               background: var(--primary-hover);
-              border-color: var(--border-hover);
+              border-color: var(--border-on-color-hover);
             }
 
             &:disabled {

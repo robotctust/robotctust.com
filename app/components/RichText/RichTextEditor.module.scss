@@ -1,0 +1,310 @@
+@use '@/app/styles/mixins' as mixins;
+
+// 編輯器隨整頁捲動，工具列以 sticky 固定在畫面上方；外框（卡片）由使用的頁面決定
+.editor {
+  min-width: 0;
+}
+
+// ─── 工具列 ───────────────────────────────────────────────
+
+.toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  border-bottom: 1px solid var(--border);
+  // 與外層卡片的上緣圓角一致
+  border-radius: 16px 16px 0 0;
+  background: var(--background);
+
+  // 手機：工具列貼齊螢幕左右、單排橫向捲動，不佔太多高度
+  @include mixins.respond-to('phone') {
+    margin: 0 calc(var(--space-2x) * -1);
+    border-top: 1px solid var(--border);
+    border-radius: 0;
+
+    .toolbarRow {
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      @include mixins.hide-scrollbar;
+
+      > * {
+        flex-shrink: 0;
+      }
+    }
+  }
+}
+
+.toolbarRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 2px;
+  padding: 0.4rem 0.75rem;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 0.5rem;
+    border: none;
+    border-radius: 0.375rem;
+    background: transparent;
+    color: var(--foreground-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background: var(--background-secondary);
+      color: var(--foreground);
+    }
+
+    &:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    &.active {
+      background: var(--background-secondary);
+      color: var(--primary);
+    }
+
+    &.danger:hover {
+      color: var(--red-500);
+    }
+  }
+}
+
+// 表格操作、連結輸入：工具列下方第二排
+.subRow {
+  border-top: 1px solid var(--border);
+}
+
+.divider {
+  width: 1px;
+  height: 20px;
+  margin: 0 0.35rem;
+  background: var(--border);
+}
+
+.blockSelect,
+.linkInput {
+  height: 32px;
+  padding: 0 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 0.375rem;
+  background: var(--background);
+  color: var(--foreground);
+  font-size: 0.85rem;
+}
+
+.linkInput {
+  flex: 1;
+  min-width: 200px;
+}
+
+// ─── 內文區 ───────────────────────────────────────────────
+
+.content {
+  // 內文寬度與公開頁相同（page 容器 max-width 800px），換行位置才會一致
+  max-width: calc(800px + 4rem);
+  min-height: 60vh;
+  margin: 0 auto;
+  padding: 1.5rem 2rem 6rem;
+  outline: none;
+
+  @include mixins.respond-to('phone') {
+    padding: var(--space) 0 6rem;
+  }
+
+  // 空白時的提示文字（Placeholder extension 加上的 class）
+  :global(p.is-editor-empty:first-child)::before {
+    content: attr(data-placeholder);
+    float: left;
+    height: 0;
+    color: var(--foreground-tertiary);
+    pointer-events: none;
+  }
+
+  // 程式碼不自動換行、超出時橫向捲動，與公開頁相同（ProseMirror 預設 pre-wrap）
+  pre,
+  pre code {
+    white-space: pre;
+  }
+
+  // 拖曳插入點
+  :global(.ProseMirror-gapcursor)::after {
+    border-top-color: var(--foreground);
+  }
+
+  // 表格：選取的儲存格
+  :global(.selectedCell) {
+    background: rgba(var(--foreground-rgb), 0.08);
+  }
+
+  // 選取整個節點（分隔線、影片等）
+  :global(.ProseMirror-selectednode) {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+}
+
+// ─── 圖片 ───────────────────────────────────────────────
+
+.image {
+  margin: 2rem 0;
+  border: 1px solid var(--border);
+  @include mixins.border-radius(12px);
+  overflow: hidden;
+  background: var(--background);
+
+  &.selected {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+  }
+
+  &:hover .imageDelete,
+  &.selected .imageDelete {
+    opacity: 1;
+  }
+}
+
+.imageFrame {
+  position: relative;
+
+  img {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+}
+
+.uploading {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  background: rgba(0, 0, 0, 0.45);
+  color: var(--color-white);
+  font-size: 0.9rem;
+}
+
+.imageDelete {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.6);
+  color: var(--color-white);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    background: var(--red-500);
+  }
+}
+
+// 說明文字：外觀對齊前台的 figcaption
+.caption {
+  display: block;
+  width: 100%;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-top: 1px solid var(--border);
+  background: transparent;
+  color: var(--foreground-secondary);
+  font-size: 0.875rem;
+  text-align: center;
+  outline: none;
+
+  &:placeholder-shown {
+    color: var(--foreground-tertiary);
+  }
+}
+
+// ─── 圖片組 ───────────────────────────────────────────────
+
+.gallery {
+  margin: 2rem 0;
+  padding: 0.75rem;
+  border: 1px dashed var(--border);
+  @include mixins.border-radius(12px);
+}
+
+.galleryBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem;
+  margin-bottom: 0.75rem;
+  font-size: 0.85rem;
+
+  button {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.25rem 0.6rem;
+    border: none;
+    border-radius: 0.375rem;
+    background: transparent;
+    color: var(--foreground-secondary);
+    cursor: pointer;
+
+    &:hover {
+      background: var(--background-secondary);
+      color: var(--foreground);
+    }
+  }
+}
+
+.galleryLabel {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  margin-right: auto;
+  color: var(--foreground-secondary);
+}
+
+// 組內圖片排成縮圖格（NodeViewContent 內層才是實際的 contentDOM）
+.galleryGrid > div {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+  gap: 0.75rem;
+
+  .image {
+    margin: 0;
+  }
+
+  .imageFrame img {
+    aspect-ratio: 3 / 2;
+    object-fit: cover;
+  }
+}
+
+// ─── 程式碼區塊 ───────────────────────────────────────────
+
+.codeBlock {
+  position: relative;
+}
+
+.codeLanguage {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  z-index: 1;
+  padding: 0.15rem 0.4rem;
+  border: 1px solid var(--gray-600);
+  border-radius: 0.375rem;
+  background: var(--gray-900);
+  color: var(--color-white);
+  font-size: 0.75rem;
+}

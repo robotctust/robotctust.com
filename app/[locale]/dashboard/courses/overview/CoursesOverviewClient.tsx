@@ -17,7 +17,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons'
 import ActionMenu from '@/app/components/ActionMenu/ActionMenu'
 import { Table } from '@/app/components/Table'
-import { Modal } from '../../components/Modal'
+import { Modal } from '@/app/components/Modal'
 import { useToast } from '@/app/contexts/ToastContext'
 import { Skeleton } from '@/app/components/Skeleton'
 import {

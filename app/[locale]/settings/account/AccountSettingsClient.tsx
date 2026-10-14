@@ -12,8 +12,8 @@ import {
   Button,
   Input,
   Toggle,
-  ConfirmModal,
 } from '@/app/components/Settings'
+import { ConfirmModal } from '@/app/components/Modal'
 import { exportMyData, deleteAccount, updateFollowPrivacy } from './actions'
 import styles from './account.module.scss'
 

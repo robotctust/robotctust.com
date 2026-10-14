@@ -7,7 +7,7 @@ import {
   faTrash,
   faUsers,
 } from '@fortawesome/free-solid-svg-icons'
-import { Modal } from '@/app/[locale]/dashboard/components/Modal'
+import { Modal } from '@/app/components/Modal'
 import {
   MembersOverviewPayload,
   SemesterWithMembers,

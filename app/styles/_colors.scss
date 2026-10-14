@@ -95,11 +95,38 @@
   --orange-900: oklch(0.1 0.12 75);
   --orange-950: oklch(0.05 0.09 75);
 
-  // semantic color
-  --color-success: #10b981;
-  --color-warning: #f59e0b;
-  --color-error: #ef4444;
-  --color-info: #3b82f6;
+  //* 鮮豔底色（主色按鈕、實心標籤等）上的邊框：模擬玻璃邊緣的亮色高光，深淺主題都一樣
+  // 一般、淺色底的容器則用主題的 --border（淺色模式是淡淡的深色勾勒）
+  --border-on-color: color-mix(in srgb, #fff 25%, transparent);
+  --border-on-color-hover: color-mix(in srgb, #fff 40%, transparent);
+
+  //* 語意色：狀態標籤、提示、危險操作（全部來自上方色票）
+  // {tone} 實心底（配白字）、-text 淡底上的有色文字、-soft 淡底、-border 淡邊框
+  // -text 用 --theme-*-600：淺色模式偏深、深色模式偏亮（見各主題的 Dynamic Colors）
+  --success: var(--green-500);
+  --success-text: var(--theme-green-600);
+  --success-soft: color-mix(in oklch, var(--green-500) 15%, transparent);
+  --success-border: color-mix(in oklch, var(--green-500) 35%, transparent);
+
+  --warning: var(--orange-500);
+  --warning-text: var(--theme-orange-600);
+  --warning-soft: color-mix(in oklch, var(--orange-500) 15%, transparent);
+  --warning-border: color-mix(in oklch, var(--orange-500) 35%, transparent);
+
+  --danger: var(--red-500);
+  --danger-hover: var(--red-400);
+  --danger-text: var(--theme-red-600);
+  --danger-soft: color-mix(in oklch, var(--red-500) 15%, transparent);
+  --danger-border: color-mix(in oklch, var(--red-500) 35%, transparent);
+
+  --info: var(--blue-500);
+  --info-text: var(--theme-blue-600);
+  --info-soft: color-mix(in oklch, var(--blue-500) 15%, transparent);
+  --info-border: color-mix(in oklch, var(--blue-500) 35%, transparent);
+
+  --brand-text: var(--theme-purple-600);
+  --brand-soft: color-mix(in oklch, var(--purple-500) 15%, transparent);
+  --brand-border: color-mix(in oklch, var(--purple-500) 35%, transparent);
 
   //* Text Colors
   // light
@@ -150,7 +177,6 @@
   //* Main Colors
   // Primary
   --primary: var(--purple-500);
-  --secondary: var(--purple-300);
   --primary-hover: var(--purple-400);
 
   // Background
@@ -173,12 +199,10 @@
   --text-tertiary: var(--foreground-tertiary);
 
   // Border
-  --border: var(--foreground-950);
-  --border-secondary: var(--foreground-900);
-  --border-tertiary: var(--foreground-800);
-  --border-hover: var(--foreground-800);
-  --border-secondary-hover: var(--foreground-700);
-  --border-tertiary-hover: var(--foreground-600);
+  // 邊框只用來輕輕勾勒輪廓：一般 7%、hover 12%、border-secondary（分隔線等需要稍明顯的地方）10%
+  --border: color-mix(in srgb, var(--foreground) 7%, transparent);
+  --border-secondary: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --border-hover: color-mix(in srgb, var(--foreground) 12%, transparent);
 
   // Background Grid
   --background-grid-color: rgba(0, 0, 0, 0.03);
@@ -290,17 +314,7 @@
   --foreground-900: var(--foreground-light-900);
   --foreground-950: var(--foreground-light-950);
 
-  //* Functional Colors
-  // Danger
-  --danger: var(--color-red-500);
-  --danger-foreground: var(--color-white);
-  --danger-hover: var(--color-red-700);
-
   --muted: var(--gray-100);
-  --muted-foreground: var(--gray-500);
-
-  --accent: var(--gray-100);
-  --accent-foreground: var(--gray-900);
 
   // Docs Card
   --docs-paper-background: var(--color-white);
@@ -316,7 +330,6 @@
   //* Main Colors
   // Primary
   --primary: var(--purple-500);
-  --secondary: var(--purple-700);
   --primary-hover: var(--purple-400);
 
   // Background
@@ -339,12 +352,10 @@
   --text-tertiary: var(--foreground-tertiary);
 
   // Border
-  --border: var(--foreground-950);
-  --border-secondary: var(--foreground-900);
-  --border-tertiary: var(--foreground-800);
-  --border-hover: var(--foreground-800);
-  --border-secondary-hover: var(--foreground-700);
-  --border-tertiary-hover: var(--foreground-600);
+  // 邊框只用來輕輕勾勒輪廓：一般 7%、hover 12%、border-secondary（分隔線等需要稍明顯的地方）10%
+  --border: color-mix(in srgb, var(--foreground) 7%, transparent);
+  --border-secondary: color-mix(in srgb, var(--foreground) 10%, transparent);
+  --border-hover: color-mix(in srgb, var(--foreground) 12%, transparent);
 
   // Background Grid
   --background-grid-color: rgba(255, 255, 255, 0.03);
@@ -456,18 +467,7 @@
   --foreground-900: var(--foreground-dark-900);
   --foreground-950: var(--foreground-dark-950);
 
-  --danger: var(--color-red-900);
-  --danger-foreground: var(--color-white);
-  --danger-hover: var(--color-red-700);
-
-  --card: var(--gray-800);
-  --card-foreground: var(--gray-50);
-
   --muted: var(--gray-800);
-  --muted-foreground: var(--gray-400);
-
-  --accent: var(--gray-800);
-  --accent-foreground: var(--gray-50);
 
   // Docs Card
   --docs-paper-background: var(--gray-800);
@@ -475,10 +475,21 @@
   --docs-paper-border: var(--gray-700);
 }
 
-//* 主題切換動畫
+//* 顏色過渡：沒有自訂 transition 的元素，hover 與主題切換時顏色淡入
 * {
   transition:
-    background-color 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-    color 0.3s cubic-bezier(0.23, 1, 0.32, 1),
-    border-color 0.3s cubic-bezier(0.23, 1, 0.32, 1);
+    background-color var(--transition-duration) var(--transition-bezier),
+    color var(--transition-duration) var(--transition-bezier),
+    border-color var(--transition-duration) var(--transition-bezier);
+}
+
+// 切換主題的瞬間（ThemeToggle 加上這個 class）：所有元素用同一組顏色過渡，
+// 不然自訂了 transition 的元素會瞬間換色，畫面出現一半換好、一半還沒換的中間狀態
+.theme-switching * {
+  transition:
+    background-color var(--transition-duration) var(--transition-bezier),
+    color var(--transition-duration) var(--transition-bezier),
+    border-color var(--transition-duration) var(--transition-bezier),
+    fill var(--transition-duration) var(--transition-bezier),
+    stroke var(--transition-duration) var(--transition-bezier) !important;
 }

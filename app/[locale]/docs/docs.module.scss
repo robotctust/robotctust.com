@@ -34,11 +34,11 @@
           color: inherit;
           overflow: hidden;
           @include mixins.border-radius(12px);
+          @include mixins.interactive('surface');
 
           &:hover {
             background: rgba(var(--background-secondary-rgb), 0.75);
             border: 1px solid var(--border-hover);
-            @include mixins.hover-scale-effect(1.01);
 
             > .docCategory {
               background-color: var(--background-tertiary);

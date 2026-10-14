@@ -24,7 +24,7 @@ import remarkGfm from 'remark-gfm'
 
 import { deleteImage, uploadImage } from '@/app/utils/media/client'
 import Img from '@/app/components/Img/Img'
-import { Modal } from '@/app/[locale]/dashboard/components/Modal'
+import { Modal } from '@/app/components/Modal'
 import {
   Course,
   CourseContent,

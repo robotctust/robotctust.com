@@ -2,6 +2,7 @@
 
 import { useEffect, useId, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
+import { useTranslations } from 'next-intl'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTimes } from '@fortawesome/free-solid-svg-icons'
 import styles from './Modal.module.scss'
@@ -45,6 +46,7 @@ export const Modal = ({
   showCloseButton = true,
   compact = false,
 }: ModalProps) => {
+  const t = useTranslations('Components.Modal')
   const titleId = useId()
   const [mounted, setMounted] = useState(false)
 
@@ -90,7 +92,7 @@ export const Modal = ({
               type="button"
               onClick={onClose}
               className={styles.closeButton}
-              aria-label="關閉"
+              aria-label={t('close')}
               disabled={!dismissible}
             >
               <FontAwesomeIcon icon={faTimes} />

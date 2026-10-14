@@ -1,3 +1,5 @@
+import type { JSONContent } from '@tiptap/core'
+
 // 文章分類
 export type PostCategory =
   | '社團活動'
@@ -11,7 +13,9 @@ export type PostCategory =
 export interface Post {
   id: string // Document ID or slug
   title: string
-  contentMarkdown: string
+  contentMarkdown: string // v2.7 以前的 Markdown 內文，只是備份（不再更新，也不傳給 client）
+  content: JSONContent | null // TipTap JSON 內文（伺服器渲染用，不傳給 client）
+  contentText: string // 內文純文字：摘要、搜尋、meta description
   category: PostCategory
   coverImageUrl: string | null
 
@@ -23,24 +27,12 @@ export interface Post {
   // 時間戳記（ISO 8601 字串）
   createdAt: string
   updatedAt: string
-  publishedAt: string | null // 草稿為 null
+  publishedAt: string | null // 第一次發布的時間；從沒發布過為 null（撤回成草稿後保留）
+  status: PostStatus
+  mediaKey: string // 文章圖片的 R2 資料夾 posts/{mediaKey}/
 }
 
-// 建立文章資料
-export interface CreatePostData {
-  title: string
-  contentMarkdown: string
-  category: PostCategory
-  coverImageUrl?: string | null
-}
-
-// 更新文章資料
-export interface UpdatePostData {
-  title?: string
-  contentMarkdown?: string
-  category?: PostCategory
-  coverImageUrl?: string | null
-}
+export type PostStatus = 'draft' | 'published'
 
 // 權限管理
 export interface AuthorizedUser {

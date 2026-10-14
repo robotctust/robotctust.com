@@ -8,7 +8,7 @@
   color: var(--foreground);
   border: 1px solid var(--border);
   @include mixins.border-radius(16px);
-  @include mixins.hover-scale-effect;
+  @include mixins.interactive;
   cursor: pointer;
 
   &:hover {
@@ -90,7 +90,7 @@
     width: 100%;
     color: var(--color-white);
     background: var(--theme-purple-500);
-    border: 1px solid var(--border);
+    border: 1px solid var(--border-on-color);
     @include mixins.border-radius(9px);
   }
 }

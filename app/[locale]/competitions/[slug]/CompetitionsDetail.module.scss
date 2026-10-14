@@ -31,7 +31,6 @@
           width: calc(100% + 48px);
           margin-left: -24px;
           @include mixins.border-radius(0);
-          @include mixins.hover-scale-effect(1);
         }
 
         &:hover {
@@ -82,17 +81,17 @@
               }
 
               &.upcoming {
-                background: var(--color-info);
+                background: var(--info);
                 color: var(--color-white);
               }
 
               &.registrationOpen {
-                background: var(--color-success);
+                background: var(--success);
                 color: var(--color-white);
               }
 
               &.ongoing {
-                background: var(--color-warning);
+                background: var(--warning);
                 color: var(--color-white);
               }
 
@@ -791,7 +790,7 @@
               font-size: 0.9rem;
               font-weight: 600;
               color: var(--foreground-tertiary);
-              margin-bottom: var(--space-half);
+              margin-bottom: var(--space-0-5x);
             }
 
             > .detailSubSteps {

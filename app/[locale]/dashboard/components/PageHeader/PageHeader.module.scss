@@ -1,0 +1,37 @@
+@use '@/app/styles/_mixins.scss' as mixins;
+
+// 後台是工具頁面，標題用 xl（1.5rem）；公開頁的頁面標題才用 2xl
+.header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: var(--space);
+  padding-top: var(--space-2x);
+  margin-bottom: var(--space-2x);
+}
+
+.text {
+  min-width: 0;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  color: var(--foreground);
+}
+
+.description {
+  margin: var(--space-0-5x) 0 0;
+  font-size: var(--font-size-sm);
+  line-height: 1.6;
+  color: var(--foreground-secondary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-0-75x);
+}

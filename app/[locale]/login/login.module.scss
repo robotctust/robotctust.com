@@ -23,7 +23,7 @@
     border: 1px solid var(--border);
     @include border-radius(32px);
     @include glass-blur(12px);
-    @include hover-scale-effect;
+    @include interactive;
 
     img {
       height: 24px;

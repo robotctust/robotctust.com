@@ -81,3 +81,4 @@ RELEASE_NOTES.md
 
 # 圖片遷移腳本輸出（對照表與報告）
 scripts/.image-migration/
+scripts/.tiptap-migration/

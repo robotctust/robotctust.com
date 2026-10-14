@@ -137,7 +137,7 @@
   height: 100%;
   background: linear-gradient(
     135deg,
-    rgba(var(--theme-purple-100-rgb), 0.28) 0%,
+    color-mix(in oklch, var(--theme-purple-100) 28%, transparent) 0%,
     var(--background-secondary) 100%
   );
 }

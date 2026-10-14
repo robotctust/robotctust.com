@@ -4,9 +4,12 @@ import { createPublicClient } from './supabase/public'
 import {
   Post,
   PostCategory,
+  PostStatus,
 } from '../types/post'
 import { canAccessModuleByRoles } from './auth/roles'
 import { Locale } from '../types/i18n'
+import type { JSONContent } from '@tiptap/core'
+import { getPlainText } from '../components/RichText/content'
 
 /**
  * 檢查使用者是否有發布權限
@@ -19,6 +22,7 @@ type SupabasePostRow = {
   id: string
   title: string
   content_markdown: string | null
+  content: JSONContent | null
   category: string
   cover_image_url: string | null
   author_id: string
@@ -26,6 +30,8 @@ type SupabasePostRow = {
   created_at: string
   updated_at: string
   published_at: string | null
+  status: string
+  media_key: string
   author: { display_name: string; username: string } | null
 }
 
@@ -37,6 +43,8 @@ function rowToPost(row: SupabasePostRow): Post {
     title: row.title,
     // v2.7 新編輯器的文章只有 JSON 內文，這裡沒有 markdown
     contentMarkdown: row.content_markdown ?? '',
+    content: row.content,
+    contentText: getPlainText(row.content),
     category: row.category as PostCategory,
     coverImageUrl: row.cover_image_url,
     authorId: row.author_id,
@@ -45,6 +53,8 @@ function rowToPost(row: SupabasePostRow): Post {
     createdAt: row.created_at,
     updatedAt: row.updated_at,
     publishedAt: row.published_at,
+    status: row.status as PostStatus,
+    mediaKey: row.media_key,
   }
 }
 
@@ -176,29 +186,11 @@ export async function getPostsByCategory(
 
 /**
  * 取得文章摘要
- * @param markdown - 文章內容
+ * @param text - 文章純文字（Post.contentText）
  * @param maxLength - 摘要最大長度
- * @returns 文章摘要
  */
-export function getPostExcerpt(
-  markdown: string,
-  maxLength: number = 150,
-): string {
-  const plainText = markdown
-    .replace(/#{1,6}\s+/g, '')
-    .replace(/\*\*(.+?)\*\*/g, '$1')
-    .replace(/\*(.+?)\*/g, '$1')
-    .replace(/`(.+?)`/g, '$1')
-    .replace(/\[(.+?)\]\(.+?\)/g, '$1')
-    .replace(/!\[.*?\]\(.+?\)/g, '')
-    .replace(/^\s*[-*+]\s+/gm, '')
-    .replace(/^\s*\d+\.\s+/gm, '')
-    .replace(/^\s*>\s+/gm, '')
-    .replace(/---/g, '')
-    .trim()
-  return plainText.length > maxLength
-    ? plainText.substring(0, maxLength) + '...'
-    : plainText
+export function getPostExcerpt(text: string, maxLength: number = 150): string {
+  return text.length > maxLength ? text.substring(0, maxLength) + '...' : text
 }
 
 /**

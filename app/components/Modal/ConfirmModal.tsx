@@ -1,10 +1,8 @@
 'use client'
 
 import { useEffect, useState, type ReactNode } from 'react'
-import { Modal } from '@/app/components/Modal'
-import Button from './Button'
-import Input from './Input'
-import styles from './Settings.module.scss'
+import Modal from './Modal'
+import styles from './ConfirmModal.module.scss'
 
 interface ConfirmModalProps {
   open: boolean
@@ -77,36 +75,32 @@ export default function ConfirmModal({
       showCloseButton={false}
       footer={
         <>
-          <Button
-            variant="outline"
-            size="md"
-            onClick={onClose}
-            disabled={loading}
-          >
+          <button type="button" className="secondary-button" onClick={onClose} disabled={loading}>
             {cancelLabel}
-          </Button>
-          <Button
-            variant={isDanger ? 'danger-solid' : 'primary'}
-            size="md"
+          </button>
+          <button
+            type="button"
+            className={isDanger ? 'danger-button' : 'primary-button'}
             onClick={onConfirm}
             disabled={confirmDisabled}
+            aria-busy={loading}
           >
             {confirmLabel}
-          </Button>
+          </button>
         </>
       }
     >
-      {description && <p className={styles.modal_desc}>{description}</p>}
-      {warning && <p className={styles.modal_warning}>{warning}</p>}
+      {description && <p className={styles.desc}>{description}</p>}
+      {warning && <p className={styles.warning}>{warning}</p>}
       {steps && steps.length > 0 && (
-        <ol className={styles.modal_steps}>
+        <ol className={styles.list}>
           {steps.map((s, i) => (
             <li key={i}>{s}</li>
           ))}
         </ol>
       )}
       {consequences && consequences.length > 0 && (
-        <ul className={styles.modal_list}>
+        <ul className={styles.list}>
           {consequences.map((c, i) => (
             <li key={i}>{c}</li>
           ))}
@@ -116,13 +110,13 @@ export default function ConfirmModal({
       {confirmationPhrase !== undefined && (
         <>
           {confirmationHint && (
-            <label className={styles.modal_confirm_label}>
+            <label className={styles.confirmLabel}>
               {confirmationHint}
             </label>
           )}
-          <Input
+          <input
             type="text"
-            variant={isDanger ? 'danger' : 'default'}
+            className={`${styles.input} ${isDanger ? styles.danger : ''}`}
             placeholder={confirmationPlaceholder}
             value={confirmInput}
             onChange={(e) => setConfirmInput(e.target.value)}

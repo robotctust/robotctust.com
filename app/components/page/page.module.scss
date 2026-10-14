@@ -17,7 +17,6 @@
 
     @include mixins.respond-by-min-width(860px) {
       // gap: var(--space-3x);
-      max-width: var(--max-window-width);
     }
 
     @include mixins.respond-by-max-width(859px) {
@@ -30,6 +29,11 @@
     padding-left: var(--space-2x);
     width: 100%;
     max-width: 280px;
+
+    // @aside slot 回傳 null 的頁面（文章編輯、課程工作區）不留側欄空位，內容填滿寬度
+    &:empty {
+      display: none;
+    }
   }
 
   .mainContent {

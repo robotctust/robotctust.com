@@ -272,7 +272,7 @@ header.header {
         visibility: hidden;
         pointer-events: none;
         @include mixins.transform-container(translateY(-50%) scale(0.85));
-        @include mixins.hover-scale-effect;
+        @include mixins.interactive;
 
         > svg {
           @include mixins.transition(transform 0.4s var(--transition-bezier));
@@ -299,7 +299,7 @@ header.header {
       scroll-snap-type: x mandatory;
       scroll-behavior: smooth;
       @include mixins.transition(var(--transition-default));
-      @include mixins.hover-scale-effect;
+      @include mixins.interactive;
       @include mixins.hide-scrollbar;
 
       &:hover {
@@ -346,7 +346,7 @@ header.header {
       height: 100%;
       @include mixins.border-radius(50%);
       @include mixins.transition(var(--transition-default));
-      @include mixins.hover-scale-effect;
+      @include mixins.interactive;
 
       &.active {
         border: 2px solid var(--text-tertiary);

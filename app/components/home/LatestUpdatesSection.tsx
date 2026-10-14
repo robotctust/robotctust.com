@@ -58,12 +58,12 @@ const LatestUpdatesSection = async () => {
                   <div className={styles.content}>
                     <h3>{post.title}</h3>
                     <p className={styles.excerpt}>
-                      {getPostExcerpt(post.contentMarkdown)}
+                      {getPostExcerpt(post.contentText)}
                     </p>
                   </div>
                   <div className={styles.footer}>
                     <span className={styles.date}>
-                      {formatPostDate(post.createdAt, locale as Locale)}
+                      {formatPostDate(post.publishedAt ?? post.createdAt, locale as Locale)}
                     </span>
                   </div>
                 </div>

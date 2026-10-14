@@ -5,16 +5,18 @@ import type { MediaCrop, MediaKind, UploadedImage } from '@/app/types/media'
  * @param file - 原始圖片檔案
  * @param kind - 圖片種類
  * @param options.courseId - course 必填
+ * @param options.mediaKey - post 必填：文章的 media_key（圖片存在該文章的資料夾）
  * @param options.crop - background 的裁切偏移（0~1）
  * @returns lg 版網址（存入資料庫的值）與實際寬高
  */
 export async function uploadImage(
   file: File,
   kind: MediaKind,
-  options: { courseId?: string; crop?: MediaCrop } = {},
+  options: { courseId?: string; mediaKey?: string; crop?: MediaCrop } = {},
 ): Promise<UploadedImage> {
   const params = new URLSearchParams({ kind })
   if (options.courseId) params.set('courseId', options.courseId)
+  if (options.mediaKey) params.set('mediaKey', options.mediaKey)
   if (options.crop) {
     params.set('cropX', String(options.crop.x))
     params.set('cropY', String(options.crop.y))
