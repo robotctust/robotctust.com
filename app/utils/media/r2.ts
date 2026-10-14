@@ -136,6 +136,29 @@ export async function deleteMediaByUrl(url: string | null | undefined): Promise<
 }
 
 /**
+ * 把一張 R2 圖片（sm、lg）複製到新資料夾，Content-Type / Cache-Control 跟著複製
+ * 用於複製課程：新課程要有自己的圖片，否則刪除舊課程時會連帶刪掉新課程用到的圖
+ * 不做權限檢查：呼叫端須自行確認
+ * @param url - parseMediaUrl 認得的 R2 圖片網址
+ * @param folder - 目標資料夾（newMediaFolder 產生）
+ * @returns 新的 lg 網址
+ */
+export async function copyMedia(url: string, folder: string): Promise<string> {
+  const parsed = parseMediaUrl(url)
+  if (!parsed) throw new Error(`不是 R2 圖片網址：${url}`)
+  const bucket = process.env.R2_BUCKET
+  await Promise.all(
+    (['lg', 'sm'] as const).map((variant) =>
+      r2Request(`${folder}/${variant}.webp`, {
+        method: 'PUT',
+        headers: { 'x-amz-copy-source': `/${bucket}/${parsed.folder}/${variant}.webp` },
+      }),
+    ),
+  )
+  return `${SITE_CONFIG.mediaBase}/${folder}/lg.webp`
+}
+
+/**
  * 列出某個前綴底下的所有物件
  * @param prefix - 必須以 / 結尾
  */

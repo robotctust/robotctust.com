@@ -6,6 +6,7 @@
 
 import { createAdminClient } from '@/app/utils/supabase/admin'
 import { deleteMediaByUrl, deleteMediaPrefix } from '@/app/utils/media/r2'
+import { toSlug } from '@/app/utils/dashboard/courseBundleFormat'
 import {
   Chapter,
   ChapterTreeNode,
@@ -103,19 +104,7 @@ const courseContentColumns =
   'id, course_id, type, content, program_id, order_index, created_at, programs(id, name, language, code_content, created_at)'
 
 function sanitizeSlug(value: string): string {
-  const normalized = value
-    .normalize('NFKD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, '')
-    .replace(/\s+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '')
-
-  if (normalized) return normalized
-
-  return `course-${Date.now().toString(36)}`
+  return toSlug(value) || `course-${Date.now().toString(36)}`
 }
 
 async function getNextOrderIndex(
