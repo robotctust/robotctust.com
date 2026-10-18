@@ -14,7 +14,7 @@ export interface Post {
   id: string // Document ID or slug
   title: string
   contentMarkdown: string // v2.7 以前的 Markdown 內文，只是備份（不再更新，也不傳給 client）
-  content: JSONContent | null // TipTap JSON 內文（伺服器渲染用，不傳給 client）
+  content: JSONContent | null // TipTap JSON 內文（伺服器渲染用；只有 iOS App 的單篇 API 會傳出）
   contentText: string // 內文純文字：摘要、搜尋、meta description
   category: PostCategory
   coverImageUrl: string | null

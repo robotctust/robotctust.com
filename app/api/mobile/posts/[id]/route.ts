@@ -7,8 +7,9 @@ type RouteContext = { params: Promise<{ id: string }> }
 /**
  * GET /api/mobile/posts/[id]
  * 公開單篇文章詳情（給 iOS App 使用，不需要 auth）
+ * 內文附上 TipTap JSON（content），由 App 原生渲染；列表 API 仍只給 contentText
  *
- * Response: SerializedPost | { error }
+ * Response: SerializedPost & { content } | { error }
  */
 export async function GET(_request: NextRequest, context: RouteContext) {
   try {
@@ -17,7 +18,7 @@ export async function GET(_request: NextRequest, context: RouteContext) {
     if (!post) {
       return Response.json({ error: '文章不存在' }, { status: 404 })
     }
-    return Response.json(serializePost(post))
+    return Response.json({ ...serializePost(post), content: post.content })
   } catch (error) {
     console.error('Mobile post detail error:', error)
     return Response.json({ error: '無法取得文章' }, { status: 500 })
