@@ -80,6 +80,44 @@ export const subDocs: SubDocs[] = [
     docs: [
       {
         id: '',
+        title: '115-1 機器人極速循線競賽',
+        date: '2026-10-21',
+        docs: [
+          {
+            id: 'course-files',
+            title: '競賽資訊',
+            type: '',
+            filePath:
+              'https://www.robotctust.com/competitions/line-following-speed-115-1-club',
+            icon: faGithub,
+          },
+          {
+            id: 'arduino-ide-installation-and-usage-google-drive',
+            title: 'Arduino IDE 安裝及使用 - 簡報',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1E9K2VmNAzUmeRdLW2MdOmULmKpawgEBK/view?usp=sharing',
+            icon: faGoogleDrive,
+          },
+          {
+            id: 'course-files',
+            title: 'Arduino 驅動程式',
+            type: 'Google Drive',
+            filePath:
+              'https://drive.google.com/file/d/1eeHpWV68UiTtbvFQRRDyEFXxKA0WbRSd/view?usp=sharing',
+            icon: faGoogleDrive,
+          },
+          {
+            id: 'course-files',
+            title: '機器人循線進階程式',
+            type: 'Github',
+            filePath: 'https://github.com/robotctust/robot-program-examples/',
+            icon: faGithub,
+          },
+        ],
+      },
+      {
+        id: '',
         title: '115-1 社團活動一',
         date: '2026-10-14',
         docs: [
@@ -103,7 +141,7 @@ export const subDocs: SubDocs[] = [
             id: 'course-files',
             title: '機器人循線進階程式',
             type: 'Github',
-            filePath: 'https://github.com/robotctust/robot-program-examples/tree/main/line-follower-advanced',
+            filePath: 'https://github.com/robotctust/robot-program-examples/',
             icon: faGithub,
           },
         ],
@@ -117,14 +155,16 @@ export const subDocs: SubDocs[] = [
             id: 'course-files',
             title: '機器人遙控程式 - Arduino',
             type: 'Github',
-            filePath: 'https://github.com/robotctust/robot-program-examples/blob/main/bluetooth-remote-control/bluetooth-remote-control.zip',
+            filePath:
+              'https://github.com/robotctust/robot-program-examples/blob/main/bluetooth-remote-control/bluetooth-remote-control.zip',
             icon: faGithub,
           },
           {
             id: 'course-files',
             title: '機器人遙控程式 - Android App',
             type: 'Github',
-            filePath: 'https://github.com/robotctust/robot-bluetooth-remote-app/releases/tag/v3.1',
+            filePath:
+              'https://github.com/robotctust/robot-bluetooth-remote-app/releases/tag/v3.1',
             icon: faGithub,
           },
           {
